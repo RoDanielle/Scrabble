@@ -4,9 +4,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.BitSet;
 
-
-//khkhkh
-
 public class BloomFilter {
     private final BitSet bitset;
     private final MessageDigest[] hashFunctions;
