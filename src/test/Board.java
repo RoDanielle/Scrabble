@@ -327,7 +327,7 @@ public class Board {
 							j = j - 1;
 					}
 					if (leftend == -1)
-					leftend = 0;
+						leftend = 0;
 					 
 					// check right of letter
 					j = w.col;
@@ -342,7 +342,7 @@ public class Board {
 							j = j + 1; 
 					}
 					if(rightend == 15)
-					rightend = 14;
+				    	rightend = 14;
 					 
 					if(leftend != rightend) // a new word was created
 					{
