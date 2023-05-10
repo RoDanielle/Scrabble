@@ -37,9 +37,7 @@ public class DictionaryManager {
 				if(map.get(args[i]).query(word)) { //search for the word in the book 
 					found = true;
 				}
-
-			} 
-
+			}
 		}
 		return found;
     }

@@ -11,6 +11,7 @@ public class BookScrabbleHandler implements ClientHandler{
 	//DictionaryManager dm = DictionaryManager.get();
 	PrintWriter out;
     Scanner in;
+	BoardStatus board_status;
 	
 	@Override
 	public void handleClient(InputStream inFromclient, OutputStream outToClient) {
@@ -21,29 +22,31 @@ public class BookScrabbleHandler implements ClientHandler{
 	    System.arraycopy(str, 1, args, 0, str.length - 1);
 	 
 	    if(str[0].equalsIgnoreCase("Q")){ // query
-		    	DictionaryManager dm = new DictionaryManager();
-		    	if(dm.query(args))
-	                out.println("true");
-	            else
-	                out.println("false");
-		      }
-		      else // challenge
-		        {
-		            DictionaryManager dm = new DictionaryManager();
-		            if(dm.challenge(args))
-		                out.println("true");
-		            else
-		                out.println("false");
-		        }
-		        out.flush();
+			DictionaryManager dm = new DictionaryManager();
+			if(dm.query(args)) {
+				out.println("true");
+				//Tile[] tiles = new Tile();
+				//Word w = new Word(tiles,str[1],str[2],str[3]);
+				//board_status.score = board_status.board.tryPlaceWord(str[str.length-1]);
+			}
+			else
+				out.println("false");
+		}
+		else // challenge
+		{
+			DictionaryManager dm = new DictionaryManager();
+			if(dm.challenge(args))
+				out.println("true");
+			else
+				out.println("false");
+		}
+		out.flush();
 	}
 
 	@Override
 	public void close() {
 		in.close();
         out.close();
-		
 	}
-	
 	
 }
