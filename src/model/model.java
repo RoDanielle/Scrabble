@@ -13,6 +13,8 @@ menu-server:
 3. server - checks words and sends response to the word. if correct sends board and score. if not sends false.
 */
 
-public class model {
+public class model{
+    //login
+    Player curr_user;
 
 }
