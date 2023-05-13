@@ -16,5 +16,6 @@ menu-server:
 public class Model{
     //login
     Player curr_user;
+    Event some_event;
 
 }
