@@ -1,5 +1,8 @@
 package test;
 
+import model.BoardStatus;
+import model.EnterWord;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +13,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class MainTrain {
-	
+
 	public static class ClientHandler1 implements ClientHandler{
 		PrintWriter out;
 		Scanner in;		
@@ -161,6 +164,7 @@ public class MainTrain {
 	}
 	
 	public static void main(String[] args) {
+
 		if(testServer()) {
 			testDM();
 			testBSCH();

@@ -8,7 +8,7 @@ public class RandTile extends Event{
         tile = null;
         event_id = 1;
         from_user = curr_user.user_name;
-        to_user = curr_user.user_name;
+        to_user = null;
     }
     public void set_tile(Tile t){
         this.tile = t;
