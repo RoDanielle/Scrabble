@@ -3,7 +3,6 @@ package test;
 import java.util.Arrays;
 
 public class Word {
-
 	Tile tiles[];
 	int row;
 	int col;

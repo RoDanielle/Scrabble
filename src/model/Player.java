@@ -10,16 +10,15 @@ public class Player{
     int score;
     String type;
 
-    List<Tile> players_tile;
+    List<Tile> tiles;
     int tile_counter;
 
     public Player(String name){
         this.user_name = name;
         this.score = 0;
         this.type = null;
-
-        players_tile = new ArrayList<>();
-        this.tile_counter =players_tile.size();
+        tiles = new ArrayList<>();
+        this.tile_counter = tiles.size();
     }
     public void set_score(int points){
         this.score += points;

@@ -13,7 +13,7 @@ public class BoardStatus extends Observable {
 
     public BoardStatus(){
         modelBoard = Board.getBoard();
-    }
+    } //TODO - neeed to fix cant  call getboard
 
     public static BoardStatus getBoardStatus( ) {
         if(_instance == null)

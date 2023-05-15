@@ -1,5 +1,6 @@
 package model;
 
+import test.Board;
 import test.Tile;
 import test.Word;
 
@@ -9,10 +10,21 @@ public class EnterWord extends Event{
     String userWord;
     String fullUserWord;
     Word word;
-    Tile[] t;
+    Tile[] word_tiles;
     int row;
     int col;
     boolean vertical;
+
+    // server parameters
+
+    boolean dic_ok;
+    int score;
+    Board tempBoard;
+
+
+
+
+
 
     EnterWord(Player player, String userWord, String row, String col, String vertical){
         this.event_id = 3;
@@ -22,12 +34,16 @@ public class EnterWord extends Event{
         this.userWord = userWord;
         this.fullUserWord = userWord;
         word = null;
-        t = null;
+        word_tiles = null;
         this.row = Integer.parseInt(row);
         this.col = Integer.parseInt(col);
         if (vertical == "0")
             this.vertical = false;
         else this.vertical = true;
+
+        this.dic_ok = false;
+        this.score = 0;
+        this.tempBoard = null;
     }
 
 
@@ -37,9 +53,9 @@ public class EnterWord extends Event{
             for (int i = 0; i< userWord.length(); i++){
                 if (userWord.charAt(i) == '_'){
                     if (vertical)
-                        fullUserWord = fullUserWord.replace('-', BoardStatus.getBoardStatus().modelBoard.getTiles()[row+i][col].letter);
+                        fullUserWord = fullUserWord.replace('_', BoardStatus.getBoardStatus().modelBoard.getTiles()[row+i][col].letter);
                     else
-                        fullUserWord = fullUserWord.replace('-', BoardStatus.getBoardStatus().modelBoard.getTiles()[row][col+i].letter);
+                        fullUserWord = fullUserWord.replace('_', BoardStatus.getBoardStatus().modelBoard.getTiles()[row][col+i].letter);
                 }
             }
         }
@@ -53,12 +69,42 @@ public class EnterWord extends Event{
 
 
     private Tile[] helper() {
-        t= new Tile[userWord.length()];
+        word_tiles= new Tile[userWord.length()];
         int i=0;
         for(char c: userWord.toCharArray()) {
-            t[i]= Tile.Bag.getBag().getTile(c);
+            if(c == '_')
+            {
+                word_tiles[i] = null;
+            }
+            else {
+                for(int j = 0; j < player.tiles.size(); j++)
+                {
+                    if(c == player.tiles.get(j).letter)
+                    {
+                        word_tiles[i] = player.tiles.remove(j); // take the tiles from the user
+                        break;
+                    }
+                }
+            }
             i++;
         }
-        return t;
+        return word_tiles;
+    }
+
+    public void set_score(int score)
+    {
+        this.score = score;
+    }
+
+    public void set_dic(boolean ans)
+    {
+        this.dic_ok = ans;
+    }
+
+    public void set_Board(Board b)
+    {
+        BoardStatus updatedboard = new BoardStatus();
+        updatedboard.modelBoard = b;
+
     }
 }

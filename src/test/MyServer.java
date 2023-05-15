@@ -22,8 +22,6 @@ public class MyServer {
         new Thread(()->startServer()).start(); 
     }
 
-	
-	
 	public void startServer()
 	{
 		try {
@@ -43,8 +41,7 @@ public class MyServer {
 		}	
 		
 	}
-	
-		
+
 	public void close() {
 		stop = true;
 	}

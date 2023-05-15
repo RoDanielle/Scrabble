@@ -18,4 +18,9 @@ public class Model{
     Player curr_user;
     Event some_event;
 
+
+
+
+
+
 }
