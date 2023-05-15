@@ -47,33 +47,64 @@ public class Model{
 
             Q.sort((a,b)->Integer.parseInt(a.tiles.get(0)) - Integer.parseInt(b.tiles.get(0)));
 
+
+
+
             while(!gameOver) {
+                String answer_from_server = null;
+                String request_to_server = null;
+                ////////////////////////////////get 7 tiles started////////////////////////////////////
+                if(Q.get(0).first_round){
+                    request_to_server = "1" + "|" + Q.get(0).user_name;
+                    write_to_server(request_to_server,socket);
+                    answer_from_server = read_from_server(socket);
+                    String[] outerArr = answer_from_server.split("|");
+                    String[] tiles = outerArr[2].split("^");
+                    //String[] newTiles = new String[tiles.length-1];
+                    //for(int i=0; i<newTiles.length-1; i++){
+                        //newTiles[i] = tiles[i];
+                    //}
+                    for(String s : tiles) {
+                        Q.get(0).tiles.add(s);
+                    }
+                    Q.get(0).first_round = false;
+                    Player p = Q.remove(0);
+                    Q.add(p);
+                    break;
+                }
+                ////////////////////////////////get 7 tiles finished////////////////////////////////////
+                ////////////////////////////////enter word started////////////////////////////////////
+
                 System.out.println("please enter Word");
                 Scanner input = new Scanner(System.in);
-                String getWord = "1";
+                request_to_server = "2";
 
                 String in = input.nextLine();
-                getWord = getWord + "|" + fill_spaces(in) + "|" + in;
+                request_to_server = request_to_server + "|" + fill_spaces(in) + "|" + in;
                 System.out.println("Please enter row");
                 in = input.nextLine();
-                getWord = getWord + "|" + in;
+                request_to_server = request_to_server + "|" + in;
                 System.out.println("Please enter col");
                 in = input.nextLine();
-                getWord = getWord + "|" + in;
+                request_to_server = request_to_server + "|" + in;
                 System.out.println("Please enter v for vertical or h for horizontal");
                 in = input.nextLine();
-                getWord = getWord + "|" + in;
-                getWord = getWord + Q.get(0).user_name;
+                request_to_server = request_to_server + "|" + in;
+                request_to_server = request_to_server + Q.get(0).user_name;
 
-                write_to_server(getWord,socket);
-                String server_ans = read_from_server(socket);
+                write_to_server(request_to_server,socket);
+
+                answer_from_server = read_from_server(socket);
+
 
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        //handle challenge
+        //get response from server
+        ////////////////////////////////enter word finished////////////////////////////////////
 
 
     }
@@ -83,8 +114,10 @@ public class Model{
     public void write_to_server(String str, Socket socket){
         try {
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+
+            writer.println(str);
+            writer.flush();
             writer.close();
-        writer.println(str);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

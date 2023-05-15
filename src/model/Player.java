@@ -12,6 +12,7 @@ public class Player{
 
     List<String> tiles;
     int tile_counter;
+    boolean first_round;
 
     public Player(String name){
         this.user_name = name;
@@ -19,6 +20,7 @@ public class Player{
         this.type = null;
         tiles = new ArrayList<>();
         this.tile_counter = tiles.size();
+        this.first_round = true;
     }
     public void set_score(int points){
         this.score += points;
