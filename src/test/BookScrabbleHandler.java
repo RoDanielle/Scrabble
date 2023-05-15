@@ -16,7 +16,11 @@ public class BookScrabbleHandler implements ClientHandler{
 	
 	@Override
 	public void handleClient(InputStream inFromclient, OutputStream outToClient) {
-	    out=new PrintWriter(outToClient);
+
+
+
+	    /*
+		out=new PrintWriter(outToClient);
 	    in=new Scanner(inFromclient);
 	    String[] str = in.next().split(",");
 	    String[] args = new String[str.length - 1];
@@ -38,6 +42,8 @@ public class BookScrabbleHandler implements ClientHandler{
 		                out.println("false");
 		        }
 		        out.flush();
+
+	     */
 	}
 
 	@Override

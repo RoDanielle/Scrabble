@@ -13,4 +13,8 @@ public class RandTile extends Event{
     public void set_tile(Tile t){
         this.tile = t;
     }
+
+    public Tile get_tile(){
+        return this.tile;
+    }
 }

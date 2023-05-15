@@ -10,7 +10,7 @@ public class Player{
     int score;
     String type;
 
-    List<Tile> tiles;
+    List<String> tiles;
     int tile_counter;
 
     public Player(String name){
