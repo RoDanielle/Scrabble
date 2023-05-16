@@ -1,5 +1,13 @@
 package model;
 
+import java.io.*;
+import java.net.Socket;
+import java.util.*;
+
+
+
+
+
 /*
 menu-model:
 1. asks for one random tile.
@@ -13,11 +21,29 @@ menu-server:
 3. server - checks words and sends response to the word. if correct sends board and score. if not sends false.
 */
 
-import test.Tile;
 
-import java.io.*;
-import java.net.Socket;
-import java.util.*;
+/*
+model output to server by cases - string structure
+1. ask for seven random tiles: "1|user_name"
+2. word input and all related parameters: "2|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)" (query only)
+3. challenge request (if query returns false and user wants to): "3|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)" (challenge only)
+
+
+
+
+
+
+model input from server by cases - - string structure
+1. server sent seven tiles: "1|user_name|ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^
+2. server sends response to word query: "2|"true"/"false"|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
+3. server sends response to word query: "3|"true"/"false"|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
+
+
+
+
+ */
+
+
 
 public class Model{
     //login
@@ -26,7 +52,12 @@ public class Model{
     Player curr_player;
     List<Player> Q = new ArrayList<>();
     boolean gameOver = true;
-    public Model(){}
+
+    ModelBoard board;
+    public Model(){
+        board = ModelBoard.getModelBoard();
+    }
+
     public void start(){
         try {
             Socket socket = new Socket("localhost", 12345);
