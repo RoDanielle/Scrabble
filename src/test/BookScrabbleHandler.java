@@ -1,6 +1,19 @@
 package test;
 
-import model.BoardStatus;
+/*
+server input from model by cases - string structure
+1. ask for seven random tiles: "1|user_name"
+2. word input and all related parameters: "2|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)" (query only)
+3. challenge request (if query returns false and user wants to): "3|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)" (challenge only)
+
+
+
+server output to model by cases - - string structure
+1. server sent seven tiles: "1|user_name|ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^
+2. server sends response to word query: "2|"true"/"false"|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
+3. server sends response to word query: "3|"true"/"false"|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
+
+ */
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,12 +58,12 @@ public class BookScrabbleHandler implements ClientHandler{
 				out.println(server_ans);
 				out.flush();
 				break; // out:
-			
+
 			case "2": // enter word // in: "2|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
 				server_ans = "2";
 				DictionaryManager dm = new DictionaryManager();
 				Board board = new Board();
-				if(dm.query(in_from_user[1]))
+				if(dm.query(in_from_user[1])) // need to creat the input for query before
 				{
 					server_ans = server_ans + "|" + "true";
 					Word word = create_word(in_from_user[2], in_from_user[3],in_from_user[4],in_from_user[5]);
@@ -91,7 +104,7 @@ public class BookScrabbleHandler implements ClientHandler{
 				out.println(server_ans);
 				out.flush();
 				break;
-			case "3":
+			case "3":  // need to creat the input for challenge before
 
 
 

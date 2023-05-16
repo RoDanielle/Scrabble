@@ -30,9 +30,6 @@ model output to server by cases - string structure
 
 
 
-
-
-
 model input from server by cases - - string structure
 1. server sent seven tiles: "1|user_name|ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^
 2. server sends response to word query: "2|"true"/"false"|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
@@ -77,6 +74,7 @@ public class Model{
             }
 
             Q.sort((a,b)->Integer.parseInt(a.tiles.get(0)) - Integer.parseInt(b.tiles.get(0)));
+            // delete first tile from the players
 
 
 
@@ -125,7 +123,7 @@ public class Model{
 
                 write_to_server(request_to_server,socket);
 
-                answer_from_server = read_from_server(socket);
+                answer_from_server = read_from_server(socket); //TODO handel response from server to the requested word (query at this point)
 
 
             }
