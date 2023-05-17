@@ -1,4 +1,4 @@
-package server;
+package model;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Board {
 
 	private static Board _instance = null; 
-	Tile TilesBoard[][]; 
+	Tile TilesBoard[][];
 	
 
 	Board()

@@ -1,4 +1,4 @@
-package server;
+package model;
 
 import java.util.Objects;
 import java.util.Random;

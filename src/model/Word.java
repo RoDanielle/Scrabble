@@ -1,8 +1,8 @@
-package server;
+package model;
 
 import java.util.Arrays;
 
-public class Word {
+public class Word{
 	Tile tiles[];
 	int row;
 	int col;
