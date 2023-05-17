@@ -1,7 +1,4 @@
-package test;
-
-import model.BoardStatus;
-import model.EnterWord;
+package server;
 
 import java.io.FileWriter;
 import java.io.IOException;

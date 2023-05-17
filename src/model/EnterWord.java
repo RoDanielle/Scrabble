@@ -1,8 +1,8 @@
 package model;
 
-import test.Board;
-import test.Tile;
-import test.Word;
+import server.Board;
+import server.Tile;
+import server.Word;
 
 public class EnterWord extends Event{
 

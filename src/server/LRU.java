@@ -1,4 +1,4 @@
-package test;
+package server;
 import java.util.LinkedHashSet;
 
 public class LRU implements CacheReplacementPolicy {

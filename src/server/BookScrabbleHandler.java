@@ -1,4 +1,4 @@
-package test;
+package server;
 
 /*
 server input from model by cases - string structure
@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import test.Tile.Bag;
+import server.Tile.Bag;
 
 import static java.lang.String.valueOf;
 

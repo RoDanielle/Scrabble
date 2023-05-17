@@ -1,5 +1,5 @@
 package model;
-import test.Board;
+import server.Board;
 import java.util.Observable;
 import java.util.Observer;
 

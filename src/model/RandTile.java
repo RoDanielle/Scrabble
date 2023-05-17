@@ -1,6 +1,6 @@
 package model;
 
-import test.Tile;
+import server.Tile;
 
 public class RandTile extends Event{
     Tile tile;

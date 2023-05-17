@@ -1,7 +1,5 @@
 package model;
 
-import test.Tile;
-
 import java.util.ArrayList;
 import java.util.List;
 
