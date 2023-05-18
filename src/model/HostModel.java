@@ -1,10 +1,13 @@
 package model;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import server.DictionaryManager;
@@ -13,71 +16,74 @@ import server.ClientHandler;
 
 import static java.lang.String.valueOf;
 
+import model.Board;
+import model.Tile;
+import model.Tile.Bag;
+import model.Word;
 
-public class HostModel implements GameModel{
+
+public class HostModel implements GameModel {
+
 
     String name;
     int score;
     String[][] board;
-    List<String> players;
+    List<Player> players;
     List<String> tiles;
+    String latestWord;
+    boolean gameRunning;
+    Board boardObject;
+    Tile.Bag bag;
+    int numbOfPlayers;
 
 
-    public HostModel(){
+    public HostModel() {
         this.name = null;
         this.score = 0;
         this.board = new String[15][15];
         this.players = new ArrayList<>();
         this.tiles = new ArrayList<>();
+        this.latestWord = null;
+        this.gameRunning = true;
+        this.boardObject = Board.getBoard();
+        this.bag = Tile.Bag.getBag();
+        numbOfPlayers = 0;
+
     }
 
     @Override
     public String getName() {
-        return null;
+        return this.name;
     }
 
-    @Override
-    public String getWord() {
-        return null;
+    public String getLatestWord() { //?
+        return this.latestWord;
     }
 
     @Override
     public int getScore() {
-        return 0;
+        return this.score;
     }
 
     @Override
     public void setScore(int score) {
-
+        this.score = score;
     }
 
     @Override
     public void updateBoard(String word, int row, int col, boolean vertical) {
-        if(vertical)
-        {
-            for(int i = 0 ; i < word.length(); i ++)
-            {
-                if(this.getBoard()[row + i][col] == null)
+        if (vertical) {
+            for (int i = 0; i < word.length(); i++) {
+                if (this.getBoard()[row + i][col] == null)
                     this.getBoard()[row + i][col] = word.indent(i);
             }
-        }
-
-        else // horizontal
+        } else // horizontal
         {
-            for(int i = 0; i < word.length(); i ++)
-            {
-                if(this.getBoard()[row][col + i] == null)
+            for (int i = 0; i < word.length(); i++) {
+                if (this.getBoard()[row][col + i] == null)
                     this.getBoard()[row][col + i] = word.indent(i);
             }
         }
-    }
-
-    @Override
-    public void startGame() {
-
-
-
-
     }
 
     @Override
@@ -86,6 +92,182 @@ public class HostModel implements GameModel{
         return this.board;
     }
 
+
+
+    public void GameManagment(){
+        //TODO - main:host\guest?
+
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("do you want to play a local game or a remote game? for local enter: 1, for remote enter: 2");
+        String gameType = input.nextLine();
+        System.out.println("How many players are expected to participate in this game?");
+        String num = input.nextLine();
+        this.numbOfPlayers = Integer.parseInt(num);
+        if(gameType == "1")
+        {
+            try {
+                Socket server =new Socket("localhost",12345); //match the games server details
+                startGame_local(server);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
+
+    public void startGame_remote(Socket server) {
+        /*
+        Socket = new Scanner(_inFromGuest);
+        outToGuest = new PrintWriter(_outToGuest);
+        inFromServer = new Scanner(_inFromServer);
+        outToServer = new PrintWriter(_outToServer);
+
+        String host_ans = null;
+        String[] in_from_guest = in.next().split("|");
+         */
+    }
+
+
+    public void startGame_local(Socket server) {
+        for(int i = 1; i<this.numbOfPlayers+1; i++){
+            System.out.println("please enter player" + i + "name");
+            Scanner input = new Scanner(System.in);
+            String guestAns = input.nextLine();
+            Player player = new Player();
+            player.setName(guestAns);
+            players.add(player);
+        }
+
+        System.out.println("start game");
+        for(Player player : players)
+        {
+            Tile t = bag.getRand();
+            player.tiles.add(t);
+        }
+
+        players.sort((a,b)->Character.getNumericValue(a.tiles.get(0).letter) - Character.getNumericValue(b.tiles.get(0).letter));
+        for(Player player : players)
+        {
+            Tile t= player.tiles.remove(0);
+            bag.put(t);
+        }
+        for(Player player : players)
+        {
+            for(int i=0; i<7; i++)
+            {
+                Tile t = bag.getRand();
+                player.tiles.add(t);
+            }
+        }
+
+        while (gameRunning)
+        {
+            String player_request = null;
+            String row = null;
+            String col = null;
+            String vertical = null;
+            String fullWord;
+
+            System.out.println("please enter Word");
+            Scanner input = new Scanner(System.in);
+            String in = input.nextLine();
+            player_request = in;
+            System.out.println("Please enter row");
+            in = input.nextLine();
+            row = in;
+            System.out.println("Please enter col");
+            in = input.nextLine();
+            col = in;
+            System.out.println("Please enter v for vertical or h for horizontal");
+            in = input.nextLine();
+            vertical = in;
+            fullWord = fill_spaces(player_request,row,col,vertical);
+            String[] args = {"Q","s1.txt","s2.txt",fullWord};
+
+            //TODO handel response from server to the requested word (query at this point)
+
+
+        }
+    }
+
+
+    class Player {
+        String name;
+        Socket socket;
+        List<Tile> tiles;
+
+        public Player() {
+            this.name = null;
+            this.socket = null;
+            this.tiles = new ArrayList<>();
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setSocket(Socket socket) {
+            this.socket = socket;
+        }
+
+        public Word create_word(String input_word, String _row, String _col, String _vertical) {
+            Tile[] wordarr;
+            int row = Integer.parseInt(_row);
+            int col = Integer.parseInt(_col);
+            boolean vertical;
+            if (_vertical == "v")
+                vertical = true;
+            else
+                vertical = false;
+
+            wordarr = new Tile[input_word.length()];
+            int i = 0;
+            for (char c : input_word.toCharArray()) {
+                if (c == '_') {
+                    wordarr[i] = null;
+                } else {
+                    for (int j = 0; j < this.tiles.size(); j++) {
+                        if (c == this.tiles.get(j).letter) {
+                            wordarr[i] = this.tiles.remove(j); // take the tiles
+                            break;
+                        }
+                    }
+                }
+                i++;
+            }
+
+            Word word = new Word(wordarr, row, col, vertical);
+            return word;
+        }
+    }
+
+        public String fill_spaces(String word, String row, String col, String vertical) {
+            if (word.contains("_"))
+            {
+                char[] chars = word.toCharArray();
+                for (int i = 0; i < word.length(); i++)
+                {
+                    if (word.charAt(i) == '_')
+                    {
+
+                        if (vertical == "v")
+                        {
+                            chars[i] = this.boardObject.getTiles()[Integer.parseInt(row) + i][Integer.parseInt(col)].letter;
+                        }
+                    }
+                }
+                String fullWord = new String(chars);
+                return fullWord;
+            }
+            else
+            {
+                return word;
+            }
+        }
+}
 
 
 /*
@@ -103,21 +285,9 @@ server output to model by cases - - string structure
 
  */
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-import model.Board;
-import model.Tile;
-import model.Tile.Bag;
-import model.Word;
-
-import static java.lang.String.valueOf;
 
 
+/*
     public class BookScrabbleHandler implements ClientHandler{
 
         //DictionaryManager dm = DictionaryManager.get();
@@ -213,14 +383,7 @@ import static java.lang.String.valueOf;
 
 
 
-
-
-
-
-
-
-
-	    /*
+	    ////////////////////////////////////////////////this scope was in comment
 		out=new PrintWriter(outToClient);
 	    in=new Scanner(inFromclient);
 	    String[] str = in.next().split(",");
@@ -243,9 +406,8 @@ import static java.lang.String.valueOf;
 		                out.println("false");
 		        }
 		        out.flush();
-
-	     */
         }
+        //////////////////////////////////////////////////////////////////////////
 
         public Word create_word(String input_word, String _row, String _col, String _vertical){
             Tile[] wordarr;
@@ -291,4 +453,5 @@ import static java.lang.String.valueOf;
 
     }
 
-}
+ */
+
