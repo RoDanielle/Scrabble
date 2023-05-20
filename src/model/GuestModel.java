@@ -13,6 +13,7 @@ public class GuestModel implements GameModel{
     int score;
     String[][] board;
     List<String> tiles;
+    boolean gameRunning;
 
     public GuestModel(){
 
@@ -114,14 +115,7 @@ model input from server by cases - - string structure
     //login
     //if(event1.tile == null) --> set
     //else-->get
-    Player curr_player;
-    List<Player> Q = new ArrayList<>();
-    boolean gameOver = true;
 
-    ModelBoard board;
-    public Model(){
-        board = ModelBoard.getModelBoard();
-    }
 
     public void start(){
         try {
@@ -147,7 +141,7 @@ model input from server by cases - - string structure
 
 
 
-            while(!gameOver) {
+            while(gameRunning) {
                 String answer_from_server = null;
                 String request_to_server = null;
                 ////////////////////////////////get 7 tiles started////////////////////////////////////

@@ -1,14 +1,14 @@
 package model;
 
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
 
 import server.DictionaryManager;
 import server.MyServer;
@@ -94,8 +94,8 @@ public class HostModel implements GameModel {
 
 
 
-    public void GameManagment(){
-        //TODO - main:host\guest?
+    public void GameManagement(){
+        //TODO - main:host\guest? -- player was asked the player what it wants to be, in host case an HostModel was created and GameManagement function was called
 
         Scanner input = new Scanner(System.in);
 
@@ -107,7 +107,7 @@ public class HostModel implements GameModel {
         if(gameType == "1")
         {
             try {
-                Socket server =new Socket("localhost",12345); //match the games server details
+                Socket server =new Socket("localhost",12345); //match the games server (dictionary) details
                 startGame_local(server);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -165,12 +165,14 @@ public class HostModel implements GameModel {
 
         while (gameRunning)
         {
-            String player_request = null;
+            String player_request = null; // word
             String row = null;
             String col = null;
             String vertical = null;
             String fullWord;
 
+            String current_player = this.players.get(0).name;
+            System.out.println(current_player + " turn");
             System.out.println("please enter Word");
             Scanner input = new Scanner(System.in);
             String in = input.nextLine();
@@ -185,11 +187,81 @@ public class HostModel implements GameModel {
             in = input.nextLine();
             vertical = in;
             fullWord = fill_spaces(player_request,row,col,vertical);
-            String[] args = {"Q","s1.txt","s2.txt",fullWord};
+            String args = "Q,s1.txt,s2.txt," + fullWord;
 
-            //TODO handel response from server to the requested word (query at this point)
+            this.write_to_server(args, server); // sending query request to game server
+            String server_response = this.read_from_server(server); // response to query
+
+            if(server_response == "true") // word found in dictionary
+            {
+                Word w = players.get(0).create_word(player_request, row,col,vertical);
+                int score = this.boardObject.tryPlaceWord(w);
+                if(score != 0) // word was put into board
+                {
+                    System.out.println(current_player + " got " + score + "point for the word");
+                    players.get(0).addScore(score);
+                    while(players.get(0).tiles.size() < 7) // fill missing tiles
+                        players.get(0).tiles.add(this.bag.getRand());
+                }
+                else
+                {
+                    while(Arrays.stream(w.tiles).toList().size() > 0) // need to check if this works well -------------------
+                    {
+                        Tile t = Arrays.stream(w.tiles).toList().remove(0);
+                        if(t != null)
+                            players.get(0).tiles.add(t);   // give the player its tiles back
+                    }
+                    System.out.println(current_player + " your word could not be put into the board, you get 0 points");
+                }
+            }
+            else
+            {
+                System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter 'pass'");
+                in = input.nextLine();
+                if(in == "c")
+                {
+                    args = "C,s1.txt,s2.txt," + fullWord;
+                    this.write_to_server(args, server); // sending challenge request to game server
+                    server_response = this.read_from_server(server); // response to challenge
+
+                    if (server_response == "true")
+                    {
+                        System.out.println("challenge succeeded");
+
+                    }
+                    else
+                    {
+                        System.out.println("challenge failed, your turn is over");
+                    }
+
+                }
+            }
+
+            Player p = this.players.remove(0);
+            this.players.add(p);
+        }
+    }
 
 
+    public void write_to_server(String str, Socket server_socket){
+        try {
+            PrintWriter outToServer = new PrintWriter(server_socket.getOutputStream());
+            outToServer.println(str);
+            outToServer.flush();
+            outToServer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public String read_from_server(Socket server_socket) {
+        try {
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(server_socket.getInputStream()));
+            String serverResponse = inFromServer.readLine();
+            inFromServer.close();
+            return serverResponse;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -199,10 +271,13 @@ public class HostModel implements GameModel {
         Socket socket;
         List<Tile> tiles;
 
+        int score;
+
         public Player() {
             this.name = null;
             this.socket = null;
             this.tiles = new ArrayList<>();
+            this.score = 0;
         }
 
         public void setName(String name) {
@@ -211,6 +286,16 @@ public class HostModel implements GameModel {
 
         public void setSocket(Socket socket) {
             this.socket = socket;
+        }
+
+        public int getScore()
+        {
+            return this.score;
+        }
+
+        public void addScore(int score)
+        {
+            this.score += score;
         }
 
         public Word create_word(String input_word, String _row, String _col, String _vertical) {
