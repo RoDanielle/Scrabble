@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+import static java.lang.String.valueOf;
+
 public class GuestModel implements GameModel{
 
     String name;
@@ -34,14 +36,18 @@ public class GuestModel implements GameModel{
 
     }
 
-    @Override
-    public void updateBoard(String word, int row, int col, boolean vertical) {
+    public List<String> WordToString (String word) // "letter,score" for each letter in word
+    {
+
+    }
+
+    public void updateBoard(String word, int row, int col, boolean vertical) { // not good need to change
         if(vertical)
         {
             for(int i = 0 ; i < word.length(); i ++)
             {
-                if(this.getBoard()[row + i][col] == null)
-                    this.getBoard()[row + i][col] = word.indent(i);
+                if(this.board[row + i][col] == null)
+                    this.board[row + i][col] = word.indent(i);
             }
         }
 

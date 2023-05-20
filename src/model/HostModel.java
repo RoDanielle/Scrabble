@@ -40,9 +40,9 @@ public class HostModel implements GameModel {
     public HostModel() {
         this.name = null;
         this.score = 0;
-        this.board = new String[15][15];
+        this.board = new String[15][15]; // needed only
         this.players = new ArrayList<>();
-        this.tiles = new ArrayList<>();
+        this.tiles = new ArrayList<>(); // probably not needed since each player object has tiles array
         this.latestWord = null;
         this.gameRunning = true;
         this.boardObject = Board.getBoard();
@@ -70,18 +70,33 @@ public class HostModel implements GameModel {
         this.score = score;
     }
 
-    @Override
-    public void updateBoard(String word, int row, int col, boolean vertical) {
-        if (vertical) {
-            for (int i = 0; i < word.length(); i++) {
-                if (this.getBoard()[row + i][col] == null)
-                    this.getBoard()[row + i][col] = word.indent(i);
-            }
-        } else // horizontal
+
+    public String TileToString (Tile t)
+    {
+        String tileString  = null;
+        tileString = valueOf(t.letter) + Integer.toString(t.score);
+        return tileString;
+    }
+
+    public void updaetMatrixBoard(Word w) {
+        if (w.vertical)
         {
-            for (int i = 0; i < word.length(); i++) {
-                if (this.getBoard()[row][col + i] == null)
-                    this.getBoard()[row][col + i] = word.indent(i);
+            for(int i = 0; i < w.tiles.length; i++)
+            {
+                if(w.tiles[i] != null)
+                {
+                    this.board[w.row + i][w.col] =  this.TileToString(w.tiles[i]);
+                }
+            }
+        }
+        else
+        {
+            for(int i = 0; i < w.tiles.length; i++)
+            {
+                if(w.tiles[i] != null)
+                {
+                    this.board[w.row][w.col + i] =  this.TileToString(w.tiles[i]);
+                }
             }
         }
     }
@@ -202,6 +217,8 @@ public class HostModel implements GameModel {
                     players.get(0).addScore(score);
                     while(players.get(0).tiles.size() < 7) // fill missing tiles
                         players.get(0).tiles.add(this.bag.getRand());
+
+                    this.updaetMatrixBoard(w); // updating matrix board
                 }
                 else
                 {
@@ -342,6 +359,8 @@ public class HostModel implements GameModel {
                         {
                             chars[i] = this.boardObject.getTiles()[Integer.parseInt(row) + i][Integer.parseInt(col)].letter;
                         }
+                        else
+                            chars[i] = this.boardObject.getTiles()[Integer.parseInt(row)][Integer.parseInt(col)  + i].letter;
                     }
                 }
                 String fullWord = new String(chars);
