@@ -30,7 +30,7 @@ public class MyServer {
 			while (!stop) {
 				try {
 					Socket client = server.accept();
-					ch.handleClient(client.getInputStream(), client.getOutputStream()); 
+					ch.handleClient(client.getInputStream(), client.getOutputStream());
 					ch.close();
 					client.close();
 				}catch (SocketTimeoutException e){}

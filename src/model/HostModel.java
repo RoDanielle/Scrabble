@@ -3,6 +3,7 @@ package model;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 import java.io.BufferedReader;
@@ -107,6 +108,11 @@ public class HostModel implements GameModel {
         return this.board;
     }
 
+    public void stopGame(){
+        this.gameRunning = false;
+        //TODO - close all the sockets
+    }
+
 
 
     public void GameManagement(){
@@ -129,11 +135,56 @@ public class HostModel implements GameModel {
             }
 
         }
+        else {
+            try {
+                Socket server =new Socket("localhost",12345); //match the games server (dictionary) details
+                startGame_local(server);
+                int counter = 1;
+                ServerSocket serverSocket = new ServerSocket(12345);
+                //TODO - add host
+                System.out.println("Game server started. Listening on port " + serverSocket.getLocalPort());
+                while (gameRunning) {
+                    Socket clientSocket = serverSocket.accept();
+                    counter += 1;
+                    Player guest = new Player();
+                    guest.setSocket(clientSocket);
 
+                    players.add(guest);
+                    if (counter == Integer.parseInt(num)) {
+                        //TODO - set turns
+                        while(gameRunning)
+                        {
+                            startGame_remote(server ,players.get(0));
+                            Player p = players.remove(0);
+                            players.add(p);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 
-    public void startGame_remote(Socket server) {
+    public void startGame_remote(Socket server, Player player) {
+
+        try {
+            PrintWriter outToGuest =new PrintWriter(player.socket.getOutputStream());
+            BufferedReader inFromGuest = new BufferedReader(new InputStreamReader(player.socket.getInputStream()));
+            String guestResponse = inFromGuest.readLine();
+
+            outToGuest.println("your turn. please enter word");
+            outToGuest.flush();
+
+
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
         /*
         Socket = new Scanner(_inFromGuest);
         outToGuest = new PrintWriter(_outToGuest);
@@ -143,6 +194,8 @@ public class HostModel implements GameModel {
         String host_ans = null;
         String[] in_from_guest = in.next().split("|");
          */
+
+
     }
 
 
@@ -213,7 +266,7 @@ public class HostModel implements GameModel {
                 int score = this.boardObject.tryPlaceWord(w);
                 if(score != 0) // word was put into board
                 {
-                    System.out.println(current_player + " got " + score + "point for the word");
+                    System.out.println(current_player + " got " + score + " point for the word");
                     players.get(0).addScore(score);
                     while(players.get(0).tiles.size() < 7) // fill missing tiles
                         players.get(0).tiles.add(this.bag.getRand());
@@ -244,7 +297,7 @@ public class HostModel implements GameModel {
                     if (server_response == "true")
                     {
                         System.out.println("challenge succeeded");
-
+                        //TODO - update the score bonus by challenge
                     }
                     else
                     {
