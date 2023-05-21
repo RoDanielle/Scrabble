@@ -2,10 +2,7 @@ package model;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.lang.String.valueOf;
 
@@ -17,6 +14,8 @@ import static java.lang.String.valueOf;
         List<String> tiles;
         boolean gameRunning;
 
+        Map<String,String> letterToScore;
+
         Socket mySocket;
 
         public GuestModel(){
@@ -26,6 +25,7 @@ import static java.lang.String.valueOf;
             this.tiles = new ArrayList<>();
             this.gameRunning = true;
             this.mySocket = null;
+            this.letterToScore = null;
         }
 
         @Override
@@ -94,12 +94,12 @@ import static java.lang.String.valueOf;
                         }
                         break;
                     case "1": // my turn
-                        System.out.println("please enter Word, if you don't have any word enter your name");
+                        System.out.println("please enter Word, if you don't have any word enter xxx");
                         in = input.nextLine();
                         request_to_server = "1";
-                        if(this.getName() != in)
+                        request_to_server = request_to_server + "|" + in;
+                        if(in != "xxx")
                         {
-                            request_to_server = request_to_server + "|" + in;
                             System.out.println("Please enter row");
                             in = input.nextLine();
                             request_to_server = request_to_server + "|" + in;
@@ -109,11 +109,22 @@ import static java.lang.String.valueOf;
                             System.out.println("Please enter v for vertical or h for horizontal");
                             in = input.nextLine();
                             request_to_server = request_to_server + "|" + in;
-                        } // 1|word(not full)|row|col|v/h|name
+                        } // 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
                         request_to_server = request_to_server + "|" + this.getName();
                         write_to_server(request_to_server,this.getMySocket());
                         break;
+
+                    case "2": // host + server response to query request ++ updated board for any entered word
+
+
+                        break; // if user wants to challenge or not:  3|c/not|word(not full)|row|col|v/h|name
+
+                    case "3": // host + server response to challenge request
+
+
+                        break;
+
 
 
                 }
