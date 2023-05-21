@@ -463,8 +463,8 @@ server output to model by cases - - string structure
             String[] in_from_user = in.next().split("|");
 
 
-            switch (in_from_user[0]){
 
+            switch (in_from_user[0]){
                 case "1": // request seven tiles for round one  in: "1|username"
                     server_ans = "1" + "|" + in_from_user[1] + "|";
                     for(int i = 0; i < 7; i++)
