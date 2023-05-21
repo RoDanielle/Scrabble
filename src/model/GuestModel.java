@@ -26,6 +26,33 @@ import static java.lang.String.valueOf;
             this.gameRunning = true;
             this.mySocket = null;
             this.letterToScore = null;
+            this.letterToScore = new HashMap<>();
+            letterToScore.put("A","1");
+            letterToScore.put("B","3");
+            letterToScore.put("C","3");
+            letterToScore.put("D","2");
+            letterToScore.put("E","1");
+            letterToScore.put("F","4");
+            letterToScore.put("G","2");
+            letterToScore.put("H","4");
+            letterToScore.put("I","1");
+            letterToScore.put("J","8");
+            letterToScore.put("K","5");
+            letterToScore.put("L","1");
+            letterToScore.put("M","3");
+            letterToScore.put("N","1");
+            letterToScore.put("O","1");
+            letterToScore.put("P","3");
+            letterToScore.put("Q","10");
+            letterToScore.put("R","1");
+            letterToScore.put("S","1");
+            letterToScore.put("T","1");
+            letterToScore.put("U","1");
+            letterToScore.put("V","4");
+            letterToScore.put("W","4");
+            letterToScore.put("X","8");
+            letterToScore.put("Y","4");
+            letterToScore.put("Z","10");
         }
 
         @Override
@@ -39,7 +66,7 @@ import static java.lang.String.valueOf;
         }
 
         @Override
-        public void setScore(int score) { // adding scoring
+        public void addScore(int score) { // adding scoring
             this.score += score;
         }
 
@@ -72,7 +99,6 @@ import static java.lang.String.valueOf;
                 throw new RuntimeException(e);
             }
         }
-
 
 
         public void starGame() {
@@ -109,38 +135,76 @@ import static java.lang.String.valueOf;
                             System.out.println("Please enter v for vertical or h for horizontal");
                             in = input.nextLine();
                             request_to_server = request_to_server + "|" + in;
-                        } // 1|word(not full)|row|col|v/h|name or 1|xxx|name
+                        }
 
                         request_to_server = request_to_server + "|" + this.getName();
                         write_to_server(request_to_server,this.getMySocket());
-                        break;
+                        break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
                     case "2": // host + server response to query request ++ updated board for any entered word
+                        if(fromHost[1] == "true" && fromHost[4] != this.name) // other users word was placed on board
+                        {
+                            updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
+                            System.out.println(fromHost[4] + "placed a new word on the board");
+                        }
 
+                        else if(fromHost[1] == "true" && fromHost[4] == this.name) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                        {
+                            if(fromHost[3] != "0") // my word was put into board
+                            {
+                                System.out.println( "your word was placed on the board, you get " + fromHost[3] + " points");
+                                updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
+                                this.addScore(Integer.parseInt(fromHost[2]));
+                                // TODO - take the words tiles from user and give it the new ones
+                            }
+                            else //"2|true|0|name"
+                                System.out.println("your word wouldn't be fit into the board");
+                                System.out.println("turn over");
 
-                        break; // if user wants to challenge or not:  3|c/not|word(not full)|row|col|v/h|name
+                        }
+                        else // my query request returned false received:"2|false|name"
+                        {
+                            System.out.println("couldn't find your word in dictionary");
+                            System.out.println("for challenge enter c for passing your turn enter xxx");
+                            in = input.nextLine();
+                            String[] temp_request = request_to_server.split("|");
+                            request_to_server = "3" + "|" + in + "|" + temp_request[1] + temp_request[2] + temp_request[3] + temp_request[4] +temp_request[5];
+                            write_to_server(request_to_server,this.getMySocket());
+
+                        }
+                        break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
 
                     case "3": // host + server response to challenge request
+                        if(fromHost[1] == "true")
+                        {
+                            if(fromHost[2] != "0") // challenge and tryplaceword correct received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                            {
+                                int tmp_score = Integer.parseInt(fromHost[2]) + 10;
+                                System.out.println( "your word was placed on the board, you get " + tmp_score + " points");
+                                updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
+                                this.addScore(tmp_score);
+                                // TODO - take the words tiles from user and give it the new ones
 
-
+                            }
+                            else // only challenge correct received: "3|true|0|name" // TODO - check if now we also give bonus
+                            {
+                                System.out.println("challenge returned true but word couldn't be put into board");
+                                System.out.println("turn over");
+                            }
+                        }
+                        else // challenge wasn't correct - deduce points received: "3|false|name"
+                        {
+                            System.out.println("challenge returned false, you loose 10 points");
+                            this.score -= 10;
+                            System.out.println("turn over");
+                        }
                         break;
-
-
-
                 }
-
-
             }
-
-
         }
 
 
-        public void updaetMatrixBoard(String word, int row, int col, boolean vertical) {
-
-        }
-
-        public List<String> WordToString (String word) { // "letter,score" for each letter in word
+        public void updateMatrixBoard(String word, String row, String col, String vertical) {
 
         }
 

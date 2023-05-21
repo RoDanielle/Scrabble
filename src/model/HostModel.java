@@ -63,7 +63,7 @@ public class HostModel implements GameModel {
     }
 
     @Override
-    public void setScore(int score) {
+    public void addScore(int score) {
         this.score = score;
     }
 
@@ -255,7 +255,7 @@ public class HostModel implements GameModel {
                 }
                 else
                 {
-                    toGuest = "2"+"|"+"false"+player.name; //query return false // //"2|false|name"
+                    toGuest = "2"+"|"+"false"+player.name; //query return false //"2|false|name"
                     guestResponse = inFromGuest.readLine().split("|");
                     if(guestResponse[1] == "c")
                     {
@@ -284,7 +284,7 @@ public class HostModel implements GameModel {
                                 {
                                     if(p.socket != null)
                                     {
-                                        this.write_to_server(toGuest, p.socket);  // "2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                                        this.write_to_server(toGuest, p.socket);  // "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
                                     }
                                 }
                             }

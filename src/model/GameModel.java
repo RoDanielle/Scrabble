@@ -7,7 +7,7 @@ public interface GameModel {
 
     public String getName();
     public int getScore();
-    public void setScore(int score);
+    public void addScore(int score);
     public String[][] getBoard();
 
 }
