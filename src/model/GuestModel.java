@@ -1,7 +1,30 @@
+
+
+/*
+model:
+case 0: s- 0|a,5^d,8^l,1^......
+        c - gets seven tiles at the beginning of the game sends nothing back
+
+case 1: c - 1|word(not full)|row|col|v/h|name for the word it wants to enter or 1|xxx|name if wants to pass
+
+case 2:s - there are three options for response: a - query and try... were good: "2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                                                  b - only query was good: "2|true|0|name"
+                                                  c - query returned false: "2|false|name"
+       c - if query false challenge option presented:for challenge sends  3|c|word(not full)|row|col|v/h|name for passing sends 3|xxx|word(not full)|row|col|v/h|name to host
+
+       *** in case 2 we get from host words that were entered and put onto the board by other users in order to put into other players board and maintain an updated board for all
+
+case 3: s - challenge request answer, again three options: a - challenge and try... were good: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                                                  b - only challenge was good: "3|true|0|name"
+                                                  c - challenge returned false: "3|false|name"
+ */
+
+
 package model;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
 import static java.lang.String.valueOf;
@@ -78,6 +101,88 @@ import static java.lang.String.valueOf;
             this.mySocket = socket;
         }
 
+        public void removeTiles(String word)
+        {
+            for(int i = 0; i < word.length(); i++) // remove the tiles used in the word that was put into the board
+            {
+                if(word.charAt(i) != '_')
+                {
+                    for(int j = 0; j < this.tiles.size(); j ++)
+                    {
+                        if(this.tiles.get(j).charAt(0) == word.charAt(i))
+                        {
+                            this.tiles.remove(j);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void addTiles(String addedTiles)
+        {
+            String[] moreTiles = addedTiles.split("^");
+            for(String s : moreTiles)
+            {
+                if(s != "^")
+                    this.tiles.add(s);
+            }
+        }
+
+        public void updateMatrixBoard(String word, String row, String col, String vertical) {
+            String tmpTileString = null;
+            if(vertical == "v")
+            {
+                for(int i = 0; i < word.length(); i++)
+                {
+                    if(word.charAt(i) != '_')
+                    {
+                        tmpTileString = word.charAt(i) + "," + this.letterToScore.get(word.charAt(i));
+                        this.board[Integer.parseInt(row) + i][Integer.parseInt(col)] = tmpTileString;
+                    }
+                }
+            }
+            else // "h"
+            {
+                for(int i = 0; i < word.length(); i++)
+                {
+                    if(word.charAt(i) != '_')
+                    {
+                        tmpTileString = word.charAt(i) + "," + this.letterToScore.get(word.charAt(i));
+                        this.board[Integer.parseInt(row)][Integer.parseInt(col) + i] = tmpTileString;
+                    }
+                }
+            }
+
+        }
+
+        @Override
+        // Getter method to access the matrix
+        public String[][] getBoard() {
+            return this.board;
+        }
+
+        public void write_to_server(String str, Socket server_socket){
+            try {
+                PrintWriter outToServer = new PrintWriter(server_socket.getOutputStream());
+                outToServer.println(str);
+                outToServer.flush();
+                outToServer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        public String read_from_server(Socket server_socket) {
+            try {
+                BufferedReader inFromServer = new BufferedReader(new InputStreamReader(server_socket.getInputStream()));
+                String serverResponse = inFromServer.readLine();
+                inFromServer.close();
+                return serverResponse;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         public void connectToServer(){
             String ip;
@@ -155,7 +260,9 @@ import static java.lang.String.valueOf;
                                 System.out.println( "your word was placed on the board, you get " + fromHost[3] + " points");
                                 updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
                                 this.addScore(Integer.parseInt(fromHost[2]));
-                                // TODO - take the words tiles from user and give it the new ones
+
+                                this.removeTiles(fromHost[5]); // remove the tiles used in the word that was put into the board
+                                this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board
                             }
                             else //"2|true|0|name"
                                 System.out.println("your word wouldn't be fit into the board");
@@ -177,16 +284,17 @@ import static java.lang.String.valueOf;
                     case "3": // host + server response to challenge request
                         if(fromHost[1] == "true")
                         {
-                            if(fromHost[2] != "0") // challenge and tryplaceword correct received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                            if(fromHost[2] != "0") // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
                             {
                                 int tmp_score = Integer.parseInt(fromHost[2]) + 10;
                                 System.out.println( "your word was placed on the board, you get " + tmp_score + " points");
                                 updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
                                 this.addScore(tmp_score);
-                                // TODO - take the words tiles from user and give it the new ones
 
+                                this.removeTiles(fromHost[5]);
+                                this.addTiles(fromHost[3]);
                             }
-                            else // only challenge correct received: "3|true|0|name" // TODO - check if now we also give bonus
+                            else // only challenge correct received: "3|true|0|name" // TODO - check if now we also give bonus - decided not to give!
                             {
                                 System.out.println("challenge returned true but word couldn't be put into board");
                                 System.out.println("turn over");
@@ -194,7 +302,7 @@ import static java.lang.String.valueOf;
                         }
                         else // challenge wasn't correct - deduce points received: "3|false|name"
                         {
-                            System.out.println("challenge returned false, you loose 10 points");
+                            System.out.println("challenge returned false, you lose 10 points");
                             this.score -= 10;
                             System.out.println("turn over");
                         }
@@ -202,198 +310,4 @@ import static java.lang.String.valueOf;
                 }
             }
         }
-
-
-        public void updateMatrixBoard(String word, String row, String col, String vertical) {
-
-        }
-
-        @Override
-        // Getter method to access the matrix
-        public String[][] getBoard() {
-            return this.board;
-        }
-
-        public void write_to_server(String str, Socket server_socket){
-            try {
-                PrintWriter outToServer = new PrintWriter(server_socket.getOutputStream());
-                outToServer.println(str);
-                outToServer.flush();
-                outToServer.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-        public String read_from_server(Socket server_socket) {
-            try {
-                BufferedReader inFromServer = new BufferedReader(new InputStreamReader(server_socket.getInputStream()));
-                String serverResponse = inFromServer.readLine();
-                inFromServer.close();
-                return serverResponse;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
-
-
-
-
-    /*
-    menu-model:
-    1. asks for one random tile.
-    2. sends back the rand tiles used for setting turns.
-    3. gets word input from client, check for pass, check if ok, create word obj, send word to server.
-    4. reads response from server and updated users score and all users boards.
-
-    menu-server:
-    1. call getTile func one time and gives it to model.
-    2. puts back the tiles received into the bag.
-    3. server - checks words and sends response to the word. if correct sends board and score. if not sends false.
-    */
-
-
-    /*
-    model output to server by cases - string structure
-    1. ask for seven random tiles: "1|user_name"
-    2. word input and all related parameters: "2|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)" (query only)
-    3. challenge request (if query returns false and user wants to): "3|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)" (challenge only)
-
-
-
-    model input from server by cases - - string structure
-    1. server sent seven tiles: "1|user_name|ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^ch,score^
-    2. server sends response to word query: "2|"true"/"false"|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
-    3. server sends response to word query: "3|"true"/"false"|fullword|orgword|row|col|vertical|username|rand_tiles_if_needed(ch,int)"
-
-
-
-
-     */
-
-
-
-        //login
-        //if(event1.tile == null) --> set
-        //else-->get
-
-    /*
-        public void start(){
-            try {
-                Socket socket = new Socket("localhost", 12345);
-                System.out.println("start game");
-                ArrayList<Integer> abc = new ArrayList<>();
-                for(int i=1; i<=26; i++){
-                    abc.add(i);
-                }
-                for(int i=0; i<Q.size(); i++){
-                    Random rand = new Random();
-                    int low = 1;
-                    int high = abc.size();
-                    int index = rand.nextInt(high-low)+low;
-                    int res = abc.get(index);
-                    abc.remove(index);
-                    Q.get(i).tiles.add(res+"");
-                }
-
-                Q.sort((a,b)->Integer.parseInt(a.tiles.get(0)) - Integer.parseInt(b.tiles.get(0)));
-                // delete first tile from the players
-
-
-
-
-                while(gameRunning) {
-                    String answer_from_server = null;
-                    String request_to_server = null;
-                    ////////////////////////////////get 7 tiles started////////////////////////////////////
-                    if(Q.get(0).first_round){
-                        request_to_server = "1" + "|" + Q.get(0).user_name;
-                        write_to_server(request_to_server,socket);
-                        answer_from_server = read_from_server(socket);
-                        String[] outerArr = answer_from_server.split("|");
-                        String[] tiles = outerArr[2].split("^");
-                        //String[] newTiles = new String[tiles.length-1];
-                        //for(int i=0; i<newTiles.length-1; i++){
-                        //newTiles[i] = tiles[i];
-                        //}
-                        for(String s : tiles) {
-                            Q.get(0).tiles.add(s);
-                        }
-                        Q.get(0).first_round = false;
-                        Player p = Q.remove(0);
-                        Q.add(p);
-                        break;
-                    }
-                    ////////////////////////////////get 7 tiles finished////////////////////////////////////
-                    ////////////////////////////////enter word started////////////////////////////////////
-
-                    System.out.println("please enter Word");
-                    Scanner input = new Scanner(System.in);
-                    request_to_server = "2";
-
-                    String in = input.nextLine();
-                    request_to_server = request_to_server + "|" + fill_spaces(in) + "|" + in;
-                    System.out.println("Please enter row");
-                    in = input.nextLine();
-                    request_to_server = request_to_server + "|" + in;
-                    System.out.println("Please enter col");
-                    in = input.nextLine();
-                    request_to_server = request_to_server + "|" + in;
-                    System.out.println("Please enter v for vertical or h for horizontal");
-                    in = input.nextLine();
-                    request_to_server = request_to_server + "|" + in;
-                    request_to_server = request_to_server + Q.get(0).user_name;
-
-                    write_to_server(request_to_server,socket);
-
-                    answer_from_server = read_from_server(socket); //TODO handel response from server to the requested word (query at this point)
-
-
-                }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            //handle challenge
-            //get response from server
-            ////////////////////////////////enter word finished////////////////////////////////////
-
-
-        }
-        public String fill_spaces(String w){
-            return "";
-        }
-
-
-    }
-
-    */
-
- /*
-        System.out.println("Welcome! for host - press 1, for guest - press 2");
-        Scanner input = new Scanner(System.in);
-        String in = input.nextLine();
-        if(in.equals("1"))
-        {
-            //start server
-            //create Player and add to Q.
-        }
-        else
-        {
-            //connect to server
-            //create Player and add to Q.
-        }
-         */
-
-///////////////////////all users are connected, ready to start game//////////////////////////
-    /*
-        RandTile RT = new RandTile(curr_user);
-        Socket socket = new Socket("localhost", 12345);
-        OutputStream outputStream = socket.getOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        outputStream.writeObject(RT);
-        objectOutputStream.flush();
-        objectOutputStream.close();
-        outputStream.close();
-    */
