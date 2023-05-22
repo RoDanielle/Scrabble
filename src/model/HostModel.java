@@ -105,6 +105,7 @@ public class HostModel implements GameModel {
 
     public void stopGame(){
         this.gameRunning = false;
+        // TODO- let all players know who the winner is
         //TODO - close all the sockets
     }
 
@@ -448,7 +449,6 @@ public class HostModel implements GameModel {
 
                     if (server_response == "true")
                     {
-                        //TODO - update the score bonus by challenge
                         Word w = players.get(0).create_word(player_request, row,col,vertical);
                         int score = this.boardObject.tryPlaceWord(w);
                         if(score != 0) // word was put into board
@@ -518,7 +518,7 @@ public class HostModel implements GameModel {
         }
 
         public Word create_word(String input_word, String _row, String _col, String _vertical) {
-            Tile[] wordarr;
+            Tile[] wordarr = null;
             int row = Integer.parseInt(_row);
             int col = Integer.parseInt(_col);
             boolean vertical;
