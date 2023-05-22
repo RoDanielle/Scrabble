@@ -105,8 +105,28 @@ public class HostModel implements GameModel {
 
     public void stopGame(){
         this.gameRunning = false;
-        // TODO- let all players know who the winner is
+        //TODO- let all players know who the winner is
+        int maxScore = 0;
+        String winner = null;
+        for (int i = 0; i<numbOfPlayers; i++) {
+            if (players.get(i).score > maxScore) {
+                maxScore = players.get(i).score;
+                winner = null;
+                winner = players.get(i).name;
+            }
+            if (players.get(i).score == maxScore)  //a case of more than one winner
+                winner += "," + players.get(i).name;
+        }
+        System.out.println("The winners are:" + winner);
+
         //TODO - close all the sockets
+        for (int i = 0; i < numbOfPlayers; i++) {  //need an indication whether the player is a guest or a host, we will close all the guests first
+            try {
+                players.get(i).socket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 
@@ -162,7 +182,7 @@ public class HostModel implements GameModel {
 
         System.out.println("do you want to play a local game or a remote game? for local enter: 1, for remote enter: 2");
         String gameType = input.nextLine();
-        System.out.println("How many players are expected to participate in this game?");
+        System.out.println("How many players are expected to participate in this game? (including you)");
         String num = input.nextLine();
         this.numbOfPlayers = Integer.parseInt(num);
         if(gameType == "1")
@@ -453,8 +473,8 @@ public class HostModel implements GameModel {
 
 
     public void startGame_local(Socket server) {
-        for(int i = 1; i<this.numbOfPlayers+1; i++){
-            System.out.println("please enter player" + i + "name");
+        for(int i = 2; i<this.numbOfPlayers+1; i++){
+            System.out.println("please enter player" + i + "name:");
             Scanner input = new Scanner(System.in);
             String guestAns = input.nextLine();
             Player player = new Player();
@@ -592,7 +612,7 @@ public class HostModel implements GameModel {
 
         int score;
 
-        public Player() {
+        public  Player() {
             this.name = null;
             this.socket = null;
             this.tiles = new ArrayList<>();

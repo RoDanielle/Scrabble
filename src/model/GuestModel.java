@@ -199,14 +199,14 @@ import static java.lang.String.valueOf;
             try {
                 Socket hostServer =new Socket(ip,port);
                 this.setMySocket(hostServer);
-                starGame();
+                startGame();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
 
-        public void starGame() {
+        public void startGame() {
             System.out.println("please enter your name");
             Scanner input = new Scanner(System.in);
             String in = input.nextLine();
