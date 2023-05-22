@@ -175,7 +175,7 @@ public class HostModel implements GameModel {
             }
 
         }
-        else {
+        else { //remote
             try {
                 Socket server =new Socket("localhost",12345); //match the games server (dictionary) details
                 int counter = 1;
@@ -183,11 +183,14 @@ public class HostModel implements GameModel {
                 //TODO - add host
                 System.out.println("Host server started. Listening on port " + hostSocket.getLocalPort() + "and ip localhost");
                 while (gameRunning) {
+                    Player hostPlayer = new Player();
+                    hostPlayer.name = this.getName();
+                    hostPlayer.socket = null;
+                    players.add(hostPlayer);
                     Socket clientSocket = hostSocket.accept();
                     counter += 1;
                     Player guest = new Player();
                     guest.setSocket(clientSocket);
-
                     players.add(guest);
                     if (counter == Integer.parseInt(num)) {
                         for(Player player : players)
@@ -221,7 +224,7 @@ public class HostModel implements GameModel {
                         {
                             if(players.get(0).socket == null)
                             {
-                                //TODO - create new start method for host like start_local
+                                hostTurn(server);
                             }
                             startGame_remote(server ,players.get(0));
                             Player p = players.remove(0);
@@ -349,6 +352,103 @@ public class HostModel implements GameModel {
                     }
                 }
             }
+    }
+
+    public void hostTurn(Socket server){
+        String player_request = null; // word
+        String row = null;
+        String col = null;
+        String vertical = null;
+        String fullWord;
+
+        String current_player = this.players.get(0).name;
+        System.out.println(current_player + " turn");
+        System.out.println("please enter Word");
+        Scanner input = new Scanner(System.in);
+        String in = input.nextLine();
+        player_request = in;
+        System.out.println("Please enter row");
+        in = input.nextLine();
+        row = in;
+        System.out.println("Please enter col");
+        in = input.nextLine();
+        col = in;
+        System.out.println("Please enter v for vertical or h for horizontal");
+        in = input.nextLine();
+        vertical = in;
+        fullWord = fill_spaces(player_request,row,col,vertical);
+        String args = "Q,s1.txt,s2.txt," + fullWord;
+
+        this.write_to_socket(args, server); // sending query request to game server
+        String server_response = this.read_from_socket(server); // response to query
+
+        if(server_response == "true") // word found in dictionary
+        {
+            Word w = players.get(0).create_word(player_request, row,col,vertical);
+            int score = this.boardObject.tryPlaceWord(w);
+            if(score != 0) // word was put into board
+            {
+                System.out.println(current_player + " got " + score + " point for the word");
+                players.get(0).addScore(score);
+                while(players.get(0).tiles.size() < 7) // fill missing tiles
+                    players.get(0).tiles.add(this.bag.getRand());
+
+                this.updateMatrixBoard(w); // updating matrix board
+            }
+            else
+            {
+                while(Arrays.stream(w.tiles).toList().size() > 0) // need to check if this works well -------------------
+                {
+                    Tile t = Arrays.stream(w.tiles).toList().remove(0);
+                    if(t != null)
+                        players.get(0).tiles.add(t);   // give the player its tiles back
+                }
+                System.out.println(current_player + " your word could not be put into the board, you get 0 points");
+            }
+        }
+        else
+        {
+            System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter 'pass'");
+            in = input.nextLine();
+            if(in == "c")
+            {
+                args = "C,s1.txt,s2.txt," + fullWord;
+                this.write_to_socket(args, server); // sending challenge request to game server
+                server_response = this.read_from_socket(server); // response to challenge
+
+                if (server_response == "true")
+                {
+                    Word w = players.get(0).create_word(player_request, row,col,vertical);
+                    int score = this.boardObject.tryPlaceWord(w);
+                    if(score != 0) // word was put into board
+                    {
+                        System.out.println("challenge succeeded");
+
+                        score+=10;
+                        System.out.println(current_player + " got " + score + " point for the word");
+                        players.get(0).addScore(score);
+                        while(players.get(0).tiles.size() < 7) // fill missing tiles
+                            players.get(0).tiles.add(this.bag.getRand());
+
+                        this.updateMatrixBoard(w); // updating matrix board
+                    }
+                    else
+                    {
+                        System.out.println("challenge succeeded but word couldn't be put into board");
+                    }
+                }
+                else
+                {
+                    System.out.println("challenge failed you lose 10 points");
+                    players.get(0).score -= 10;
+                }
+
+            }
+        }
+
+        System.out.println("turn over");
+        Player p = this.players.remove(0);
+        this.players.add(p);
     }
 
 
