@@ -23,7 +23,7 @@ public class MainTrain {
             GuestModel guestPlayer = new GuestModel();
             guestPlayer.name = name;
             guestPlayer.connectToServer();
-            guestPlayer.startGame();
+            //guestPlayer.startGame(); --- not needed, there is a call for this function inside connect to server (it will be called only when a connection was successful)
         }
 
     }

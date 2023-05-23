@@ -188,18 +188,19 @@ import static java.lang.String.valueOf;
             String ip;
             int port;
 
-            System.out.println("please server ip");
+            System.out.println("please enter server ip");
             Scanner input = new Scanner(System.in);
             String in = input.nextLine();
             ip = in;
-            System.out.println("please server port");
+            System.out.println("please enter server port");
             in = input.nextLine();
             port = Integer.parseInt(in);
 
             try {
                 Socket hostServer =new Socket(ip,port);
+                System.out.println("Connection established successfully!");
                 this.setMySocket(hostServer);
-                startGame();
+                this.startGame();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -212,6 +213,7 @@ import static java.lang.String.valueOf;
             String in = input.nextLine();
             this.name = in;
 
+            System.out.println("please wait for Host to start the game");
 
             while (gameRunning){
                 // reading from server
@@ -223,6 +225,7 @@ import static java.lang.String.valueOf;
                         for(int i = 0; i < tilesArray.length; i++) {
                             this.tiles.add(tilesArray[i]);
                         }
+                        System.out.println("game started, you got seven tiles: " + this.tiles); // will be deleted when we create view
                         break;
                     case "1": // my turn
                         System.out.println("please enter Word, if you don't have any word enter xxx");
@@ -263,6 +266,7 @@ import static java.lang.String.valueOf;
 
                                 this.removeTiles(fromHost[5]); // remove the tiles used in the word that was put into the board
                                 this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board
+                                System.out.println("your tiles are: " + this.tiles); // will be changed when view is added
                             }
                             else //"2|true|0|name"
                                 System.out.println("your word wouldn't be fit into the board");
@@ -293,8 +297,9 @@ import static java.lang.String.valueOf;
 
                                 this.removeTiles(fromHost[5]);
                                 this.addTiles(fromHost[3]);
+                                System.out.println("your tiles are: " + this.tiles); // will be changed when view is added
                             }
-                            else // only challenge correct received: "3|true|0|name" // TODO - check if now we also give bonus - decided not to give!
+                            else // only challenge correct received: "3|true|0|name"
                             {
                                 System.out.println("challenge returned true but word couldn't be put into board");
                                 System.out.println("turn over");
