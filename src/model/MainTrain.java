@@ -10,18 +10,18 @@ public class MainTrain {
 
         System.out.println("What type of player are you? Enter: Host/Guest");
         String playerType = input.nextLine();
-        System.out.println("Enter your name:"); //the player's name
-        String name = input.nextLine();
+        //System.out.println("Enter your name:"); //the player's name
+       //String name = input.nextLine();
 
 
         if (playerType == "Host"){
             HostModel hostPlayer = new HostModel();
-            hostPlayer.name = name;
+            //hostPlayer.name = name;
             hostPlayer.GameManagement();
         }
         else {
             GuestModel guestPlayer = new GuestModel();
-            guestPlayer.name = name;
+            //guestPlayer.name = name;
             guestPlayer.connectToServer();
             //guestPlayer.startGame(); --- not needed, there is a call for this function inside connect to server (it will be called only when a connection was successful)
         }

@@ -275,7 +275,7 @@ public class HostModel implements GameModel {
                     player.name = guestResponse[5];
                 }
                 String word = fill_spaces(guestResponse[1], guestResponse[2],guestResponse[3],guestResponse[4]);
-                String args = "Q,s1.txt,s2.txt," + word;
+                String args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + word;
                 this.write_to_socket(args, server); // sending query request to game server
                 String server_response = this.read_from_socket(server); // response to query
 
@@ -322,7 +322,7 @@ public class HostModel implements GameModel {
                     guestResponse = this.read_from_socket(player.socket).split("|");
                     if(guestResponse[1] == "c")
                     {
-                        args = "C,s1.txt,s2.txt," + word;
+                        args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + word;
                         write_to_socket(args, server);
                         server_response = read_from_socket(server);
                         if(server_response == "true") //challenge return true
@@ -383,6 +383,7 @@ public class HostModel implements GameModel {
 
         String current_player = this.players.get(0).name;
         System.out.println(current_player + " turn");
+        System.out.println("your tiles are: " + players.get(0).tiles);
         System.out.println("please enter Word");
         Scanner input = new Scanner(System.in);
         String in = input.nextLine();
@@ -397,7 +398,7 @@ public class HostModel implements GameModel {
         in = input.nextLine();
         vertical = in;
         fullWord = fill_spaces(player_request,row,col,vertical);
-        String args = "Q,s1.txt,s2.txt," + fullWord;
+        String args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
 
         this.write_to_socket(args, server); // sending query request to game server
         String server_response = this.read_from_socket(server); // response to query
@@ -432,7 +433,7 @@ public class HostModel implements GameModel {
             in = input.nextLine();
             if(in == "c")
             {
-                args = "C,s1.txt,s2.txt," + fullWord;
+                args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
                 this.write_to_socket(args, server); // sending challenge request to game server
                 server_response = this.read_from_socket(server); // response to challenge
 
@@ -514,6 +515,7 @@ public class HostModel implements GameModel {
 
             String current_player = this.players.get(0).name;
             System.out.println(current_player + " turn");
+            System.out.println("your tiles are: " + this.players.get(0).tiles); // will be changed when view is added
             System.out.println("please enter Word");
             Scanner input = new Scanner(System.in);
             String in = input.nextLine();
@@ -528,7 +530,7 @@ public class HostModel implements GameModel {
             in = input.nextLine();
             vertical = in;
             fullWord = fill_spaces(player_request,row,col,vertical);
-            String args = "Q,s1.txt,s2.txt," + fullWord;
+            String args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
 
             this.write_to_socket(args, server); // sending query request to game server
             String server_response = this.read_from_socket(server); // response to query
@@ -563,7 +565,7 @@ public class HostModel implements GameModel {
                 in = input.nextLine();
                 if(in == "c")
                 {
-                    args = "C,s1.txt,s2.txt," + fullWord;
+                    args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
                     this.write_to_socket(args, server); // sending challenge request to game server
                     server_response = this.read_from_socket(server); // response to challenge
 
