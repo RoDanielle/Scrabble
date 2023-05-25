@@ -8,6 +8,7 @@ public interface GameModel {
     public String getName();
     public int getScore();
     public void addScore(int score);
+    public void decreaseScore(int score);
     public String[][] getBoard();
 
 }

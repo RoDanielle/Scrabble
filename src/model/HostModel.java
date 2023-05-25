@@ -1,5 +1,5 @@
 /*
-model:
+model: (in remote game: s = server(host) output to client. c = client output to server(host))
 case 0: s- 0|a,5^d,8^l,1^......
         c - gets seven tiles at the beginning of the game sends nothing back
 
@@ -19,37 +19,22 @@ case 3: s - challenge request answer, again three options: a - challenge and try
 
 package model;
 
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-
-
-import server.DictionaryManager;
-import server.MyServer;
-import server.ClientHandler;
-
 import static java.lang.String.valueOf;
-
-/*
-import model.Board;
-import model.Tile;
-import model.Tile.Bag;
-import model.Word;
-
- */
-
 
 public class HostModel implements GameModel {
 
-
+    // data for host player
     String name;
     int score;
     String[][] board;
-    List<Player> players;
     List<String> tiles;
-    String latestWord;
+
+    // data for managing game
+    List<Player> players;
     boolean gameRunning;
     Board boardObject;
     Tile.Bag bag;
@@ -59,10 +44,9 @@ public class HostModel implements GameModel {
     public HostModel() {
         this.name = null;
         this.score = 0;
-        this.board = new String[15][15]; // needed only
+        this.board = new String[15][15];
         this.players = new ArrayList<>();
-        this.tiles = new ArrayList<>(); // probably not needed since each player object has tiles array
-        this.latestWord = null;
+        this.tiles = new ArrayList<>();
         this.gameRunning = true;
         this.boardObject = Board.getBoard();
         this.bag = Tile.Bag.getBag();
@@ -75,10 +59,6 @@ public class HostModel implements GameModel {
         return this.name;
     }
 
-    public String getLatestWord() { //?
-        return this.latestWord;
-    }
-
     @Override
     public int getScore() {
         return this.score;
@@ -86,14 +66,17 @@ public class HostModel implements GameModel {
 
     @Override
     public void addScore(int score) {
-        this.score = score;
+        this.score += score;
+    }
+    @Override
+    public void decreaseScore(int score) {
+        this.score -= score;
     }
 
 
-    public String tileToString (Tile t)
-    {
+    public String tileToString (Tile t) {
         String tileString  = null;
-        tileString = valueOf(t.letter) + "," +Integer.toString(t.score);
+        tileString = valueOf(t.letter) + "," + Integer.toString(t.score);
         return tileString;
     }
 
@@ -103,9 +86,11 @@ public class HostModel implements GameModel {
         return this.board;
     }
 
-    public void stopGame(){
+    public void stopGame() {
         this.gameRunning = false;
-        //TODO- let all players know who the winner is
+    }
+
+    public void stopRemoteGame(){
         int maxScore = 0;
         String winner = null;
         for (int i = 0; i<numbOfPlayers; i++) {
@@ -117,12 +102,25 @@ public class HostModel implements GameModel {
             if (players.get(i).score == maxScore)  //a case of more than one winner
                 winner += "," + players.get(i).name;
         }
-        System.out.println("The winners are:" + winner);
 
-        //TODO - close all the sockets
-        for (int i = 0; i < numbOfPlayers; i++) {  //need an indication whether the player is a guest or a host, we will close all the guests first
+        String win = "The winners are:" + winner + "with: " + maxScore + "points";
+        for(Player p : this.players)
+        {
+            String Gwin = "4|" + win;
+            this.write_to_socket(Gwin, p.socket);
+            if(p.socket != null)
+            {
+                this.write_to_socket(Gwin, p.socket);
+            }
+        }
+        System.out.println(win);
+
+        for (int i = 0; i < numbOfPlayers; i++) {
             try {
-                players.get(i).socket.close();
+                if(players.get(i).socket != null)
+                {
+                    players.get(i).socket.close();
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -175,21 +173,21 @@ public class HostModel implements GameModel {
         }
     }
 
-    public void GameManagement(){
-        //TODO - main:host\guest? -- player was asked the player what it wants to be, in host case an HostModel was created and GameManagement function was called
-
+    public void GameManagement(String gameServerIP, int gameServerPort){
         Scanner input = new Scanner(System.in);
-
-        System.out.println("do you want to play a local game or a remote game? for local enter: 1, for remote enter: 2");
+        System.out.println("Do you want to play a local game or host a remote game? for local enter: 1, for remote enter: 2");
         String gameType = input.nextLine();
-        System.out.println("How many players are expected to participate in this game? (including you)");
+        System.out.println("How many players are expected to participate in this game? choose 1-4 (including you)");
         String num = input.nextLine();
         this.numbOfPlayers = Integer.parseInt(num);
+
+
         if(gameType == "1")
         {
             try {
-                Socket server =new Socket("localhost",12345); //match the games server (dictionary) details
+                Socket server =new Socket(gameServerIP,gameServerPort); //TODO - match the games server (dictionary) details need to open a server somewhere
                 startGame_local(server);
+                server.close(); // needed to be called only after startGame_local stopped running, meaning after the game is over.
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -197,16 +195,19 @@ public class HostModel implements GameModel {
         }
         else { //remote
             try {
-                Socket server =new Socket("localhost",12345); //match the games server (dictionary) details
+                System.out.println("please enter your name:");
+                String ans = input.nextLine();
+                Player hostPlayer = new Player();
+                this.name = ans;
+                hostPlayer.setName(ans);
+                players.add(hostPlayer);
+
+                Socket server =new Socket(gameServerIP,gameServerPort); //TODO - match the games server (dictionary) details need to open a server somewhere
                 int counter = 1;
                 ServerSocket hostSocket = new ServerSocket(12345);
-                //TODO - add host
-                System.out.println("Host server started. Listening on port " + hostSocket.getLocalPort() + "and ip localhost");
+                System.out.println("Host server started. Listening on port: " + hostSocket.getLocalPort() + "and ip: localhost");
+
                 while (gameRunning) {
-                    Player hostPlayer = new Player();
-                    hostPlayer.name = this.getName();
-                    hostPlayer.socket = null;
-                    players.add(hostPlayer);
                     Socket clientSocket = hostSocket.accept();
                     counter += 1;
                     Player guest = new Player();
@@ -225,6 +226,7 @@ public class HostModel implements GameModel {
                             Tile t= player.tiles.remove(0);
                             bag.put(t);
                         }
+
                         for(Player player : players)
                         {
                             String s_tiles = null;
@@ -246,12 +248,18 @@ public class HostModel implements GameModel {
                             {
                                 hostTurn(server);
                             }
-                            startGame_remote(server ,players.get(0));
+                            else
+                            {
+                                startGame_remote(server ,players.get(0));
+                            }
                             Player p = players.remove(0);
                             players.add(p);
                         }
                     }
                 }
+                stopRemoteGame();
+                server.close();
+                hostSocket.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -291,8 +299,15 @@ public class HostModel implements GameModel {
                         while(player.tiles.size() < 7)// fill missing tiles
                         {
                             Tile t = this.bag.getRand();
-                            toGuest = toGuest + "|" + this.tileToString(t) + "^";
-                            player.tiles.add(this.bag.getRand());
+                            if(t != null)
+                            {
+                                toGuest = toGuest + "|" + this.tileToString(t) + "^";
+                                player.tiles.add(t);
+                            }
+                            else {
+                                this.stopGame();
+                                break;
+                            }
                         }
                         toGuest = toGuest + "|" + player.name + guestResponse[1] +"|" + guestResponse[2] +"|" + guestResponse[3] +"|" + guestResponse[4];
                         this.updateMatrixBoard(w); // updating matrix board
@@ -308,9 +323,12 @@ public class HostModel implements GameModel {
                     {
                         toGuest = toGuest + player.name; //"2|true|0|name"
                         this.write_to_socket(toGuest, player.socket);
-                        while(Arrays.stream(w.tiles).toList().size() > 0) // need to check if this works well -------------------
+
+                        List<Tile> tmplst = new ArrayList<>();
+                        tmplst = Arrays.stream(w.tiles).toList();
+                        while(tmplst.size() > 0)
                         {
-                            Tile t = Arrays.stream(w.tiles).toList().remove(0);
+                            Tile t = tmplst.remove(0);
                             if(t != null)
                                 player.tiles.add(t);   // give the player its tiles back
                         }
@@ -338,8 +356,15 @@ public class HostModel implements GameModel {
                                 while(player.tiles.size() < 7)// fill missing tiles
                                 {
                                     Tile t = this.bag.getRand();
-                                    toGuest = toGuest + "|" + this.tileToString(t) + "^";
-                                    player.tiles.add(this.bag.getRand());
+                                    if(t != null)
+                                    {
+                                        toGuest = toGuest + "|" + this.tileToString(t) + "^";
+                                        player.tiles.add(t);
+                                    }
+                                    else {
+                                        this.stopGame();
+                                        break;
+                                    }
                                 }
                                 toGuest = toGuest + "|" + player.name + guestResponse[1] +"|" + guestResponse[2] +"|" + guestResponse[3] +"|" + guestResponse[4];
                                 this.updateMatrixBoard(w); // updating host matrix board
@@ -355,9 +380,11 @@ public class HostModel implements GameModel {
                             {
                                 toGuest = toGuest + "|0|" + player.name; //"3|true|0|name" //challenge-V, try-X
                                 this.write_to_socket(toGuest, player.socket);
-                                while(Arrays.stream(w.tiles).toList().size() > 0) // need to check if this works well -------------------
+                                List<Tile> tmplst = new ArrayList<>();
+                                tmplst = Arrays.stream(w.tiles).toList();
+                                while(tmplst.size() > 0)
                                 {
-                                    Tile t = Arrays.stream(w.tiles).toList().remove(0);
+                                    Tile t = tmplst.remove(0);
                                     if(t != null)
                                         player.tiles.add(t);   // give the player its tiles back
                                 }
@@ -366,7 +393,7 @@ public class HostModel implements GameModel {
                         else
                         {
                             toGuest = "3" + "|false|" +player.name;
-                            player.score -= 10;
+                            player.decreaseScore(10);
                             write_to_socket(toGuest,player.socket);
                         }
                     }
@@ -418,18 +445,21 @@ public class HostModel implements GameModel {
             }
             else
             {
-                while(Arrays.stream(w.tiles).toList().size() > 0) // need to check if this works well -------------------
+                List<Tile> tmplst = new ArrayList<>();
+                tmplst = Arrays.stream(w.tiles).toList();
+                while(tmplst.size() > 0)
                 {
-                    Tile t = Arrays.stream(w.tiles).toList().remove(0);
+                    Tile t = tmplst.remove(0);
                     if(t != null)
                         players.get(0).tiles.add(t);   // give the player its tiles back
                 }
+
                 System.out.println(current_player + " your word could not be put into the board, you get 0 points");
             }
         }
         else
         {
-            System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter 'pass'");
+            System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter xxx");
             in = input.nextLine();
             if(in == "c")
             {
@@ -455,13 +485,21 @@ public class HostModel implements GameModel {
                     }
                     else
                     {
+                        List<Tile> tmplst = new ArrayList<>();
+                        tmplst = Arrays.stream(w.tiles).toList();
+                        while(tmplst.size() > 0)
+                        {
+                            Tile t = tmplst.remove(0);
+                            if(t != null)
+                                players.get(0).tiles.add(t);   // give the player its tiles back
+                        }
                         System.out.println("challenge succeeded but word couldn't be put into board");
                     }
                 }
                 else
                 {
                     System.out.println("challenge failed you lose 10 points");
-                    players.get(0).score -= 10;
+                    players.get(0).decreaseScore(10);
                 }
 
             }
@@ -474,12 +512,12 @@ public class HostModel implements GameModel {
 
 
     public void startGame_local(Socket server) {
-        for(int i = 2; i<this.numbOfPlayers+1; i++){
+        Scanner input = new Scanner(System.in);
+        for(int i = 1; i <this.numbOfPlayers + 1; i++){
             System.out.println("please enter player" + i + "name:");
-            Scanner input = new Scanner(System.in);
-            String guestAns = input.nextLine();
+            String ans = input.nextLine();
             Player player = new Player();
-            player.setName(guestAns);
+            player.setName(ans);
             players.add(player);
         }
 
@@ -511,24 +549,20 @@ public class HostModel implements GameModel {
             String row = null;
             String col = null;
             String vertical = null;
-            String fullWord;
+            String fullWord = null;
+            String in = null;
 
             String current_player = this.players.get(0).name;
             System.out.println(current_player + " turn");
             System.out.println("your tiles are: " + this.players.get(0).tiles); // will be changed when view is added
             System.out.println("please enter Word");
-            Scanner input = new Scanner(System.in);
-            String in = input.nextLine();
-            player_request = in;
+            player_request = input.nextLine();
             System.out.println("Please enter row");
-            in = input.nextLine();
-            row = in;
+            row = input.nextLine();
             System.out.println("Please enter col");
-            in = input.nextLine();
-            col = in;
+            col = input.nextLine();
             System.out.println("Please enter v for vertical or h for horizontal");
-            in = input.nextLine();
-            vertical = in;
+            vertical = input.nextLine();
             fullWord = fill_spaces(player_request,row,col,vertical);
             String args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
 
@@ -541,18 +575,29 @@ public class HostModel implements GameModel {
                 int score = this.boardObject.tryPlaceWord(w);
                 if(score != 0) // word was put into board
                 {
-                    System.out.println(current_player + " got " + score + " point for the word");
+                    System.out.println(current_player + " got " + score + " points for the word");
                     players.get(0).addScore(score);
                     while(players.get(0).tiles.size() < 7) // fill missing tiles
-                        players.get(0).tiles.add(this.bag.getRand());
-
+                    {
+                        Tile t = this.bag.getRand();
+                        if(t != null)
+                        {
+                            players.get(0).tiles.add(t);
+                        }
+                        else{
+                            this.stopGame();
+                            break;
+                        }
+                    }
                     this.updateMatrixBoard(w); // updating matrix board
                 }
                 else
                 {
-                    while(Arrays.stream(w.tiles).toList().size() > 0) // need to check if this works well -------------------
+                    List<Tile> tmplst = new ArrayList<>();
+                    tmplst = Arrays.stream(w.tiles).toList();
+                    while(tmplst.size() > 0)
                     {
-                        Tile t = Arrays.stream(w.tiles).toList().remove(0);
+                        Tile t = tmplst.remove(0);
                         if(t != null)
                             players.get(0).tiles.add(t);   // give the player its tiles back
                     }
@@ -561,7 +606,7 @@ public class HostModel implements GameModel {
             }
             else
             {
-                System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter 'pass'");
+                System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter xxx");
                 in = input.nextLine();
                 if(in == "c")
                 {
@@ -576,24 +621,40 @@ public class HostModel implements GameModel {
                         if(score != 0) // word was put into board
                         {
                             System.out.println("challenge succeeded");
-
                             score+=10;
                             System.out.println(current_player + " got " + score + " point for the word");
                             players.get(0).addScore(score);
                             while(players.get(0).tiles.size() < 7) // fill missing tiles
-                                players.get(0).tiles.add(this.bag.getRand());
-
+                            {
+                                Tile t = this.bag.getRand();
+                                if(t != null)
+                                {
+                                    players.get(0).tiles.add(t);
+                                }
+                                else{
+                                    this.stopGame();
+                                    break;
+                                }
+                            }
                             this.updateMatrixBoard(w); // updating matrix board
                         }
                         else
                         {
+                            List<Tile> tmplst = new ArrayList<>();
+                            tmplst = Arrays.stream(w.tiles).toList();
+                            while(tmplst.size() > 0)
+                            {
+                                Tile t = tmplst.remove(0);
+                                if(t != null)
+                                    players.get(0).tiles.add(t);   // give the player its tiles back
+                            }
                             System.out.println("challenge succeeded but word couldn't be put into board");
                         }
                     }
                     else
                     {
                         System.out.println("challenge failed you lose 10 points");
-                        players.get(0).score -= 10;
+                        players.get(0).decreaseScore(10);
                     }
 
                 }
@@ -603,6 +664,18 @@ public class HostModel implements GameModel {
             Player p = this.players.remove(0);
             this.players.add(p);
         }
+
+        Player winner = null;
+        for(Player p : this.players)
+        {
+            if(winner.getScore() < p.getScore())
+            {
+                winner = p;
+            }
+        }
+
+        System.out.println("the winner is: " + winner.name + "with " + winner.getScore() + " points");
+        System.out.println("Game Over");
     }
 
 
@@ -637,6 +710,10 @@ public class HostModel implements GameModel {
         public void addScore(int score)
         {
             this.score += score;
+        }
+        public void decreaseScore(int score)
+        {
+            this.score -= score;
         }
 
         public Word create_word(String input_word, String _row, String _col, String _vertical) {

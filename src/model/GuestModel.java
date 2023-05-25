@@ -39,7 +39,7 @@ import static java.lang.String.valueOf;
 
         Map<String,String> letterToScore;
 
-        Socket mySocket;
+        Socket mySocket; // TODO - close the socket when game is over
 
         public GuestModel(){
             this.name = null;
@@ -92,6 +92,9 @@ import static java.lang.String.valueOf;
         public void addScore(int score) { // adding scoring
             this.score += score;
         }
+
+        @Override
+        public void decreaseScore(int score) { this.score -= score; }
 
         public Socket getMySocket() {
             return this.mySocket;
@@ -308,10 +311,19 @@ import static java.lang.String.valueOf;
                         else // challenge wasn't correct - deduce points received: "3|false|name"
                         {
                             System.out.println("challenge returned false, you lose 10 points");
-                            this.score -= 10;
+                            this.decreaseScore(10);
                             System.out.println("turn over");
                         }
                         break;
+
+                    case "4": // game over
+                        System.out.println(fromHost[1]);
+                        System.out.println("Game Over");
+                        try{
+                            this.mySocket.close();
+                        }catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                 }
             }
         }

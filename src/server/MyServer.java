@@ -11,7 +11,7 @@ public class MyServer {
 	private ClientHandler ch;
 	private boolean stop;
 	
-	MyServer(int p, ClientHandler c)
+	public MyServer(int p, ClientHandler c)
 	{
 		this.port = p;
 		this.ch = c;
