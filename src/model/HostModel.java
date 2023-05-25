@@ -298,9 +298,9 @@ public class HostModel implements GameModel {
                         player.addScore(score);
                         while(player.tiles.size() < 7)// fill missing tiles
                         {
-                            Tile t = this.bag.getRand();
-                            if(t != null)
+                            if(this.bag.size() != 0)
                             {
+                                Tile t = this.bag.getRand();
                                 toGuest = toGuest + "|" + this.tileToString(t) + "^";
                                 player.tiles.add(t);
                             }
@@ -355,9 +355,9 @@ public class HostModel implements GameModel {
                                 toGuest = toGuest + "|" + score;
                                 while(player.tiles.size() < 7)// fill missing tiles
                                 {
-                                    Tile t = this.bag.getRand();
-                                    if(t != null)
+                                    if(this.bag.size() != 0)
                                     {
+                                        Tile t = this.bag.getRand();
                                         toGuest = toGuest + "|" + this.tileToString(t) + "^";
                                         player.tiles.add(t);
                                     }
@@ -439,8 +439,16 @@ public class HostModel implements GameModel {
                 System.out.println(current_player + " got " + score + " point for the word");
                 players.get(0).addScore(score);
                 while(players.get(0).tiles.size() < 7) // fill missing tiles
-                    players.get(0).tiles.add(this.bag.getRand());
-
+                {
+                    if(this.bag.size() != 0)
+                    {
+                        players.get(0).tiles.add(this.bag.getRand());
+                    }
+                    else {
+                        this.stopGame();
+                        break;
+                    }
+                }
                 this.updateMatrixBoard(w); // updating matrix board
             }
             else
@@ -479,8 +487,16 @@ public class HostModel implements GameModel {
                         System.out.println(current_player + " got " + score + " point for the word");
                         players.get(0).addScore(score);
                         while(players.get(0).tiles.size() < 7) // fill missing tiles
-                            players.get(0).tiles.add(this.bag.getRand());
-
+                        {
+                            if(this.bag.size() != 0)
+                            {
+                                players.get(0).tiles.add(this.bag.getRand());
+                            }
+                            else {
+                                this.stopGame();
+                                break;
+                            }
+                        }
                         this.updateMatrixBoard(w); // updating matrix board
                     }
                     else
@@ -579,12 +595,12 @@ public class HostModel implements GameModel {
                     players.get(0).addScore(score);
                     while(players.get(0).tiles.size() < 7) // fill missing tiles
                     {
-                        Tile t = this.bag.getRand();
-                        if(t != null)
+                        if(this.bag.size() != 0)
                         {
-                            players.get(0).tiles.add(t);
+                            players.get(0).tiles.add(this.bag.getRand());
                         }
-                        else{
+                        else
+                        {
                             this.stopGame();
                             break;
                         }
@@ -626,10 +642,9 @@ public class HostModel implements GameModel {
                             players.get(0).addScore(score);
                             while(players.get(0).tiles.size() < 7) // fill missing tiles
                             {
-                                Tile t = this.bag.getRand();
-                                if(t != null)
+                                if(this.bag.size() != 0)
                                 {
-                                    players.get(0).tiles.add(t);
+                                    players.get(0).tiles.add(this.bag.getRand());
                                 }
                                 else{
                                     this.stopGame();
