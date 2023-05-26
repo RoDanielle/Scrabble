@@ -23,6 +23,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static java.lang.String.valueOf;
 
 public class HostModel implements GameModel {
@@ -153,10 +155,17 @@ public class HostModel implements GameModel {
     public void write_to_socket(String str, Socket _socket){
         try {
             System.out.println(str);
+            System.out.println(this.gameServerSocket.isClosed());
             PrintWriter outToServer = new PrintWriter(_socket.getOutputStream());
+            System.out.println(this.gameServerSocket.isClosed());
+
             outToServer.println(str);
             outToServer.flush();
-            outToServer.close();
+            System.out.println(this.gameServerSocket.isClosed());
+
+//            outToServer.close();
+            System.out.println(this.gameServerSocket.isClosed());
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -289,7 +298,7 @@ public class HostModel implements GameModel {
 
             if(!guestResponse[1].equals("xxx") && !guestResponse[1].equals("XXX"))
             {
-                if(player.name == null)
+                if(player.name == null) //first round
                 {
                     player.name = guestResponse[5];
                 }
@@ -608,18 +617,19 @@ public class HostModel implements GameModel {
             vertical = input.nextLine();
             fullWord = fill_spaces(player_request,row,col,vertical);
             String args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
-
+            System.out.println(this.gameServerSocket.isClosed());
             this.write_to_socket(args, this.gameServerSocket); // sending query request to game server
+            System.out.println(this.gameServerSocket.isClosed());
 
             //----------------------------------------------------------------------------------------------------------------------------------------------------
-            try {
-                //System.out.println("close? " + _socket.isClosed());
-                BufferedReader inFromServer = new BufferedReader(new InputStreamReader(this.gameServerSocket.getInputStream()));
-                String serverResponse = inFromServer.readLine();
-                inFromServer.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                //System.out.println("close? " + _socket.isClosed());
+//                BufferedReader inFromServer = new BufferedReader(new InputStreamReader(this.gameServerSocket.getInputStream()));
+//                String serverResponse = inFromServer.readLine();
+//                inFromServer.close();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
             //------------------------------------------------------------------------------------------------------------------------------------------------------
 
             String server_response = this.read_from_socket(this.gameServerSocket); // response to query
@@ -649,7 +659,7 @@ public class HostModel implements GameModel {
                 else
                 {
                     List<Tile> tmplst = new ArrayList<>();
-                    tmplst = Arrays.stream(w.tiles).toList();
+                    tmplst = Arrays.stream(w.tiles).collect(Collectors.toList());
                     while(tmplst.size() > 0)
                     {
                         Tile t = tmplst.remove(0);
@@ -732,9 +742,9 @@ public class HostModel implements GameModel {
         System.out.println("Game Over");
     }
 
-    class Player {
+    public static class Player {
         String name;
-        Socket socket;
+        public Socket socket;
         List<Tile> tiles;
 
         int score;
