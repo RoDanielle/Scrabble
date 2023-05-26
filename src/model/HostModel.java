@@ -93,19 +93,16 @@ public class HostModel implements GameModel {
     }
 
     public void stopRemoteGame(){
-        int maxScore = 0;
-        String winner = null;
-        for (int i = 0; i<numbOfPlayers; i++) {
-            if (players.get(i).score > maxScore) {
-                maxScore = players.get(i).score;
-                winner = null;
-                winner = players.get(i).name;
+        Player winner = new Player();
+        for(Player p : this.players)
+        {
+            if(winner.getScore() < p.getScore())
+            {
+                winner = p;
             }
-            if (players.get(i).score == maxScore)  //a case of more than one winner
-                winner += "," + players.get(i).name;
         }
+        String win = "The winner is:" + winner.name + "with: " + winner.getScore() + "points";
 
-        String win = "The winners are:" + winner + "with: " + maxScore + "points";
         for(Player p : this.players)
         {
             String Gwin = "4|" + win;
@@ -722,7 +719,7 @@ public class HostModel implements GameModel {
             this.players.add(p);
         }
 
-        Player winner = null;
+        Player winner = new Player();
         for(Player p : this.players)
         {
             if(winner.getScore() < p.getScore())
@@ -734,8 +731,6 @@ public class HostModel implements GameModel {
         System.out.println("the winner is: " + winner.name + "with " + winner.getScore() + " points");
         System.out.println("Game Over");
     }
-
-
 
     class Player {
         String name;
