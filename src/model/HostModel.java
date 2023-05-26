@@ -40,6 +40,8 @@ public class HostModel implements GameModel {
     Tile.Bag bag;
     int numbOfPlayers;
 
+    Socket gameServerSocket;
+
 
     public HostModel() {
         this.name = null;
@@ -50,8 +52,8 @@ public class HostModel implements GameModel {
         this.gameRunning = true;
         this.boardObject = Board.getBoard();
         this.bag = Tile.Bag.getBag();
-        numbOfPlayers = 0;
-
+        this.numbOfPlayers = 0;
+        this.gameServerSocket = null;
     }
 
     @Override
@@ -153,6 +155,7 @@ public class HostModel implements GameModel {
 
     public void write_to_socket(String str, Socket _socket){
         try {
+            System.out.println(str);
             PrintWriter outToServer = new PrintWriter(_socket.getOutputStream());
             outToServer.println(str);
             outToServer.flush();
@@ -164,6 +167,7 @@ public class HostModel implements GameModel {
     }
     public String read_from_socket(Socket _socket) {
         try {
+            //System.out.println("close? " + _socket.isClosed());
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
             String serverResponse = inFromServer.readLine();
             inFromServer.close();
@@ -173,28 +177,29 @@ public class HostModel implements GameModel {
         }
     }
 
+    public void ConnectToGameServer(String gameServerIP, int gameServerPort) throws IOException {
+        Socket server; //TODO - match the games server (dictionary) details need to open a server somewhere
+        server = new Socket(gameServerIP,gameServerPort);
+        this.gameServerSocket = server;
+    }
+
     public void GameManagement(String gameServerIP, int gameServerPort){
         Scanner input = new Scanner(System.in);
         System.out.println("Do you want to play a local game or host a remote game? for local enter: 1, for remote enter: 2");
         String gameType = input.nextLine();
-        System.out.println("How many players are expected to participate in this game? choose 1-4 (including you)");
-        String num = input.nextLine();
-        this.numbOfPlayers = Integer.parseInt(num);
 
-
-        if(gameType == "1")
+        if(gameType.equals("1"))
         {
-            try {
-                Socket server =new Socket(gameServerIP,gameServerPort); //TODO - match the games server (dictionary) details need to open a server somewhere
-                startGame_local(server);
-                server.close(); // needed to be called only after startGame_local stopped running, meaning after the game is over.
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
+            System.out.println("You are now hosting a local game");
+            startGame_local(gameServerIP, gameServerPort);
+            //this.gameServerSocket.close(); // needed to be called only after startGame_local stopped running, meaning after the game is over.
         }
         else { //remote
             try {
+                System.out.println("How many players are expected to participate in this game? choose 1-4 (including you)");
+                String num = input.nextLine();
+                this.numbOfPlayers = Integer.parseInt(num);
+                System.out.println("You are now hosting a remote game");
                 System.out.println("please enter your name:");
                 String ans = input.nextLine();
                 Player hostPlayer = new Player();
@@ -202,10 +207,11 @@ public class HostModel implements GameModel {
                 hostPlayer.setName(ans);
                 players.add(hostPlayer);
 
-                Socket server =new Socket(gameServerIP,gameServerPort); //TODO - match the games server (dictionary) details need to open a server somewhere
+                //Socket server =new Socket(gameServerIP,gameServerPort); //TODO - match the games server (dictionary) details need to open a server somewhere
+                ConnectToGameServer(gameServerIP,gameServerPort);
                 int counter = 1;
-                ServerSocket hostSocket = new ServerSocket(12345);
-                System.out.println("Host server started. Listening on port: " + hostSocket.getLocalPort() + "and ip: localhost");
+                ServerSocket hostSocket = new ServerSocket(8081);
+                System.out.println("Host server started. Listening on port: " + hostSocket.getLocalPort() + " and ip: localhost");
 
                 while (gameRunning) {
                     Socket clientSocket = hostSocket.accept();
@@ -244,13 +250,21 @@ public class HostModel implements GameModel {
                         }
                         while(gameRunning)
                         {
+                            System.out.println("connecting to game server...");
+                            try {
+                                ConnectToGameServer(gameServerIP,gameServerPort);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            System.out.println("you are connected to game server on port " + this.gameServerSocket);
+
                             if(players.get(0).socket == null)
                             {
-                                hostTurn(server);
+                                hostTurn(this.gameServerSocket);
                             }
                             else
                             {
-                                startGame_remote(server ,players.get(0));
+                                startGame_remote(this.gameServerSocket ,players.get(0));
                             }
                             Player p = players.remove(0);
                             players.add(p);
@@ -258,7 +272,7 @@ public class HostModel implements GameModel {
                     }
                 }
                 stopRemoteGame();
-                server.close();
+                this.gameServerSocket.close();
                 hostSocket.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -276,7 +290,7 @@ public class HostModel implements GameModel {
 
             guestResponse = this.read_from_socket(player.socket).split("|");
 
-            if(guestResponse[1]!= "xxx")
+            if(!guestResponse[1].equals("xxx") && !guestResponse[1].equals("XXX"))
             {
                 if(player.name == null)
                 {
@@ -287,7 +301,7 @@ public class HostModel implements GameModel {
                 this.write_to_socket(args, server); // sending query request to game server
                 String server_response = this.read_from_socket(server); // response to query
 
-                if(server_response == "true") // word found in dictionary
+                if(server_response.equals("true")) // word found in dictionary
                 {
                     toGuest = "2" + "|" + "true";
                     Word w = player.create_word(guestResponse[1], guestResponse[2],guestResponse[3],guestResponse[4]);
@@ -338,12 +352,12 @@ public class HostModel implements GameModel {
                 {
                     toGuest = "2"+"|"+"false"+player.name; //query return false //"2|false|name"
                     guestResponse = this.read_from_socket(player.socket).split("|");
-                    if(guestResponse[1] == "c")
+                    if(guestResponse[1].equals("c") || guestResponse[1].equals("C"))
                     {
                         args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + word;
                         write_to_socket(args, server);
                         server_response = read_from_socket(server);
-                        if(server_response == "true") //challenge return true
+                        if(server_response.equals("true")) //challenge return true
                         {
                             toGuest = "3" + "|true";
                             Word w = player.create_word(guestResponse[2], guestResponse[3],guestResponse[4],guestResponse[5]);
@@ -430,7 +444,7 @@ public class HostModel implements GameModel {
         this.write_to_socket(args, server); // sending query request to game server
         String server_response = this.read_from_socket(server); // response to query
 
-        if(server_response == "true") // word found in dictionary
+        if(server_response.equals("true")) // word found in dictionary
         {
             Word w = players.get(0).create_word(player_request, row,col,vertical);
             int score = this.boardObject.tryPlaceWord(w);
@@ -469,13 +483,13 @@ public class HostModel implements GameModel {
         {
             System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter xxx");
             in = input.nextLine();
-            if(in == "c")
+            if(in.equals("c") || in.equals("C"))
             {
                 args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
                 this.write_to_socket(args, server); // sending challenge request to game server
                 server_response = this.read_from_socket(server); // response to challenge
 
-                if (server_response == "true")
+                if (server_response.equals("true"))
                 {
                     Word w = players.get(0).create_word(player_request, row,col,vertical);
                     int score = this.boardObject.tryPlaceWord(w);
@@ -527,17 +541,21 @@ public class HostModel implements GameModel {
     }
 
 
-    public void startGame_local(Socket server) {
+    public void startGame_local(String gameServerIP, int gameServerPort) {
         Scanner input = new Scanner(System.in);
+        System.out.println("How many players are expected to participate in this game? choose 1-4 (including you)");
+        String num = input.nextLine();
+        this.numbOfPlayers = Integer.parseInt(num);
+
         for(int i = 1; i <this.numbOfPlayers + 1; i++){
-            System.out.println("please enter player" + i + "name:");
+            System.out.println("please enter player " + i + " name:");
             String ans = input.nextLine();
             Player player = new Player();
             player.setName(ans);
             players.add(player);
         }
 
-        System.out.println("start game");
+        System.out.println("starting game");
         for(Player player : players)
         {
             Tile t = bag.getRand();
@@ -561,6 +579,14 @@ public class HostModel implements GameModel {
 
         while (gameRunning)
         {
+            System.out.println("connecting to game server...");
+            try {
+                ConnectToGameServer(gameServerIP,gameServerPort);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("you are connected to game server on port " + this.gameServerSocket);
+
             String player_request = null; // word
             String row = null;
             String col = null;
@@ -570,7 +596,11 @@ public class HostModel implements GameModel {
 
             String current_player = this.players.get(0).name;
             System.out.println(current_player + " turn");
-            System.out.println("your tiles are: " + this.players.get(0).tiles); // will be changed when view is added
+            System.out.println("your tiles are: "); // will be changed when view is added
+            for(Tile t :  this.players.get(0).tiles)
+            {
+                System.out.println(t.letter + "," + t.score);
+            }
             System.out.println("please enter Word");
             player_request = input.nextLine();
             System.out.println("Please enter row");
@@ -582,10 +612,22 @@ public class HostModel implements GameModel {
             fullWord = fill_spaces(player_request,row,col,vertical);
             String args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
 
-            this.write_to_socket(args, server); // sending query request to game server
-            String server_response = this.read_from_socket(server); // response to query
+            this.write_to_socket(args, this.gameServerSocket); // sending query request to game server
 
-            if(server_response == "true") // word found in dictionary
+            //----------------------------------------------------------------------------------------------------------------------------------------------------
+            try {
+                //System.out.println("close? " + _socket.isClosed());
+                BufferedReader inFromServer = new BufferedReader(new InputStreamReader(this.gameServerSocket.getInputStream()));
+                String serverResponse = inFromServer.readLine();
+                inFromServer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            String server_response = this.read_from_socket(this.gameServerSocket); // response to query
+
+            if(server_response.equals("true")) // word found in dictionary
             {
                 Word w = players.get(0).create_word(player_request, row,col,vertical);
                 int score = this.boardObject.tryPlaceWord(w);
@@ -624,13 +666,13 @@ public class HostModel implements GameModel {
             {
                 System.out.println("word not found in dictionary, want to challenge? enter 'c' for challenge else enter xxx");
                 in = input.nextLine();
-                if(in == "c")
+                if(in.equals("c") || in.equals("C"))
                 {
                     args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
-                    this.write_to_socket(args, server); // sending challenge request to game server
-                    server_response = this.read_from_socket(server); // response to challenge
+                    this.write_to_socket(args, this.gameServerSocket); // sending challenge request to game server
+                    server_response = this.read_from_socket(this.gameServerSocket); // response to challenge
 
-                    if (server_response == "true")
+                    if (server_response.equals("true"))
                     {
                         Word w = players.get(0).create_word(player_request, row,col,vertical);
                         int score = this.boardObject.tryPlaceWord(w);
@@ -736,7 +778,7 @@ public class HostModel implements GameModel {
             int row = Integer.parseInt(_row);
             int col = Integer.parseInt(_col);
             boolean vertical;
-            if (_vertical == "v")
+            if (_vertical.equals("V") || _vertical.equals("v"))
                 vertical = true;
             else
                 vertical = false;
@@ -771,7 +813,7 @@ public class HostModel implements GameModel {
                     if (word.charAt(i) == '_')
                     {
 
-                        if (vertical == "v")
+                        if (vertical.equals("V") ||  vertical.equals("v"))
                         {
                             chars[i] = this.boardObject.getTiles()[Integer.parseInt(row) + i][Integer.parseInt(col)].letter;
                         }

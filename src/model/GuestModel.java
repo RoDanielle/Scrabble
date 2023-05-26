@@ -127,14 +127,14 @@ import static java.lang.String.valueOf;
             String[] moreTiles = addedTiles.split("^");
             for(String s : moreTiles)
             {
-                if(s != "^")
+                if(!s.equals("^"))
                     this.tiles.add(s);
             }
         }
 
         public void updateMatrixBoard(String word, String row, String col, String vertical) {
             String tmpTileString = null;
-            if(vertical == "v")
+            if(vertical.equals("v") || vertical.equals("V"))
             {
                 for(int i = 0; i < word.length(); i++)
                 {
@@ -235,7 +235,7 @@ import static java.lang.String.valueOf;
                         in = input.nextLine();
                         request_to_server = "1";
                         request_to_server = request_to_server + "|" + in;
-                        if(in != "xxx")
+                        if(!in.equals("xxx") && !in.equals("XXX"))
                         {
                             System.out.println("Please enter row");
                             in = input.nextLine();
@@ -253,15 +253,15 @@ import static java.lang.String.valueOf;
                         break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
                     case "2": // host + server response to query request ++ updated board for any entered word
-                        if(fromHost[1] == "true" && fromHost[4] != this.name) // other users word was placed on board
+                        if(fromHost[1].equals("true") && !fromHost[4].equals(this.name)) // other users word was placed on board
                         {
                             updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
                             System.out.println(fromHost[4] + "placed a new word on the board");
                         }
 
-                        else if(fromHost[1] == "true" && fromHost[4] == this.name) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                        else if(fromHost[1].equals("true") && fromHost[4].equals(this.name)) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
                         {
-                            if(fromHost[3] != "0") // my word was put into board
+                            if(fromHost[3].equals("0")) // my word was put into board
                             {
                                 System.out.println( "your word was placed on the board, you get " + fromHost[3] + " points");
                                 updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
@@ -289,9 +289,9 @@ import static java.lang.String.valueOf;
                         break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
 
                     case "3": // host + server response to challenge request
-                        if(fromHost[1] == "true")
+                        if(fromHost[1].equals("true"))
                         {
-                            if(fromHost[2] != "0") // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                            if(!fromHost[2].equals("0")) // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
                             {
                                 int tmp_score = Integer.parseInt(fromHost[2]) + 10;
                                 System.out.println( "your word was placed on the board, you get " + tmp_score + " points");

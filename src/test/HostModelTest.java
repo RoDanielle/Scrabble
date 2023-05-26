@@ -1,7 +1,7 @@
 package test;
 
 public class HostModelTest {
-    public static void main(String[] args) {
+    public static void hostTest() {
 
         System.out.println("done");
     }
