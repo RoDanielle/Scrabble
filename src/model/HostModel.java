@@ -77,6 +77,9 @@ public class HostModel implements GameModel {
         this.score -= score;
     }
 
+    public List<Player> getPlayers(){return this.players;}
+    public int getNumbOfPlayers(){return this.numbOfPlayers;}
+
 
     public String tileToString (Tile t) {
         String tileString  = null;
@@ -190,6 +193,9 @@ public class HostModel implements GameModel {
     }
 
     public void GameManagement(String gameServerIP, int gameServerPort){
+
+        //Loading word files to the server's dictionary??? There is a function that does this "loadFile" in "Dictionary"
+
         Scanner input = new Scanner(System.in);
         System.out.println("Do you want to play a local game or host a remote game? for local enter: 1, for remote enter: 2");
         String gameType = input.nextLine();
@@ -547,43 +553,108 @@ public class HostModel implements GameModel {
     }
 
 
-    public void startGame_local(String gameServerIP, int gameServerPort) {
-        Scanner input = new Scanner(System.in);
-        System.out.println("How many players are expected to participate in this game? choose 1-4 (including you)");
-        String num = input.nextLine();
-        this.numbOfPlayers = Integer.parseInt(num);
+    public boolean set_num_players(String num){
+        if (num.equals("1") || num.equals("2") || num.equals("3") || num.equals("4")) {
+            this.numbOfPlayers = Integer.parseInt(num);
+            return true;
+        }
+        else
+            return false;
+    }
 
-        for(int i = 1; i <this.numbOfPlayers + 1; i++){
-            System.out.println("please enter player " + i + " name:");
-            String ans = input.nextLine();
+    public void create_players(ArrayList<String> names){
+
+        for(int i = 0; i <=names.size(); i++){
             Player player = new Player();
-            player.setName(ans);
+            player.setName(names.get(i));
             players.add(player);
         }
+    }
 
-        System.out.println("starting game");
+    public void order_players_turns(List<Player> players){ //Determines the order of players' turns
         for(Player player : players)
         {
             Tile t = bag.getRand();
             player.tiles.add(t);
         }
-
         players.sort((a,b)->Character.getNumericValue(a.tiles.get(0).letter) - Character.getNumericValue(b.tiles.get(0).letter));
         for(Player player : players)
         {
             Tile t= player.tiles.remove(0);
             bag.put(t);
         }
-        for(Player player : players)
-        {
-            for(int i=0; i<7; i++)
+    }
+
+    public void tile_completion(Player player){ //Gets a player and complements him to 7 tiles
+        int size = player.tiles.size();
+        if (player.tiles.size() < 7)
+            for(int i=size+1; i<=7; i++)
             {
                 Tile t = bag.getRand();
                 player.tiles.add(t);
             }
+    }
+
+
+    public void startGame_local(String gameServerIP, int gameServerPort) {
+        /*
+        Boolean flag = false;
+        Scanner input = new Scanner(System.in);
+        String num = null;
+
+        while (!flag) {
+            System.out.println("How many players are expected to participate in this game? choose 1-4 (including you)");
+            num = input.nextLine();
+            if (num.equals("1") || num.equals("2") || num.equals("3") || num.equals("4"))
+                flag = true;
+            else {
+                System.out.println("Error! try again");
+                num = null;
+            }
         }
 
-        while (gameRunning)
+        this.numbOfPlayers = Integer.parseInt(num);
+        for(int i = 1; i <this.numbOfPlayers + 1; i++){
+            if (i==1){
+                System.out.println("Please enter your name:");
+            }
+            else {
+                System.out.println("Please enter player " + i + " name:");
+            }
+            String ans = input.nextLine();
+            Player player = new Player();
+            player.setName(ans);
+            players.add(player);
+        }
+
+         */
+        Scanner input = new Scanner(System.in);
+        while (this.numbOfPlayers == 0) {
+            System.out.println("How many players are expected to participate in this game? choose 1-4 (including you)");
+            if (set_num_players(input.nextLine()))
+                System.out.println("Error! try again");
+        }
+
+        ArrayList<String> arrayNames = new ArrayList<>();
+        for(int i = 1; i <=this.numbOfPlayers; i++) {
+            if (i == 1)
+                System.out.println("Please enter your name (host):");
+            else
+                System.out.println("Please enter player " + i + " name:");
+            arrayNames.add(input.nextLine());
+        }
+        create_players(arrayNames);
+
+
+        System.out.println("starting game");
+
+        order_players_turns(this.players);
+
+        for (int i = 0; i<this.numbOfPlayers; i++)
+            tile_completion(this.players.get(i));
+
+
+        while (this.gameRunning)
         {
             System.out.println("connecting to game server...");
             try {
@@ -607,6 +678,8 @@ public class HostModel implements GameModel {
             {
                 System.out.println(t.letter + "," + t.score);
             }
+            /*
+
             System.out.println("please enter Word");
             player_request = input.nextLine();
             System.out.println("Please enter row");
@@ -615,6 +688,13 @@ public class HostModel implements GameModel {
             col = input.nextLine();
             System.out.println("Please enter v for vertical or h for horizontal");
             vertical = input.nextLine();
+
+             */
+
+
+            player_request = get_word(this.players.get(0).tiles);
+
+
             fullWord = fill_spaces(player_request,row,col,vertical);
             String args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
             System.out.println(this.gameServerSocket.isClosed());
@@ -756,6 +836,13 @@ public class HostModel implements GameModel {
             this.score = 0;
         }
 
+        public List<Tile> getTiles(){
+            return this.tiles;
+        }
+        public String getName(){
+            return this.name;
+        }
+
         public void setName(String name) {
             this.name = name;
         }
@@ -779,7 +866,7 @@ public class HostModel implements GameModel {
         }
 
         public Word create_word(String input_word, String _row, String _col, String _vertical) {
-            Tile[] wordarr = null;
+            Tile[] word_arr = null;
             int row = Integer.parseInt(_row);
             int col = Integer.parseInt(_col);
             boolean vertical;
@@ -788,15 +875,15 @@ public class HostModel implements GameModel {
             else
                 vertical = false;
 
-            wordarr = new Tile[input_word.length()];
+            word_arr = new Tile[input_word.length()];
             int i = 0;
             for (char c : input_word.toCharArray()) {
                 if (c == '_') {
-                    wordarr[i] = null;
+                    word_arr[i] = null;
                 } else {
                     for (int j = 0; j < this.tiles.size(); j++) {
                         if (c == this.tiles.get(j).letter) {
-                            wordarr[i] = this.tiles.remove(j); // take the tiles
+                            word_arr[i] = this.tiles.remove(j); // take the tiles
                             break;
                         }
                     }
@@ -804,12 +891,12 @@ public class HostModel implements GameModel {
                 i++;
             }
 
-            Word word = new Word(wordarr, row, col, vertical);
+            Word word = new Word(word_arr, row, col, vertical);
             return word;
         }
     }
 
-        public String fill_spaces(String word, String row, String col, String vertical) {
+    public String fill_spaces(String word, String row, String col, String vertical) {
             if (word.contains("_"))
             {
                 char[] chars = word.toCharArray();
@@ -833,7 +920,81 @@ public class HostModel implements GameModel {
             {
                 return word;
             }
+    }
+
+    public String get_word(List<Tile> tiles) { //Getting a word from the player
+        List<Tile> t = tiles;
+        Scanner input = new Scanner(System.in);
+        String player_request = null;
+        String row = null;
+        String col = null;
+        String vertical = null;
+        Boolean flag = false;
+
+
+        while (!flag){
+            System.out.println("Please enter a word: (built from your tiles)");
+            player_request = input.nextLine();
+            for (int i =0; i<player_request.length(); i++){
+                for (int j =0 ; j<t.size(); j++){
+                    if (t != null) {
+                        if (player_request.charAt(i) == t.get(j).letter) {
+                            t.remove(j);
+                            break;
+                        }
+                        else if (player_request.charAt(i) == '_')
+                            break;
+                        else {
+                            System.out.println("Error! Try again");
+                            player_request = null;
+                        }
+                    }
+                    if (t == null && player_request.charAt(i) != '_') {
+                        System.out.println("Error! Try again");
+                        player_request = null;
+                    }
+                }
+            }
         }
+
+        flag = false;
+        while (!flag) {
+            System.out.println("Please enter a row: 1-15");
+            row = input.nextLine();
+            if (Integer.parseInt(row)<=15 && Integer.parseInt(row)>=1)
+                flag = true;
+            else {
+                System.out.println("Error! Try again");
+                row = null;
+            }
+        }
+
+        flag = false;
+        while (!flag) {
+            System.out.println("Please enter a col: 1-15");
+            col = input.nextLine();
+            if (Integer.parseInt(col)<=15 && Integer.parseInt(col)>=1)
+                flag = true;
+            else {
+                System.out.println("Error! Try again");
+                col = null;
+            }
+        }
+
+        flag = false;
+        while (!flag) {
+            System.out.println("Please enter v for vertical or h for horizontal");
+            vertical = input.nextLine();
+            if (vertical.equals("V") || vertical.equals("v") || vertical.equals("H") || vertical.equals("h"))
+                flag = true;
+            else {
+                System.out.println("Error! try again");
+                vertical = null;
+            }
+        }
+        return player_request;
+    }
+
 }
 
 
