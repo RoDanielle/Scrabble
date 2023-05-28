@@ -7,7 +7,7 @@ public class Tile {
 
 	public final char letter;
 	public final int score;
-	
+
 	private Tile(char letter, int score) {
 		super();
 		this.letter = letter;
@@ -30,15 +30,15 @@ public class Tile {
 		Tile other = (Tile) obj;
 		return letter == other.letter && score == other.score;
 	}
-	
+
 	public static class Bag {
-		
-		private static Bag _instance = null; 
+
+		private static Bag _instance = null;
 		int lettercount[];
 		int copycount[];
-		Tile tilearr[]; 
+		Tile tilearr[];
 		public int sum = 98;
-		
+
 		private Bag() {
 			lettercount  = new int[] {9,2,2,4,12,2,3,2,9,1,1,4,2,6,8,2,1,6,4,6,4,2,2,1,2,1};
 			copycount = new int[26];
@@ -69,9 +69,9 @@ public class Tile {
 			tilearr[22] = new Tile('W', 4);
 			tilearr[23] = new Tile('X', 8);
 			tilearr[24] = new Tile('Y', 4);
-			tilearr[25] = new Tile('Z', 10);	
+			tilearr[25] = new Tile('Z', 10);
 		}
-		
+
 		public static Bag getBag( ) {
 			if(_instance == null)
 			{
@@ -79,7 +79,7 @@ public class Tile {
 			}
 			return _instance;
 		}
-		
+
 		public Tile getRand()
 		{
 			if(sum == 0)
@@ -94,11 +94,11 @@ public class Tile {
 				return tilearr[rand];
 			}
 		}
-		
+
 		public Tile getTile(char cha){
 			if(Character.isUpperCase(cha)) {
 				if(lettercount[cha - 'A'] == 0)
-					return null; 
+					return null;
 				else {
 					lettercount[cha - 'A'] = lettercount[cha - 'A'] - 1;
 					sum--;
@@ -108,7 +108,7 @@ public class Tile {
 			else
 				return null;
 		}
-		
+
 		public void put(Tile t)
 		{
 			if(lettercount[t.letter- 'A'] < copycount[t.letter- 'A'])
@@ -117,12 +117,12 @@ public class Tile {
 				sum++;
 			}
 		}
-		
+
 		public int size()
 		{
 			return sum;
 		}
-		
+
 		public int[] getQuantities()
 		{
 			int Quantities[];
@@ -130,5 +130,5 @@ public class Tile {
 			System.arraycopy(lettercount, 0, Quantities,0,26);
 			return Quantities;
 		}
- 	}	
+	}
 }

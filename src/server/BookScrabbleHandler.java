@@ -20,6 +20,7 @@ public class BookScrabbleHandler implements ClientHandler{
         System.arraycopy(str, 1, args, 0, str.length - 1);
 
         if(str[0].equalsIgnoreCase("Q")){ // query
+            System.out.println("checking query request");
             DictionaryManager dm = new DictionaryManager();
             if(dm.query(args))
                 out.println("true");
@@ -28,6 +29,7 @@ public class BookScrabbleHandler implements ClientHandler{
         }
         else // challenge
         {
+            System.out.println("checking challenge request");
             DictionaryManager dm = new DictionaryManager();
             if(dm.challenge(args))
                 out.println("true");

@@ -25,7 +25,7 @@ public class Word{
 	public int getCol() {
 		return col;
 	}
-	
+
 	public boolean isvertical() {
 		return vertical;
 	}
@@ -42,5 +42,5 @@ public class Word{
 		return col == other.col && row == other.row && Arrays.equals(tiles, other.tiles)
 				&& vertical == other.vertical;
 	}
-	
+
 }
