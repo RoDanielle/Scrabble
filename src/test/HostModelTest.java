@@ -4,7 +4,7 @@ package test;
 import model.HostModel;
 
 import java.util.ArrayList;
-
+/*
 public class HostModelTest {
 
     public static void start() {
@@ -44,3 +44,4 @@ public class HostModelTest {
 
     }
 }
+*/

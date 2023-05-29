@@ -77,6 +77,9 @@ public class GuestModel implements GameModel{
         letterToScore.put("X","8");
         letterToScore.put("Y","4");
         letterToScore.put("Z","10");
+        new Thread(()-> {
+            this.connectToServer();
+        }).start();
     }
 
     @Override
@@ -393,19 +396,10 @@ public class GuestModel implements GameModel{
         String request_to_server = null;
         nameRequest();
         System.out.println("please wait for Host to start the game");
-        boolean trun = true;
 
         while (gameRunning){
             // reading from server
             System.out.println("entered client loop");
-            if(!trun)
-            {
-                try {
-                    Thread.sleep(4000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
             String readfromHost = this.read_from_server(this.getMySocket());
             System.out.println(readfromHost);
             String[] fromHost = readfromHost.split("[|]");

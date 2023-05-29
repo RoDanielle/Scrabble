@@ -17,7 +17,7 @@ public class MainTrain {
         else {
             System.out.println("you are now in Guest mode");
             GuestModel guestPlayer = new GuestModel();
-            guestPlayer.connectToServer();
+            //guestPlayer.connectToServer();
         }
     }
 

@@ -169,7 +169,7 @@ public class GuestHandler implements Runnable {
             }
 
             // Start the game loop
-            while (gameRunning) {
+            //while (gameRunning) {
                 // Check if it's the client's turn
                 if (isClientTurn()) {
                     System.out.println("guest turn");
@@ -259,16 +259,16 @@ public class GuestHandler implements Runnable {
                                 }
                             }
                         }
-                        // Set the flag to indicate the server's turn is over
-                        isClientTurn = false;
-                        System.out.println("isClientTurn: " + isClientTurn);
                     }
+                    // Set the flag to indicate the server's turn is over
+                    isClientTurn = false;
+                    System.out.println("isClientTurn: " + isClientTurn);
                 }
-            }
+
         } catch(IOException e){
             e.printStackTrace();
         }
-        DisconnectFromGameServer();
+        //DisconnectFromGameServer();
     }
 
 }
