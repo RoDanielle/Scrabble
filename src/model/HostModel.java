@@ -63,6 +63,9 @@ public class HostModel implements GameModel {
         this.numbOfPlayers = 0;
         this.gameServerSocket = null;
         this.myPort = 8081;
+        new Thread(()-> {
+            this.GameManagement();
+        }).start();
     }
 
     @Override
@@ -465,9 +468,3 @@ public class HostModel implements GameModel {
         }
     }
 }
-
-
-
-
-
-

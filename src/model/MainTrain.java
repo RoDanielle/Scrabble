@@ -12,12 +12,10 @@ public class MainTrain {
         if (playerType.equals("1")){
             System.out.println("you are now in Host mode");
             HostModel hostPlayer = new HostModel();
-            hostPlayer.GameManagement();
         }
         else {
             System.out.println("you are now in Guest mode");
             GuestModel guestPlayer = new GuestModel();
-            //guestPlayer.connectToServer();
         }
     }
 
@@ -26,5 +24,3 @@ public class MainTrain {
         System.out.println("done");
     }
 }
-
-
