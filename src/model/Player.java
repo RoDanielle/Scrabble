@@ -9,6 +9,8 @@ public class Player {
     public Socket socket;
     List<Tile> tiles;
 
+    List<String> strTiles;
+
     int score;
 
     public Player() {
@@ -16,6 +18,7 @@ public class Player {
         this.socket = null;
         this.tiles = new ArrayList<>();
         this.score = 0;
+        this.strTiles = new ArrayList<>();
     }
 
     public void setName(String name) {
@@ -69,4 +72,23 @@ public class Player {
         Word word = new Word(wordarr, row, col, vertical);
         return word;
     }
+
+    public void removeStrTiles(String word)
+    {
+        for(int i = 0; i < word.length(); i++)
+        {
+            if(word.charAt(i) != '_')
+            {
+                for(int j = 0; j < this.strTiles.size(); j++)
+                {
+                    if(word.charAt(i) == this.strTiles.get(j).charAt(0))
+                    {
+                        this.strTiles.remove(j);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
+

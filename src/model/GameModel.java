@@ -1,14 +1,14 @@
 package model;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.List;
+import java.util.Observer;
 
 public interface GameModel {
 
     public String getName();
     public int getScore();
-    public void addScore(int score);
-    public void decreaseScore(int score);
     public String[][] getBoard();
+    public List<String> getTiles();
+    public String getMessage();
 
 }

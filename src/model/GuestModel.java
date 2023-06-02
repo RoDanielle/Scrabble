@@ -1,5 +1,3 @@
-
-
 /*
 model:
 case 0: s- 0|a,5.d,8.l,1......
@@ -17,38 +15,40 @@ case 2:s - there are three options for response: a - query and try... were good:
 case 3: s - challenge request answer, again three options: a - challenge and try... were good: "3|true|score|a,1.b2....|name|word(not full)|row|col|v\h"
                                                   b - only challenge was good: "3|true|0|name"
                                                   c - challenge returned false: "3|false|name"
+case 4 : winner announcement
  */
 
 
 package model;
 
+import viewModel.ViewModel;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-import static java.lang.String.valueOf;
 
-public class GuestModel implements GameModel{
+public class GuestModel extends Observable implements GameModel{
 
-    String name;
-    int score;
-    String[][] board;
-    List<String> tiles;
+    private Player guest_player;
+    private String[][] board;
+    //private List<String> tiles;
+    private Map<String,String> letterToScore;
+    private String request_to_server;
+    private String message;
+
     boolean gameRunning;
 
-    Map<String,String> letterToScore;
+    private ViewModel myObserver;
 
-    Socket mySocket; // TODO - close the socket when game is over
-
-    String request_to_server;
-
-    public GuestModel(){
-        this.name = null;
-        this.score = 0;
+    public GuestModel(String name, String ip, int port, ViewModel vmObserver){
+        this.myObserver = vmObserver;
+        this.guest_player = new Player();
+        this.setName(name);
         this.board = new String[15][15];
-        this.tiles = new ArrayList<>();
+        //this.tiles = new ArrayList<>();
+        this.message = null;
         this.gameRunning = true;
-        this.mySocket = null;
         this.request_to_server = null;
         this.letterToScore = new HashMap<>();
         letterToScore.put("A","1");
@@ -78,67 +78,87 @@ public class GuestModel implements GameModel{
         letterToScore.put("Y","4");
         letterToScore.put("Z","10");
         new Thread(()-> {
-            this.connectToServer();
+            this.connectToServer(ip,port);
         }).start();
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return this.guest_player.name;
     }
 
     @Override
     public int getScore() {
-        return this.score;
+        return this.guest_player.getScore();
     }
 
     @Override
-    public void addScore(int score) { // adding scoring
-        this.score += score;
+    public List<String> getTiles() {
+        return this.guest_player.strTiles;
     }
 
     @Override
-    public void decreaseScore(int score) { this.score -= score; }
+    public String getMessage() {
+        return this.message;
+    }
+    @Override
+    public String[][] getBoard() {
+        return this.board;
+    }
+
+    public void setMessage(String msg)
+    {
+        this.message = msg;
+        this.notifyObserver("message");
+    }
+
+    public void setName(String name)
+    {
+        this.guest_player.setName(name);
+        this.notifyObserver("name");
+    }
 
     public Socket getMySocket() {
-        return this.mySocket;
+
+        return this.guest_player.socket;
     }
 
     public void setMySocket(Socket socket) {
-        this.mySocket = socket;
+
+        this.guest_player.socket = socket;
     }
 
-    public void removeTiles(String word)
+    public void decreaseScore(int num)
     {
-        for(int i = 0; i < word.length(); i++) // remove the tiles used in the word that was put into the board
-        {
-            if(word.charAt(i) != '_')
-            {
-                for(int j = 0; j < this.tiles.size(); j ++)
-                {
-                    if(this.tiles.get(j).charAt(0) == word.charAt(i))
-                    {
-                        this.tiles.remove(j);
-                        break;
-                    }
-                }
-            }
-        }
+        this.guest_player.decreaseScore(num);
+        this.notifyObserver("score");
     }
 
-    public void addTiles(String addedTiles)
+    public void addScore(int num)
     {
+        this.guest_player.addScore(num);
+        this.notifyObserver("score");
+    }
+
+    public void notifyObserver(String change) {
+        setChanged();
+        this.myObserver.update(this, change);
+    }
+
+    public void addTiles(String addedTiles) // received all 7 tiles
+    {
+        this.guest_player.strTiles.clear();
         String[] moreTiles = addedTiles.split("[.]");
         for(String s : moreTiles)
         {
             if(!s.equals("."))
-                this.tiles.add(s);
+                this.guest_player.strTiles.add(s);
         }
+        this.notifyObserver("tiles");
     }
 
     public void updateMatrixBoard(String word, String row, String col, String vertical) {
         String tmpTileString = null;
-        System.out.println("putting " + word + " into board");
         if(vertical.equals("v") || vertical.equals("V"))
         {
             for(int i = 0; i < word.length(); i++)
@@ -161,14 +181,9 @@ public class GuestModel implements GameModel{
                 }
             }
         }
-        printboard();
+        this.notifyObserver("board");
     }
 
-    @Override
-    // Getter method to access the matrix
-    public String[][] getBoard() {
-        return this.board;
-    }
 
     public void write_to_server(String str, Socket server_socket){
         try {
@@ -179,7 +194,6 @@ public class GuestModel implements GameModel{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
     public String read_from_server(Socket server_socket) {
         try {
@@ -192,96 +206,73 @@ public class GuestModel implements GameModel{
         }
     }
 
-    public void connectToServer(){
-        String ip;
-        int port;
-
-        System.out.println("please enter server ip");
-        Scanner input = new Scanner(System.in);
-        String in = input.nextLine();
-        ip = in;
-        System.out.println("please enter server port");
-        in = input.nextLine();
-        port = Integer.parseInt(in);
-
+    public void connectToServer(String ip, int port){
         try {
             Socket hostServer =new Socket(ip,port);
-            System.out.println("Connection established successfully!");
+            this.setMessage("Connection established successfully!");
             this.setMySocket(hostServer);
             this.startGuestGame();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-
-    public void nameRequest()
-    {
-        Scanner input = new Scanner(System.in);
-        System.out.println("please enter your name");
-        input = new Scanner(System.in);
-        String in = input.nextLine();
-        this.name = in;
-    }
-
     public void case0(String fromHost) // got 7 tiles
     {
-        System.out.println("entered case 0");
-        String[] tilesArray = fromHost.split("[.]");
-        System.out.println("game started, you got seven tiles: "); // will be deleted when we create view
-        for(int i = 0; i < 7; i++) {
-            this.tiles.add(tilesArray[i]);
-            System.out.println(tilesArray[i]);
-        }
-        System.out.println("wait for your turn");
+        this.setMessage("game started, you got seven tiles, wait for your turn");
+        addTiles(fromHost);
     }
 
-    public String case1()
-    {   Scanner input = new Scanner(System.in);
-        System.out.println("entered case 1");
-        System.out.println("please enter Word, if you don't have any word enter xxx");
-        String in = input.nextLine();
-        this.request_to_server = "1";
-        request_to_server = request_to_server + "|" + in;
-        if(!in.equals("xxx") && !in.equals("XXX"))
-        {
-            System.out.println("Please enter row");
-            in = input.nextLine();
-            request_to_server = request_to_server + "|" + in;
-            System.out.println("Please enter col");
-            in = input.nextLine();
-            request_to_server = request_to_server + "|" + in;
-            System.out.println("Please enter v for vertical or h for horizontal");
-            in = input.nextLine();
-            request_to_server = request_to_server + "|" + in;
+    public String[] askWord()
+    { // might ask in view for all the detail and have viewmodel pass the in a String[]
+        Scanner input = new Scanner(System.in); // TODO delete and replace with input from view
+        String[] wordDetails = new String[4];
+        this.setMessage("please enter Word, if you don't have a word enter xxx");
+        wordDetails[0] = input.nextLine();
+        if(! wordDetails[0].equals("xxx") && ! wordDetails[0].equals("XXX")) {
+            this.setMessage("Please enter row");
+            wordDetails[1] = input.nextLine();
+            this.setMessage("Please enter col");
+            wordDetails[2] = input.nextLine();
+            this.setMessage("Please enter v for vertical or h for horizontal");
+            wordDetails[3] = input.nextLine();
         }
+        else {
+            wordDetails[1] = "null";
+            wordDetails[2] = "null";
+            wordDetails[3] = "null";
+        }
+        return wordDetails;
+    }
 
-        request_to_server = request_to_server + "|" + this.getName();
+
+    public String wordInput()
+    {
+        String[] wordDetails = askWord();
+        request_to_server = "1|" + wordDetails[0] + "|" + wordDetails[1] + "|" + wordDetails[2] + "|" + wordDetails[3] + this.getName();
         return request_to_server;
     }
 
-    public void case2(String[] fromHost)
+    public void serverWordResponse(String[] fromHost)
     {
-        System.out.println("entered case 2");
-        if(fromHost[1].equals("true") && !fromHost[4].equals(this.name)) // other users word was placed on board
+        if(fromHost[1].equals("true") && !fromHost[4].equals(this.guest_player.name)) // other users word was placed on board
         {
             wordEnteredByOtherUser(fromHost);
+            this.setMessage(fromHost[4] + "put a new word in the board");
         }
 
-        else if(fromHost[1].equals("true") && fromHost[4].equals(this.name)) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+        else if(fromHost[1].equals("true") && fromHost[4].equals(this.guest_player.name)) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
         {
             wordEnteredByMe(fromHost);
-            System.out.println("turn over");
+            this.setMessage("turn over");
         }
         else // my query request returned false received:"2|false|name"
         {
-            write_to_server(queryFalse(),this.getMySocket());
+            write_to_server(queryFalse(),this.getMySocket()); // request challenge or not
         }
     }
 
-    public void case3(String[] fromHost)
+    public void challengeResponse(String[] fromHost)
     {
-        System.out.println("entered case 3");
         if(fromHost[1].equals("true"))
         {
             challengeTrue(fromHost);
@@ -290,17 +281,16 @@ public class GuestModel implements GameModel{
         {
             System.out.println("challenge returned false, you lose 10 points");
             this.decreaseScore(10);
-            System.out.println("turn over");
         }
+        this.setMessage("turn over");
     }
 
-    public void case4(String fromHost)
+    public void gameOver(String fromHost)
     {
-        System.out.println("entered case 4");
-        System.out.println(fromHost);
-        System.out.println("Game Over");
+        this.setMessage(fromHost); // winner message
+        this.setMessage("Game Over");
         try{
-            this.mySocket.close();
+            this.guest_player.socket.close();
         }catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -309,37 +299,35 @@ public class GuestModel implements GameModel{
     public void wordEnteredByOtherUser(String[] fromHost)
     {
         updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
-        System.out.println(fromHost[4] + "placed a new word on the board");
     }
 
     public void wordEnteredByMe(String[] fromHost)
     {
         if(!fromHost[2].equals("0")) // my word was put into board
         {
-            System.out.println( "your word was placed on the board, you get " + fromHost[2] + " points");
+            this.setMessage( "your word was placed on the board, you get " + fromHost[2] + " points");
             updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
             this.addScore(Integer.parseInt(fromHost[2]));
 
-            this.removeTiles(fromHost[5]); // remove the tiles used in the word that was put into the board
-            this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board
-            System.out.println("your tiles are: "); // will be changed when view is added
-            for(String s : this.tiles)
-            {
-                System.out.println(s);
-            }
+            //this.guest_player.removeStrTiles(fromHost[5]); // remove the tiles used in the word that was put into the board -- guesthandler handels this part
+            this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board (recieved all of my tiles)
         }
         else //"2|true|0|name"
-            System.out.println("your word wouldn't be fit into the board");
+            this.setMessage("your word couldn't be fit into the board");
     }
 
     public String queryFalse()
     {
         Scanner input = new Scanner(System.in);
-        System.out.println("couldn't find your word in dictionary");
-        System.out.println("for challenge enter c for passing your turn enter xxx");
+        this.setMessage("couldn't find your word in dictionary");
+        this.setMessage("for challenge enter c for passing your turn enter xxx");
         String in = input.nextLine();
         String[] temp_request = this.request_to_server.split("[|]");
         this.request_to_server = "3" + "|" + in + "|" + temp_request[1] + temp_request[2] + temp_request[3] + temp_request[4] +temp_request[5];
+        if(in.equals("XXX") || in.equals("xxx"))
+        {
+            this.setMessage("turn over");
+        }
         return request_to_server;
     }
     public void challengeTrue(String[] fromHost)
@@ -347,18 +335,15 @@ public class GuestModel implements GameModel{
         if(!fromHost[2].equals("0")) // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
         {
             int tmp_score = Integer.parseInt(fromHost[2]) + 10;
-            System.out.println( "your word was placed on the board, you get " + tmp_score + " points");
+            this.setMessage( "your word was placed on the board, you get " + tmp_score + " points");
             updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
             this.addScore(tmp_score);
-
-            this.removeTiles(fromHost[5]);
+            //this.guest_player.removeStrTiles(fromHost[5]);
             this.addTiles(fromHost[3]);
-            System.out.println("your tiles are: " + this.tiles); // will be changed when view is added
         }
         else // only challenge correct received: "3|true|0|name"
         {
-            System.out.println("challenge returned true but word couldn't be put into board");
-            System.out.println("turn over");
+            this.setMessage("challenge returned true but word couldn't be put into board. turn over");
         }
     }
 
@@ -394,12 +379,10 @@ public class GuestModel implements GameModel{
     public void startGuestGame(){
         Scanner input = new Scanner(System.in);
         String request_to_server = null;
-        nameRequest();
-        System.out.println("please wait for Host to start the game");
+        this.setMessage("please wait for Host to start the game");
 
         while (gameRunning){
             // reading from server
-            System.out.println("entered client loop");
             String readfromHost = this.read_from_server(this.getMySocket());
             System.out.println(readfromHost);
             String[] fromHost = readfromHost.split("[|]");
@@ -409,20 +392,20 @@ public class GuestModel implements GameModel{
                     break;
                 case "1": // my turn
                     printboard();
-                    this.request_to_server = case1();
+                    this.request_to_server = wordInput();
                     write_to_server(this.request_to_server,this.getMySocket());
                     break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
                 case "2": // host + server response to query request ++ updated board for any entered word
-                    case2(fromHost);
+                    serverWordResponse(fromHost);
                     break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
 
                 case "3": // host + server response to challenge request
-                    case3(fromHost);
+                    challengeResponse(fromHost);
                     break;
 
                 case "4": // game over
-                    case4(fromHost[1]);
+                    gameOver(fromHost[1]);
                     break;
             }
         }

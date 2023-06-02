@@ -3,7 +3,7 @@ package model;
 import java.util.Scanner;
 
 public class MainTrain {
-
+/*
     public static void start(){
         Scanner input = new Scanner(System.in);
         System.out.println("What type of player are you? Enter 1 for Host, Enter 2 for Guest");
@@ -23,4 +23,6 @@ public class MainTrain {
         start();
         System.out.println("done");
     }
+
+    */
 }
