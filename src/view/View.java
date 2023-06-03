@@ -7,9 +7,7 @@ import java.util.Scanner;
 public class View {
     String name;
     int score;
-
     String[][] board;
-
     ViewModel vm;
 
 
