@@ -30,6 +30,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GuestHandler implements Runnable {
 
@@ -120,8 +121,7 @@ public class GuestHandler implements Runnable {
         this.myHost.write_to_socket(toGuest,this.clientSocket);
 
         List<Tile> tmplst = new ArrayList<>();
-        tmplst = Arrays.asList(w.tiles);
-        //tmplst = Arrays.stream(w.tiles).toList();
+        tmplst = Arrays.stream(w.tiles).collect(Collectors.toList());
         while (tmplst.size() > 0) {
             Tile t = tmplst.remove(0);
             if (t != null)
