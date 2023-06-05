@@ -25,7 +25,6 @@ public class MainViewController {
         boardLabel.textProperty().bindBidirectional(viewModel.boardProperty(), new BoardStringConverter());
     }
 
-
     private static class BoardStringConverter extends StringConverter<String[][]> {
         @Override
         public String toString(String[][] board) {
@@ -48,5 +47,4 @@ public class MainViewController {
             return null;
         }
     }
-
 }

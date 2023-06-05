@@ -121,7 +121,6 @@ public class GuestHandler implements Runnable {
 
         List<Tile> tmplst = new ArrayList<>();
         tmplst = Arrays.asList(w.tiles);
-        //tmplst = Arrays.stream(w.tiles).toList();
         while (tmplst.size() > 0) {
             Tile t = tmplst.remove(0);
             if (t != null)
