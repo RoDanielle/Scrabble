@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+/*
 public class ViewModel implements Observer {
 
     String message;
@@ -62,3 +63,5 @@ public class ViewModel implements Observer {
         }
     }
 }
+
+ */

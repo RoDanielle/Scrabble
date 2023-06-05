@@ -1,18 +1,68 @@
 package viewModel;
 
 import javafx.beans.property.*;
+import model.GameModel;
+import model.GuestModel;
+import model.HostModel;
 
-public class MainViewModel {
+import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
+public class MainViewModel implements Observer {
+
+     String message;
+    private final ObjectProperty<List> tiles;
+
+    //private final ListProperty<String> tiles;
     private final StringProperty nameProperty;
     private final IntegerProperty scoreProperty;
-    private final ObjectProperty<String[][]> boardProperty;
+    //private final StringProperty[][] boardProperty;
 
-    public MainViewModel() {
+    private final ObjectProperty<String[][]> boardProperty;
+    private final GameModel gameModel;
+
+    public MainViewModel(String name, String ip, String port, boolean isHost, boolean isLocal, int numOfPlayers) {
+        tiles = new SimpleObjectProperty<List>();
         nameProperty = new SimpleStringProperty();
         scoreProperty = new SimpleIntegerProperty();
-        boardProperty = new SimpleObjectProperty<>();
+        boardProperty = new SimpleObjectProperty<String[][]>();
+        if(isHost)
+            gameModel = new HostModel(name, isLocal, numOfPlayers,this);
+        else
+            gameModel = new GuestModel(name,ip,Integer.parseInt(port),this);
     }
+
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof GameModel)
+        {
+            if(arg.equals("score"))
+            {
+                scoreProperty.set(gameModel.getScore());
+            }
+            else if(arg.equals("name"))
+            {
+                nameProperty.set(gameModel.getName());
+            }
+            else if(arg.equals("board"))
+            {
+                boardProperty.set(gameModel.getBoard());
+            }
+            else if(arg.equals("tiles"))
+            {
+                ////tiles.set(GameModel);
+            }
+            else // message
+            {
+                message = gameModel.getMessage();
+
+                // here if there are requests for an input we will ask the view
+            }
+        }
+    }
+
 
     // Getter for the name property
     public StringProperty nameProperty() {

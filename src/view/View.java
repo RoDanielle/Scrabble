@@ -1,6 +1,6 @@
 package view;
 
-import viewModel.ViewModel;
+import viewModel.MainViewModel;
 
 import java.util.Scanner;
 
@@ -8,7 +8,7 @@ public class View {
     String name;
     int score;
     String[][] board;
-    ViewModel vm;
+    MainViewModel vm;
 
 
     public void start(){
@@ -55,7 +55,7 @@ public class View {
 
         }
         // TODO - create the viewmodel object after a startgame button was pressed
-        vm = new ViewModel(name, ip, port, ishost, islocal, Integer.parseInt(num));
+        vm = new MainViewModel(name, ip, port, ishost, islocal, Integer.parseInt(num));
     }
 
 }

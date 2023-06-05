@@ -2,7 +2,7 @@ package model;
 
 import server.BookScrabbleHandler;
 import server.MyServer;
-import viewModel.ViewModel;
+import viewModel.MainViewModel;
 
 import java.io.*;
 import java.net.Socket;
@@ -14,7 +14,7 @@ import static java.lang.String.valueOf;
 public class HostModel extends Observable implements GameModel {
 
     // data for host player
-    private ViewModel myObserver;
+    private MainViewModel myObserver;
     public Player hostPlayer;
     private String[][] board;
     //private List<String> tiles;
@@ -41,7 +41,7 @@ public class HostModel extends Observable implements GameModel {
     // with this data member we will get the necessary information to show in view each turn
 
 
-    public HostModel(String name, Boolean isLocal, int numPlayers,ViewModel vmObserver) {
+    public HostModel(String name, Boolean isLocal, int numPlayers, MainViewModel vmObserver) {
         this.isLocal = isLocal;
         this.hostPlayer = new Player();
         this.hostPlayer.setName(name);

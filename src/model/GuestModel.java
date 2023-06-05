@@ -21,7 +21,7 @@ case 4 : winner announcement
 
 package model;
 
-import viewModel.ViewModel;
+import viewModel.MainViewModel;
 
 import java.io.*;
 import java.net.Socket;
@@ -39,9 +39,9 @@ public class GuestModel extends Observable implements GameModel{
 
     boolean gameRunning;
 
-    private ViewModel myObserver;
+    private MainViewModel myObserver;
 
-    public GuestModel(String name, String ip, int port, ViewModel vmObserver){
+    public GuestModel(String name, String ip, int port, MainViewModel vmObserver){
         this.myObserver = vmObserver;
         this.guest_player = new Player();
         this.setName(name);
