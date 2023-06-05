@@ -2,8 +2,8 @@ package viewModel;
 
 import javafx.beans.property.*;
 
-
 public class MainViewModel {
+
     private final StringProperty nameProperty;
     private final IntegerProperty scoreProperty;
     private final ObjectProperty<String[][]> boardProperty;
