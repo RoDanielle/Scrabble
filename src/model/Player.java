@@ -13,12 +13,15 @@ public class Player {
 
     int score;
 
+    String[] wordDetails;
+
     public Player() {
         this.name = null;
         this.socket = null;
         this.tiles = new ArrayList<>();
         this.score = 0;
         this.strTiles = new ArrayList<>();
+        this.wordDetails = new String[4];
     }
 
     public void setName(String name) {

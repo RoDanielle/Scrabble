@@ -11,4 +11,10 @@ public interface GameModel {
     public List<String> getTiles();
     public String getMessage();
 
+    public void addObserver(Observer obz);
+    public void setUserQueryInput(String word, String row, String col, String vertical);
+
+    public void setUserChallengeInput(String request);
+
+
 }

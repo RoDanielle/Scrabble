@@ -1,7 +1,7 @@
 package model;
 
 import java.util.Scanner;
-
+ /*
 public class MainTrain {
 /*
     public static void start(){
@@ -24,5 +24,8 @@ public class MainTrain {
         System.out.println("done");
     }
 
-    */
+
 }
+
+ *
+ */

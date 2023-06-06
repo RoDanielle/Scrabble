@@ -39,10 +39,10 @@ public class GuestModel extends Observable implements GameModel{
 
     boolean gameRunning;
 
-    private MainViewModel myObserver;
+    private List<Observer> myObservers;
 
-    public GuestModel(String name, String ip, int port, MainViewModel vmObserver){
-        this.myObserver = vmObserver;
+    public GuestModel(String name, String ip, int port){
+        this.myObservers = new ArrayList<>();
         this.guest_player = new Player();
         this.setName(name);
         this.board = new String[15][15];
@@ -101,6 +101,38 @@ public class GuestModel extends Observable implements GameModel{
     public String getMessage() {
         return this.message;
     }
+
+    @Override
+    public void setUserQueryInput(String word, String row, String col, String vertical) {
+        this.guest_player.wordDetails[0] = word;
+        if(word.equals("xxx") && ! word.equals("XXX")) {
+            this.guest_player.wordDetails[1] = row;
+            this.guest_player.wordDetails[2] = col;
+            this.guest_player.wordDetails[3] = vertical;
+        }
+        else {
+            this.guest_player.wordDetails[1] = "null";
+            this.guest_player.wordDetails[2] = "null";
+            this.guest_player.wordDetails[3] = "null";
+        }
+
+        request_to_server = "1|" + this.guest_player.wordDetails[0] + "|" +  this.guest_player.wordDetails[1] + "|" + this.guest_player.wordDetails[2] + "|" + this.guest_player.wordDetails[3] + this.getName();
+        write_to_server(this.request_to_server,this.getMySocket());
+    }
+
+    @Override
+    public void setUserChallengeInput(String request) {
+        if(request.equals("c") || request.equals("C"))
+        {
+            this.request_to_server = "3" + "|" + "C" + "|" + this.guest_player.wordDetails[0] + this.guest_player.wordDetails[1] + "|" + this.guest_player.wordDetails[2] + "|" + this.guest_player.wordDetails[3] + this.getName();
+            write_to_server(request_to_server,this.getMySocket()); // request challenge or not
+        }
+        else
+        {
+            this.setMessage("turn over");
+        }
+    }
+
     @Override
     public String[][] getBoard() {
         return this.board;
@@ -140,9 +172,17 @@ public class GuestModel extends Observable implements GameModel{
         this.notifyObserver("score");
     }
 
-    public void notifyObserver(String change) {
+    private void notifyObserver(String change) {
         setChanged();
-        this.myObserver.update(this, change);
+        for(Observer obz: myObservers)
+        {
+            obz.update(this, change);
+        }
+    }
+    @Override
+    public void addObserver(Observer obz)
+    {
+        this.myObservers.add(obz);
     }
 
     public void addTiles(String addedTiles) // received all 7 tiles
@@ -213,6 +253,7 @@ public class GuestModel extends Observable implements GameModel{
             this.setMySocket(hostServer);
             this.startGuestGame();
         } catch (IOException e) {
+            this.setMessage("connection to remote game failed");
             throw new RuntimeException(e);
         }
     }
@@ -220,36 +261,6 @@ public class GuestModel extends Observable implements GameModel{
     {
         this.setMessage("game started, you got seven tiles, wait for your turn");
         addTiles(fromHost);
-    }
-
-    public String[] askWord()
-    { // might ask in view for all the detail and have viewmodel pass the in a String[]
-        Scanner input = new Scanner(System.in); // TODO delete and replace with input from view
-        String[] wordDetails = new String[4];
-        this.setMessage("please enter Word, if you don't have a word enter xxx");
-        wordDetails[0] = input.nextLine();
-        if(! wordDetails[0].equals("xxx") && ! wordDetails[0].equals("XXX")) {
-            this.setMessage("Please enter row");
-            wordDetails[1] = input.nextLine();
-            this.setMessage("Please enter col");
-            wordDetails[2] = input.nextLine();
-            this.setMessage("Please enter v for vertical or h for horizontal");
-            wordDetails[3] = input.nextLine();
-        }
-        else {
-            wordDetails[1] = "null";
-            wordDetails[2] = "null";
-            wordDetails[3] = "null";
-        }
-        return wordDetails;
-    }
-
-
-    public String wordInput()
-    {
-        String[] wordDetails = askWord();
-        request_to_server = "1|" + wordDetails[0] + "|" + wordDetails[1] + "|" + wordDetails[2] + "|" + wordDetails[3] + this.getName();
-        return request_to_server;
     }
 
     public void serverWordResponse(String[] fromHost)
@@ -267,7 +278,7 @@ public class GuestModel extends Observable implements GameModel{
         }
         else // my query request returned false received:"2|false|name"
         {
-            write_to_server(queryFalse(),this.getMySocket()); // request challenge or not
+           this.setMessage("challenge");
         }
     }
 
@@ -279,7 +290,7 @@ public class GuestModel extends Observable implements GameModel{
         }
         else // challenge wasn't correct - deduce points received: "3|false|name"
         {
-            System.out.println("challenge returned false, you lose 10 points");
+            this.setMessage("challenge returned false, you lose 10 points");
             this.decreaseScore(10);
         }
         this.setMessage("turn over");
@@ -316,20 +327,6 @@ public class GuestModel extends Observable implements GameModel{
             this.setMessage("your word couldn't be fit into the board");
     }
 
-    public String queryFalse()
-    {
-        Scanner input = new Scanner(System.in);
-        this.setMessage("couldn't find your word in dictionary");
-        this.setMessage("for challenge enter c for passing your turn enter xxx");
-        String in = input.nextLine();
-        String[] temp_request = this.request_to_server.split("[|]");
-        this.request_to_server = "3" + "|" + in + "|" + temp_request[1] + temp_request[2] + temp_request[3] + temp_request[4] +temp_request[5];
-        if(in.equals("XXX") || in.equals("xxx"))
-        {
-            this.setMessage("turn over");
-        }
-        return request_to_server;
-    }
     public void challengeTrue(String[] fromHost)
     {
         if(!fromHost[2].equals("0")) // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
@@ -377,10 +374,8 @@ public class GuestModel extends Observable implements GameModel{
     }
 
     public void startGuestGame(){
-        Scanner input = new Scanner(System.in);
-        String request_to_server = null;
-        this.setMessage("please wait for Host to start the game");
 
+        this.setMessage("please wait for Host to start the game");
         while (gameRunning){
             // reading from server
             String readfromHost = this.read_from_server(this.getMySocket());
@@ -392,8 +387,7 @@ public class GuestModel extends Observable implements GameModel{
                     break;
                 case "1": // my turn
                     printboard();
-                    this.request_to_server = wordInput();
-                    write_to_server(this.request_to_server,this.getMySocket());
+                    this.setMessage("your turn");
                     break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
                 case "2": // host + server response to query request ++ updated board for any entered word

@@ -1,3 +1,4 @@
+/*
 package view;
 
 import viewModel.MainViewModel;
@@ -59,3 +60,5 @@ public class View {
     }
 
 }
+*/
+
