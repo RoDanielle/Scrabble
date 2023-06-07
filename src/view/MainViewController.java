@@ -45,6 +45,9 @@ public class MainViewController {
         // Set up your JavaFX UI components
         // ...
         start123();
+
+
+
         BindAll();
 
     /*
@@ -193,8 +196,8 @@ public class MainViewController {
     }
 
     public void initializeBoard() {
-        String[][] initialBoard = new String[15][15];
-        viewModel.updateBoardFromModel(initialBoard);
+       //String[][] initialBoard = new String[15][15]; - check if needed
+        //viewModel.updateBoardFromModel(initialBoard); - check if needed
 
         // Bind the labelGrid to the boardProperty in the ViewModel
         ObjectProperty<StringProperty[][]> boardProperty = viewModel.boardProperty();

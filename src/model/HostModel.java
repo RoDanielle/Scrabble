@@ -2,7 +2,6 @@ package model;
 
 import server.BookScrabbleHandler;
 import server.MyServer;
-import viewModel.MainViewModel;
 
 import java.io.*;
 import java.net.Socket;
@@ -240,7 +239,7 @@ public class HostModel extends Observable implements GameModel {
         else { //remote
             this.hostPlayer.setName(names);
             this.current_player = hostPlayer;
-            MyServer s=new MyServer(8080, new BookScrabbleHandler());
+            MyServer s = new MyServer(8080, new BookScrabbleHandler());
             s.start();
             this.hs = new HostServer(this);
             this.hs.start();
@@ -421,12 +420,29 @@ public class HostModel extends Observable implements GameModel {
                 throw new RuntimeException(e);
             }
             playerTurn(this.gameServerSocket, this.current_player);
-
+            this.passesCount(); // count turn passes in order to know if the game needs to be stopped
             Player p = this.players.remove(0);
             this.players.add(p);
         }
         this.stopLocalGame();
     }
+
+    private void passesCount(){
+        int numOfPasses = 0;
+        for(int i = 0; i < this.numbOfPlayers; i++)
+        {
+            if(this.players.get(i).wordDetails[0].equals("xxx") || this.players.get(i).wordDetails[0].equals("xxx"))
+            {
+                numOfPasses++;
+            }
+        }
+        if(numOfPasses == this.numbOfPlayers)
+        {
+            this.stopGame();
+        }
+    }
+
+
 
     private void stopLocalGame()
     {

@@ -106,11 +106,30 @@ public class HostServer {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
+            passCount(); // count turn passes in order to know if the game needs to be stopped
         }
         this.stopRemoteGame();
     }
 
+    private void passCount(){
+        int passesCounter = 0;
+        if(this.hostModel.current_player.wordDetails[0].equals("xxx") || this.hostModel.current_player.wordDetails[0].equals("XXX"))
+        {
+            passesCounter++;
+        }
+        for(int i = 0; i < this.clientHandlers.size(); i++)
+        {
+            if((this.clientHandlers.get(i).p.wordDetails[0].equals("xxx") || this.clientHandlers.get(i).p.wordDetails[0].equals("XXX")
+            {
+                passesCounter++;
+            }
+        }
+
+        if(passesCounter == this.hostModel.numbOfPlayers)
+        {
+            this.hostModel.stopGame();
+        }
+    }
 
     public void stopRemoteGame(){
         try {

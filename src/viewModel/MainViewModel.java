@@ -48,7 +48,7 @@ public class MainViewModel implements Observer {
         // name
         this.nameProperty = new SimpleStringProperty();
         // score
-        scoreProperty = new SimpleIntegerProperty();
+        this.scoreProperty = new SimpleIntegerProperty();
         // message
         this.msgProperty = new SimpleStringProperty();
 
