@@ -119,7 +119,7 @@ public class HostServer {
         }
         for(int i = 0; i < this.clientHandlers.size(); i++)
         {
-            if((this.clientHandlers.get(i).p.wordDetails[0].equals("xxx") || this.clientHandlers.get(i).p.wordDetails[0].equals("XXX")
+            if((this.clientHandlers.get(i).p.wordDetails[0].equals("xxx") || this.clientHandlers.get(i).p.wordDetails[0].equals("XXX")))
             {
                 passesCounter++;
             }

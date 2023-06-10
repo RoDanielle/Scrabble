@@ -4,14 +4,17 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.util.converter.NumberStringConverter;
 import viewModel.MainViewModel;
 import javafx.scene.control.ListView;
 import javafx.beans.property.StringProperty;
 
 
+import java.awt.event.ActionEvent;
 import java.util.Scanner;
 
 public class MainViewController {
@@ -34,21 +37,52 @@ public class MainViewController {
     private BooleanProperty isUserTurnProperty;
 
     private BooleanProperty isUserChallengeProperty;
+    @FXML
+    private Label submit;
+    @FXML
+    protected void func(){
+        msgLabel.setText("hello");
+    }
 
+    @FXML public TextField port;
+    @FXML public TextField ip;
+    String s_port,s_ip;
+    Connect connect_controller;
 
+    @FXML
+    private Button connect;
+
+    private void connect1(ActionEvent event){
+        s_ip = ip.getText();
+        s_port = port.getText();
+        System.out.println(s_ip);
+        System.out.println(s_port);
+
+    }
+    @FXML
+    private void initialize() {
+        connect.setOnAction(e -> {
+            s_ip = ip.getText();
+            s_port = port.getText();
+
+            System.out.println(s_ip);
+            System.out.println(s_port);
+        });
+    }
 
     public MainViewController() {
-        setupUI();
+        this.ip = connect_controller.ip;
+        //setupUI();
+
     }
 
     private void setupUI() {
         // Set up your JavaFX UI components
         // ...
-        start123();
+        //start123();
 
 
-
-        BindAll();
+        //BindAll();
 
     /*
     // set buttons for viewmodel triggered actions
