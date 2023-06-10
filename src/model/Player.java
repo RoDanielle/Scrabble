@@ -22,6 +22,10 @@ public class Player {
         this.score = 0;
         this.strTiles = new ArrayList<>();
         this.wordDetails = new String[4];
+        this.wordDetails[0] = "null";
+        this.wordDetails[1] = "null";
+        this.wordDetails[2] = "null";
+        this.wordDetails[3] = "null";
     }
 
     public void setName(String name) {

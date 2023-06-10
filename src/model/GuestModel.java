@@ -21,24 +21,21 @@ case 4 : winner announcement
 
 package model;
 
-import viewModel.MainViewModel;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
-
 
 public class GuestModel extends Observable implements GameModel{
 
     private Player guest_player;
     private String[][] board;
-    //private List<String> tiles;
     private Map<String,String> letterToScore;
     private String request_to_server;
     private String message;
-
     boolean gameRunning;
-
     private List<Observer> myObservers;
 
     public GuestModel(String name, String ip, int port){
@@ -105,7 +102,7 @@ public class GuestModel extends Observable implements GameModel{
     @Override
     public void setUserQueryInput(String word, String row, String col, String vertical) {
         this.guest_player.wordDetails[0] = word;
-        if(word.equals("xxx") && ! word.equals("XXX")) {
+        if(!word.equals("xxx") && !word.equals("XXX")) {
             this.guest_player.wordDetails[1] = row;
             this.guest_player.wordDetails[2] = col;
             this.guest_player.wordDetails[3] = vertical;
@@ -116,7 +113,7 @@ public class GuestModel extends Observable implements GameModel{
             this.guest_player.wordDetails[3] = "null";
         }
 
-        request_to_server = "1|" + this.guest_player.wordDetails[0] + "|" +  this.guest_player.wordDetails[1] + "|" + this.guest_player.wordDetails[2] + "|" + this.guest_player.wordDetails[3] + this.getName();
+        request_to_server = "1|" + this.guest_player.wordDetails[0] + "|" +  this.guest_player.wordDetails[1] + "|" + this.guest_player.wordDetails[2] + "|" + this.guest_player.wordDetails[3] + "|" + this.getName();
         write_to_server(this.request_to_server,this.getMySocket());
     }
 
@@ -140,7 +137,7 @@ public class GuestModel extends Observable implements GameModel{
 
     public void setMessage(String msg)
     {
-        this.message = msg;
+        this.message = msg; // messages to the user and requests for input
         this.notifyObserver("message");
     }
 
@@ -198,15 +195,13 @@ public class GuestModel extends Observable implements GameModel{
     }
 
     public void updateMatrixBoard(String word, String row, String col, String vertical) {
-        String tmpTileString = null;
         if(vertical.equals("v") || vertical.equals("V"))
         {
             for(int i = 0; i < word.length(); i++)
             {
                 if(word.charAt(i) != '_')
                 {
-                    tmpTileString = word.charAt(i) + "," + this.letterToScore.get(String.valueOf(word.charAt(i)));
-                    this.board[Integer.parseInt(row) + i][Integer.parseInt(col)] = tmpTileString;
+                    this.board[Integer.parseInt(row) + i][Integer.parseInt(col)] = String.valueOf(word.charAt(i));
                 }
             }
         }
@@ -216,8 +211,7 @@ public class GuestModel extends Observable implements GameModel{
             {
                 if(word.charAt(i) != '_')
                 {
-                    tmpTileString = word.charAt(i) + "," + this.letterToScore.get(String.valueOf(word.charAt(i)));
-                    this.board[Integer.parseInt(row)][Integer.parseInt(col) + i] = tmpTileString;
+                    this.board[Integer.parseInt(row)][Integer.parseInt(col) + i] = String.valueOf(word.charAt(i));
                 }
             }
         }
@@ -300,6 +294,8 @@ public class GuestModel extends Observable implements GameModel{
     {
         this.setMessage(fromHost); // winner message
         this.setMessage("Game Over");
+        this.gameRunning = false;
+
         try{
             this.guest_player.socket.close();
         }catch (IOException e) {
@@ -374,33 +370,34 @@ public class GuestModel extends Observable implements GameModel{
     }
 
     public void startGuestGame(){
-
         this.setMessage("please wait for Host to start the game");
         while (gameRunning){
             // reading from server
             String readfromHost = this.read_from_server(this.getMySocket());
-            System.out.println(readfromHost);
-            String[] fromHost = readfromHost.split("[|]");
-            switch (fromHost[0]){
-                case "0": // seven tiles at the start of the game
-                    case0(fromHost[1]);
-                    break;
-                case "1": // my turn
-                    printboard();
-                    this.setMessage("your turn");
-                    break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
+            if(readfromHost != null)
+            {
+                String[] fromHost = readfromHost.split("[|]");
+                switch (fromHost[0]){
+                    case "0": // seven tiles at the start of the game
+                        case0(fromHost[1]);
+                        break;
+                    case "1": // my turn
+                        printboard();
+                        this.setMessage("your turn");
+                        break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
-                case "2": // host + server response to query request ++ updated board for any entered word
-                    serverWordResponse(fromHost);
-                    break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
+                    case "2": // host + server response to query request ++ updated board for any entered word
+                        serverWordResponse(fromHost);
+                        break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
 
-                case "3": // host + server response to challenge request
-                    challengeResponse(fromHost);
-                    break;
+                    case "3": // host + server response to challenge request
+                        challengeResponse(fromHost);
+                        break;
 
-                case "4": // game over
-                    gameOver(fromHost[1]);
-                    break;
+                    case "4": // game over
+                        gameOver(fromHost[1]);
+                        break;
+                }
             }
         }
     }

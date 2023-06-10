@@ -41,7 +41,7 @@ public class GuestHandler implements Runnable {
     private BufferedReader inFromClient;
     private PrintWriter outToClient;
 
-    public Player p;
+    public Player guestPlayer;
     private boolean gameRunning;
 
     public Word addedWord;
@@ -51,11 +51,11 @@ public class GuestHandler implements Runnable {
         this.myHost = myHost;
         this.clientSocket = clientSocket;
         this.isClientTurn = false;
-        this.p = new Player();
+        this.guestPlayer = new Player();
         this.gameRunning = true;
 
         this.addedWord = null;  ///--------
-        this.addedWordStr = null;
+        this.addedWordStr = "null";
     }
 
     // Getter for isClientTurn
@@ -82,49 +82,71 @@ public class GuestHandler implements Runnable {
 
     private String giveTiles()
     {
-        this.myHost.giveTiles(this.p);
-        String s_tiles = this.p.strTiles.get(0);
-        for(int i = 1; i < this.p.strTiles.size(); i++)
+        this.myHost.giveTiles(this.guestPlayer);
+        String s_tiles = this.guestPlayer.strTiles.get(0);
+        for(int i = 1; i < this.guestPlayer.strTiles.size(); i++)
         {
-            s_tiles = s_tiles + "." + this.p.strTiles.get(i);
+            s_tiles = s_tiles + "." + this.guestPlayer.strTiles.get(i);
         }
         return s_tiles; // return all players tiles as a String
     }
 
     private void turnNotifier()
     {
-        this.myHost.write_to_socket("1|your turn",this.clientSocket);
+        outToClient.println("1|your turn");
+        //this.myHost.write_to_socket("1|your turn",this.clientSocket);
     }
 
     public void wordOkResponse(String msgTag, String word, String row, String col,String vertical, int score, Word w){
 
-        p.removeStrTiles(word); // remove the tiles used in the word
-        p.addScore(score);
-        String toGuest = msgTag + "|" + score + this.giveTiles() +  p.name + "|" + word + "|" + row + "|" +col + "|" + vertical;
+        guestPlayer.removeStrTiles(word); // remove the tiles used in the word
+        guestPlayer.addScore(score);
+        String toGuest = msgTag + "|" + score + "|" + this.giveTiles() + "|" + guestPlayer.name + "|" + word + "|" + row + "|" +col + "|" + vertical;
+        this.outToClient.println(toGuest);
+        this.outToClient.flush();
 
-        this.myHost.write_to_socket(toGuest,this.clientSocket);
+        //this.myHost.write_to_socket(toGuest,this.clientSocket);
         this.addedWord = w;
         this.addedWordStr = toGuest;
     }
 
     public void challengeFailed()
     {
-        String toGuest = "3" + "|false|" + p.name;
-        p.decreaseScore(10);
-        this.myHost.write_to_socket(toGuest, this.clientSocket);
+        String toGuest = "3" + "|false|" + guestPlayer.name;
+        guestPlayer.decreaseScore(10);
+        outToClient.println(toGuest);
+        outToClient.flush();
+        //this.myHost.write_to_socket(toGuest, this.clientSocket);
     }
 
     public void wordPlacementFailed(String msgTag, Word w)
     {
-        String toGuest = msgTag + "|0|" + p.name; //"2|true|0|name"
-        this.myHost.write_to_socket(toGuest,this.clientSocket);
+        String toGuest = msgTag + "|0|" + guestPlayer.name; //"2|true|0|name"
+        outToClient.println(toGuest);
+        outToClient.flush();
+        //this.myHost.write_to_socket(toGuest,this.clientSocket);
 
         List<Tile> tmplst = new ArrayList<>();
         tmplst = Arrays.asList(w.tiles);
         while (tmplst.size() > 0) {
             Tile t = tmplst.remove(0);
             if (t != null)
-                p.tiles.add(t);   // give the player its tiles back
+                guestPlayer.tiles.add(t);   // give the player its tiles back
+        }
+    }
+    private void updateRequest(String[] request)
+    {
+        this.guestPlayer.wordDetails[0] = request[1];
+        if(!this.guestPlayer.wordDetails[0].equals("xxx") && !this.guestPlayer.wordDetails[0].equals("XXX"))
+        {
+            this.guestPlayer.wordDetails[1] = request[2];
+            this.guestPlayer.wordDetails[2] = request[3];
+            this.guestPlayer.wordDetails[3] = request[4];
+        }
+        else {
+            this.guestPlayer.wordDetails[1] = "null";
+            this.guestPlayer.wordDetails[2] = "null";
+            this.guestPlayer.wordDetails[3] = "null";
         }
     }
 
@@ -139,31 +161,35 @@ public class GuestHandler implements Runnable {
             String toGuest = null;
 
             // sending seven tiles
-            if(p.tiles.size() == 0)
+            if(guestPlayer.tiles.size() == 0)
             {
                 toGuest = "0|" + this.giveTiles();
                 outToClient.println(toGuest);
             }
 
             if (isClientTurn()) {  // Check if it's the client's turn
-                inFromGameS = new BufferedReader(new InputStreamReader(this.myHost.gameServerSocket.getInputStream()));
-                outToGameS = new PrintWriter(this.myHost.gameServerSocket.getOutputStream(), true);
+                // communication with game server for query and challenge
+                //inFromGameS = new BufferedReader(new InputStreamReader(this.myHost.gameServerSocket.getInputStream()));
+                //outToGameS = new PrintWriter(this.myHost.gameServerSocket.getOutputStream(), true);
 
                 // Client's turn logic
 
                 turnNotifier(); // case 1
-                guestResponse = this.myHost.read_from_socket(this.clientSocket).split("[|]"); // word from user
+                guestResponse = inFromClient.readLine().split("[|]");
+                //guestResponse = this.myHost.read_from_socket(this.clientSocket).split("[|]"); // word from user
+                updateRequest(guestResponse);
 
-                if (!guestResponse[1].equals("xxx") && !guestResponse[1].equals("XXX")) {
-                    if (p.name == null) // first round
+                if (!guestResponse[1].equals("xxx") && !guestResponse[1].equals("XXX"))
+                {
+                    if (guestPlayer.name == null) // first round
                     {
-                        p.name = guestResponse[5];
+                        guestPlayer.name = guestResponse[5];
                     }
 
                     if(this.myHost.testDictionary("Q",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) // word found in dictionary
                     {
                         toGuest = "2" + "|" + "true";
-                        Word w = p.create_word(guestResponse[1], guestResponse[2], guestResponse[3], guestResponse[4]);
+                        Word w = guestPlayer.create_word(guestResponse[1], guestResponse[2], guestResponse[3], guestResponse[4]);
                         int score = this.myHost.getBoardObject().tryPlaceWord(w);
 
                         if (score != 0) // word was put into board
@@ -176,13 +202,14 @@ public class GuestHandler implements Runnable {
                     }
                     else
                     {
-                        toGuest = "2" + "|" + "false" + p.name; //query return false "2|false|name"
-                        guestResponse = this.myHost.read_from_socket(this.clientSocket).split("[|]");
+                        toGuest = "2" + "|" + "false" + guestPlayer.name; //query return false "2|false|name"
+                        guestResponse = inFromClient.readLine().split("[|]");
+                        //guestResponse = this.myHost.read_from_socket(this.clientSocket).split("[|]");
                         if (guestResponse[1].equals("c") || guestResponse[1].equals("C")) {
                             if (this.myHost.testDictionary("C",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) //challenge return true
                             {
                                 toGuest = "3" + "|true";
-                                Word w = p.create_word(guestResponse[2], guestResponse[3], guestResponse[4], guestResponse[5]);
+                                Word w = guestPlayer.create_word(guestResponse[2], guestResponse[3], guestResponse[4], guestResponse[5]);
                                 int score = this.myHost.getBoardObject().tryPlaceWord(w);
                                 if (score != 0) // word was put into board
                                 {

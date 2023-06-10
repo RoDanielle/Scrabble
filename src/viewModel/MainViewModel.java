@@ -80,16 +80,16 @@ public class MainViewModel implements Observer {
             else // message
             {
                 message = gameModel.getMessage();
-                if(message.contains("turn"))
+                if(message.contains("turn") && !message.contains("over") && !message.contains("wait"))
                 {
                     startUserQueryTurn();
                 }
-                else if(message.contains("challenge"))
+                else if(message.contains("challenge") && !message.contains("failed"))
                 {
                     startUserChallengeTurn();
                 }
                 else {
-                    updateMessageFromModel(arg.toString()); // messages to show on screen without getting input from user
+                    updateMessageFromModel(message); // messages to show on screen without getting input from user
                 }
             }
         }
@@ -112,21 +112,35 @@ public class MainViewModel implements Observer {
         isUserChallenge.set(true);
     }
 
-    public void processQueryInput(String userInput) {
+    public void processQueryInput(String userInput) {  // TODO - should be: word|row|col|vertical from View
+        System.out.println("entered query pros");
+        // TODO maybe do validations with users tiles
         if (isUserTurn.get()) {
             // Process the user's input
-            // TODO maybe do validations with users tiles
-            // ...
-            isUserTurn.set(false); // Indicate the end of the user's turn
-            gameModel.setUserQueryInput("userInput-word","userInput-row","userInput-col","userInput-vertical"); // TODO - put info accordingly
+            String[] request = userInput.split("[|]");
+            if(request[0].equals("xxx") || request[0].equals("XXX"))
+            {
+                gameModel.setUserQueryInput(request[0],"null","null","null");
+            }
+            else
+            {
+                gameModel.setUserQueryInput(request[0],request[1],request[2],request[3]);
+            }
         }
+        isUserTurn.set(false); // Indicate the end of the user's turn
     }
     public void processChallengeInput(String userInput) {
         if (isUserChallenge.get()) {
             // Process the user's input
             // ...
             isUserChallenge.set(false); // Indicate the end of the user's turn
-            gameModel.setUserChallengeInput("userInput-c"); // TODO - put info accordingly
+            if(userInput.equals(1)) // TODO - put info accordingly
+            {
+                gameModel.setUserChallengeInput("C");
+            }
+            else {
+                gameModel.setUserChallengeInput("xxx");
+            }
         }
     }
 
@@ -164,7 +178,7 @@ public class MainViewModel implements Observer {
         msgProperty.set(msg);
     }
     public StringProperty MsgProperty() {
-        return nameProperty;
+        return msgProperty;
     }
 
     // board update and get

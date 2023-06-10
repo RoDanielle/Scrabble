@@ -1,9 +1,23 @@
-package model;
+/*package model;
 
 import server.BookScrabbleHandler;
 import server.MyServer;
 
 import java.io.*;
+import java.net.Socket;
+import java.util.*;
+import java.util.stream.Collectors;
+import static java.lang.String.valueOf;
+*/
+package model;
+
+import server.BookScrabbleHandler;
+import server.MyServer;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -142,6 +156,7 @@ public class HostModel extends Observable implements GameModel {
             }
         }
         this.notifyObserver("board");
+        printmatrix(); // TODO - delete after view is done
     }
 
     public String tileToString (Tile t) {
@@ -225,11 +240,31 @@ public class HostModel extends Observable implements GameModel {
         //TODO - add a connection succeeded or failes message
     }
 
+    public static boolean GameServerAvailabilityCheck() {
+        try (Socket s = new Socket("localhost", 8080)) {
+            // TODO - send test connection message to let the server know to not keep this connection and port open
+            //  TODO - close the socket
+            return true;
+        } catch (IOException ex) {
+            /* ignore */
+        }
+        return false;
+    }
+
     public void GameManagement(boolean isLocal, String names){
-        if(isLocal)
+
+        // use this after implementing game server changes
+        /*
+        if(!GameServerAvailabilityCheck()) // the game server is not up - this host will create it
         {
             MyServer s=new MyServer(8080, new BookScrabbleHandler());
             s.start();
+        }*/
+
+        if(isLocal)
+        {
+            MyServer s=new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
+            s.start(); // delete after implementing the game server changes
             this.setLocalPlayers(names);
             this.setMessage("You are now hosting a local game");
             startGame_local("localhost", 8080);
@@ -239,8 +274,8 @@ public class HostModel extends Observable implements GameModel {
         else { //remote
             this.hostPlayer.setName(names);
             this.current_player = hostPlayer;
-            MyServer s = new MyServer(8080, new BookScrabbleHandler());
-            s.start();
+            MyServer s = new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
+            s.start(); // delete after implementing the game server changes
             this.hs = new HostServer(this);
             this.hs.start();
             //s.close();
@@ -280,6 +315,7 @@ public class HostModel extends Observable implements GameModel {
             this.giveTiles(this.current_player); // fill missing tiles
             this.notifyObserver("tiles");
             this.updateMatrixBoard(w); // updating matrix board
+            this.setMessage("turn over");
         }
         else
         {
@@ -291,7 +327,7 @@ public class HostModel extends Observable implements GameModel {
     @Override
     public void setUserQueryInput(String word, String row, String col, String vertical){
         this.current_player.wordDetails[0] = word;
-        if(word.equals("xxx") && ! word.equals("XXX")){
+        if(!word.equals("xxx") && !word.equals("XXX")){
             this.current_player.wordDetails[1]= row;
             this.current_player.wordDetails[2] = col;
             this.current_player.wordDetails[3] = vertical;
@@ -303,7 +339,7 @@ public class HostModel extends Observable implements GameModel {
             }
             else
             {
-                this.setMessage("challenge");
+                this.setMessage("challenge");  // offer to challenge
             }
 
         }
@@ -415,19 +451,20 @@ public class HostModel extends Observable implements GameModel {
         {
             this.current_player = this.players.get(0);
             try {
+
                 ConnectToGameServer(gameServerIP,gameServerPort);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             playerTurn(this.gameServerSocket, this.current_player);
-            this.passesCount(); // count turn passes in order to know if the game needs to be stopped
+            this.passesCountLocal(); // count turn passes in order to know if the game needs to be stopped
             Player p = this.players.remove(0);
             this.players.add(p);
         }
         this.stopLocalGame();
     }
 
-    private void passesCount(){
+    private void passesCountLocal(){
         int numOfPasses = 0;
         for(int i = 0; i < this.numbOfPlayers; i++)
         {
@@ -446,7 +483,7 @@ public class HostModel extends Observable implements GameModel {
 
     private void stopLocalGame()
     {
-        Player winner = new Player();
+        Player winner = this.hostPlayer;
         for(Player p : this.players)
         {
             if(winner.getScore() < p.getScore())
@@ -459,7 +496,7 @@ public class HostModel extends Observable implements GameModel {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        this.setMessage("the winner is: " + winner.name + "with " + winner.getScore() + " points");
+        this.setMessage("the winner is: " + winner.name + " with " + winner.getScore() + " points");
         this.setMessage("Game Over");
     }
 
