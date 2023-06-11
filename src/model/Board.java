@@ -1,8 +1,5 @@
 package model;
-
 import java.util.ArrayList;
-
-//import test.Tile.Bag;
 
 public class Board {
 

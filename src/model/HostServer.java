@@ -57,6 +57,7 @@ public class HostServer {
                     startGame();
                 }
             }
+            serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -74,30 +75,37 @@ public class HostServer {
                 gameServer = this.hostModel.gameServerSocket;
                 // Check if it's the server's turn
                 if (isHostTurn) {
-                    hostModel.setMessage("your turn, trying to connect to game server");
+                    hostModel.setMessage("trying to connect to game server");
+                    int hostScore = this.hostModel.getScore();
                     this.hostModel.playerTurn(gameServer, this.hostModel.current_player);
                     // Set the flag to indicate the client's turn
                     isHostTurn = false;
+
+                    if(hostScore != this.hostModel.getScore()) // host added a word into the board
+                    {
+                        // TODO - notify all remote players the board was changed
+                        notifyRemotes(this.hostModel.current_player.wordDetails, this.hostModel.current_player.name);
+                    }
                 }
                 else {
                     // Client's turn logic
                     clientHandlers.get(0).setClientTurn(true);
                     clientHandlers.get(0).run();
                     clientHandlers.get(0).setClientTurn(false);
-                    if(!clientHandlers.get(0).addedWordStr.equals(null)) // user put a word in the board
+                    Guestturns +=1; // a guest played its turn
+
+                    // TODO - notify all other remote players and the host the board was changed
+                    if(!clientHandlers.get(0).addedWordStr.equals("null")) // user put a word in the board
                     {
-                        for(int i = 1; i < clientHandlers.size(); i++) // update other remotes a word was put into board
-                        {
-                            this.hostModel.write_to_socket(clientHandlers.get(0).addedWordStr, clientHandlers.get(i).clientSocket);
-                        }
-                        this.hostModel.updateMatrixBoard(clientHandlers.get(0).addedWord); // update host a word was put into board
+                        notifyBoardChanged(clientHandlers.get(0).addedWordStr, clientHandlers.get(0).addedWord);
                         clientHandlers.get(0).addedWord = null;
-                        clientHandlers.get(0).addedWordStr = null;
+                        clientHandlers.get(0).addedWordStr = "null";
                     }
-                    GuestHandler tmp = clientHandlers.get(0);
+
+                    GuestHandler tmp = clientHandlers.remove(0);
                     clientHandlers.add(tmp);
-                    Guestturns++;
-                    if(Guestturns == clientHandlers.size() - 1)
+
+                    if(Guestturns == clientHandlers.size())
                     {
                         isHostTurn = true;
                         Guestturns = 0;
@@ -106,12 +114,34 @@ public class HostServer {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            passCount(); // count turn passes in order to know if the game needs to be stopped
+            if(passCount()) // count turn passes in order to know if the game needs to be stopped
+            {
+                this.hostModel.stopGame();
+            }
         }
         this.stopRemoteGame();
     }
+    private void notifyRemotes(String[] wordDetails, String playerName)
+    {
+        //2|true|score|a,1.b2....|name|word(not full)|row|col|v\h
+        String wordUpdate = "2|true|score|tiles|" + playerName + "|" + wordDetails[0] + "|" + wordDetails[1] + "|" + wordDetails[2] + "|" + wordDetails[3];
 
-    private void passCount(){
+        for(GuestHandler ch : clientHandlers)
+        {
+            this.hostModel.write_to_socket(wordUpdate, ch.clientSocket);
+        }
+    }
+
+    private void notifyBoardChanged(String wordinfo, Word word)
+    {
+        for(int i = 1; i < clientHandlers.size(); i++) // update other remotes a word was put into board
+        {
+            this.hostModel.write_to_socket(wordinfo, clientHandlers.get(i).clientSocket);
+        }
+        this.hostModel.updateMatrixBoard(word); // update host a word was put into board
+    }
+
+    private boolean passCount(){
         int passesCounter = 0;
         if(this.hostModel.current_player.wordDetails[0].equals("xxx") || this.hostModel.current_player.wordDetails[0].equals("XXX"))
         {
@@ -119,16 +149,16 @@ public class HostServer {
         }
         for(int i = 0; i < this.clientHandlers.size(); i++)
         {
-            if((this.clientHandlers.get(i).p.wordDetails[0].equals("xxx") || this.clientHandlers.get(i).p.wordDetails[0].equals("XXX")))
+            if(this.clientHandlers.get(i).guestPlayer.wordDetails[0].equals("xxx") || this.clientHandlers.get(i).guestPlayer.wordDetails[0].equals("XXX"))
             {
                 passesCounter++;
             }
         }
 
         if(passesCounter == this.hostModel.numbOfPlayers)
-        {
-            this.hostModel.stopGame();
-        }
+            return true;
+        else
+            return false;
     }
 
     public void stopRemoteGame(){
@@ -136,12 +166,12 @@ public class HostServer {
             Player winner = this.hostModel.current_player;
             for(GuestHandler guest : this.clientHandlers)
             {
-                if(winner.getScore() < guest.p.getScore())
+                if(winner.getScore() < guest.guestPlayer.getScore())
                 {
-                    winner = guest.p;
+                    winner = guest.guestPlayer;
                 }
             }
-            String win = "The winner is:" + winner.name + "with: " + winner.getScore() + "points";
+            String win = "The winner is: " + winner.name + " with: " + winner.getScore() + " points";
             this.hostModel.setMessage(win);
             this.hostModel.gameServerSocket.close();
             win = "4|" + win;
@@ -150,9 +180,10 @@ public class HostServer {
                 this.hostModel.write_to_socket(win, guest.clientSocket);
                 guest.clientSocket.close();
             }
+
+            this.stop = true; // stop host server
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 }
-

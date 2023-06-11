@@ -43,7 +43,6 @@ public class GuestModel extends Observable implements GameModel{
         this.guest_player = new Player();
         this.setName(name);
         this.board = new String[15][15];
-        //this.tiles = new ArrayList<>();
         this.message = null;
         this.gameRunning = true;
         this.request_to_server = null;
