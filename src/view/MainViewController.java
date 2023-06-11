@@ -4,7 +4,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -47,7 +46,7 @@ public class MainViewController {
     @FXML public TextField port;
     @FXML public TextField ip;
     String s_port,s_ip;
-    Connect connect_controller;
+    ConnectController connect_controller;
 
     @FXML
     private Button connect;

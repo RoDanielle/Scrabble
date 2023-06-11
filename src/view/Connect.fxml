@@ -6,32 +6,34 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.Connect">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ConnectController">
    <children>
-      <Label fx:id="title" prefHeight="17.0" prefWidth="600.0" text="connect to remote game">
+      <Label fx:id="title" layoutX="89.0" prefHeight="55.0" prefWidth="422.0" text="connect to remote game">
          <font>
             <Font size="38.0" />
          </font>
       </Label>
-      <Label fx:id="enter_port" layoutX="5.0" layoutY="110.0" prefHeight="17.0" prefWidth="600.0" text="Enter port">
+      <Label fx:id="enter_port" layoutX="6.0" layoutY="146.0" prefHeight="55.0" prefWidth="214.0" text="Enter port">
          <font>
             <Font size="38.0" />
          </font>
       </Label>
-      <Label fx:id="enter_ip" layoutX="5.0" layoutY="55.0" prefHeight="17.0" prefWidth="600.0" text="Enter ip">
+      <Label fx:id="enter_ip" layoutX="9.0" layoutY="74.0" prefHeight="55.0" prefWidth="137.0" text="Enter ip">
          <font>
             <Font size="38.0" />
          </font>
       </Label>
-      <Label fx:id="enter_name" layoutX="8.0" layoutY="173.0" prefHeight="17.0" prefWidth="600.0" text="Enter name">
+      <Label fx:id="enter_name" layoutX="9.0" layoutY="219.0" prefHeight="55.0" prefWidth="207.0" text="Enter name">
          <font>
             <Font size="38.0" />
          </font>
       </Label>
-      <Button fx:id="connect" layoutX="482.0" layoutY="317.0" mnemonicParsing="false" onAction="#initialize" prefHeight="55.0" prefWidth="103.0" text="connect" />
-      <TextField fx:id="ip" layoutX="230.0" layoutY="70.0" />
-      <TextField fx:id="name" layoutX="234.0" layoutY="188.0" />
-      <TextField fx:id="port" layoutX="234.0" layoutY="125.0" />
+      <Button fx:id="connect" layoutX="460.0" layoutY="317.0" mnemonicParsing="false" onAction="#initialize" prefHeight="55.0" prefWidth="103.0" text="connect">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+      <TextField fx:id="ip" layoutX="230.0" layoutY="83.0" prefHeight="36.0" prefWidth="173.0" />
+      <TextField fx:id="name" layoutX="230.0" layoutY="228.0" prefHeight="36.0" prefWidth="173.0" />
+      <TextField fx:id="port" layoutX="230.0" layoutY="155.0" prefHeight="36.0" prefWidth="173.0" />
    </children>
 </AnchorPane>

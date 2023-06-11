@@ -8,11 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
-import java.awt.*;
 
-public class WellcomeScreen {
+public class WelcomeScreenController {
     @FXML
     private Label header;
     @FXML
@@ -21,11 +19,8 @@ public class WellcomeScreen {
     private Button host;
     @FXML
     private Button guest;
-    boolean isHost;
+    private boolean isHost;
 
-    //Scene scene = guest.getScene();
-    //Window window = scene.getWindow();
-    //Stage stage = (Stage)window;
 
 
     @FXML
@@ -36,14 +31,35 @@ public class WellcomeScreen {
         if(event.getSource()==host){
             this.isHost = true;
             stage = (Stage) host.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("GameMode.fxml"));
+            root = loader.load();
+            stage.setTitle("Game Mode");
+
+            GameModeController GameModeController = loader.getController();
+            GameModeController.setIsHost(true); // Pass the boolean parameter here
+
+            /*
+            stage = (Stage) host.getScene().getWindow();
             root = FXMLLoader.load(getClass().getResource("GameMode.fxml"));
-            stage.setTitle("game mode");
+            stage.setTitle("Game Mode");
+            */
         }
         else{ //guest
             this.isHost = false;
             stage = (Stage) guest.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Connect.fxml"));
+            root = loader.load();
+            stage.setTitle("Connect");
+
+            ConnectController connectController = loader.getController();
+            connectController.setIsHost(false); // Pass the boolean parameter here
+
+            /*
+            stage = (Stage) guest.getScene().getWindow();
             root = FXMLLoader.load(getClass().getResource("Connect.fxml"));
             stage.setTitle("connect");
+
+             */
         }
         stage.setScene(new Scene(root));
     }
