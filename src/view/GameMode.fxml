@@ -5,7 +5,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="364.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GameModeController">
    <children>
       <Label fx:id="playerType" layoutX="14.0" layoutY="91.0" prefHeight="95.0" prefWidth="589.0" text="Do you want to host a local game or a remote game?">

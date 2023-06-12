@@ -3,190 +3,165 @@ package view;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import viewModel.MainViewModel;
-import javafx.scene.control.ListView;
 import javafx.beans.property.StringProperty;
+import javafx.scene.layout.GridPane;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 
-import java.awt.event.ActionEvent;
-import java.util.Scanner;
+public class MainViewController implements Initializable{
 
-public class MainViewController {
+    private MainViewModel viewModel;
+    // binded vars with the viewmodel
     @FXML
     private Label msgLabel;
     @FXML
     private Label nameLabel;
     @FXML
     private Label scoreLabel;
-    @FXML
-    private Label[][] labelGrid;
+    @FXML GridPane labelGrid;
+    //@FXML private Label[][] labelGrid;
     @FXML
     private ListView<String> tilesListView;
-    @FXML
-    private Button userQueryButton;
-    @FXML
-    private Button userChallengeButton;
 
-    private MainViewModel viewModel;
+    // vars for user word (query)
+    @FXML
+    private TextField word;
+    @FXML private ChoiceBox<String> row;
+    @FXML private ChoiceBox<String> col;
+    private String[] rowAndCol = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14"};
+    @FXML private ChoiceBox<String> vertical;
+    private String[] ver = {"vertical","horizontal"};
+    @FXML private Button submitWord;
+    @FXML private Button passTurn;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        row.getItems().addAll(rowAndCol);
+        col.getItems().addAll(rowAndCol);
+        vertical.getItems().addAll(ver);
+    }
+
+    @FXML
+    private void submitWordHandler (ActionEvent event) throws Exception { //word|row|col|vertical
+        String s_word;
+        String s_row;
+        String s_col;
+        String s_vertical;
+        if(event.getSource()==submitWord)
+        {
+            s_word = word.getText();
+            s_row = row.getValue();
+            s_col = col.getValue();
+            s_vertical = vertical.getValue();
+        }
+        else // pass
+        {
+            s_word = "xxx";
+            s_row = "null";
+            s_col = "null";
+            s_vertical = "null";
+        }
+        String userQueryInput = s_word + "|" + s_row + "|" + s_col + "|" + s_vertical;
+        System.out.println("FROM VIEW: " + userQueryInput);
+        viewModel.processQueryInput(userQueryInput);
+    }
+
+    // var for user challenge
+    @FXML private Button challengeB;
+    @FXML private Button passChallenge;
+
+    @FXML
+    private void challengeHandler (ActionEvent event) throws Exception { //word|row|col|vertical
+        String challengeInput;
+
+        if(event.getSource()==challengeB)
+        {
+            challengeInput = "C";
+        }
+        else // pass
+        {
+            challengeInput = "xxx";
+        }
+        viewModel.processQueryInput(challengeInput);
+    }
+
+    // activation buttons for query and challenge (triggered activation from view model)
+
     private BooleanProperty isUserTurnProperty;
-
     private BooleanProperty isUserChallengeProperty;
-    @FXML
-    private Label submit;
-    @FXML
-    protected void func(){
-        msgLabel.setText("hello");
-    }
 
-    @FXML public TextField port;
-    @FXML public TextField ip;
-    String s_port,s_ip;
-    ConnectController connect_controller;
-
-    @FXML
-    private Button connect;
-
-    private void connect1(ActionEvent event){
-        s_ip = ip.getText();
-        s_port = port.getText();
-        System.out.println(s_ip);
-        System.out.println(s_port);
-
-    }
-    @FXML
-    private void initialize() {
-        connect.setOnAction(e -> {
-            s_ip = ip.getText();
-            s_port = port.getText();
-
-            System.out.println(s_ip);
-            System.out.println(s_port);
-        });
-    }
-
-    public MainViewController() {
-        this.ip = connect_controller.ip;
-        //setupUI();
-
-    }
 
     private void setupUI() {
         // Set up your JavaFX UI components
-        // ...
-        //start123();
-
-
-        //BindAll();
-
-    /*
-    // set buttons for viewmodel triggered actions
-        // Listen to user input events (e.g., button clicks)
-        userQueryButton.setOnAction(event -> {
-            String userInput = // Extract user input from the UI componentview
-            //viewModel.processQueryInput(userInput);
-            // ....
-        });
-
-        userChallengeButton.setOnAction(event -> {
-            String userInput = // Extract user input from the UI componentview
-            //viewModel.processChallengeInput(userInput);
-            // ....
-        });
-
-
-        // Observe the ViewModel's properties
-        viewModel.isUserTurnProperty().addListener((observable, oldValue, newValue) -> { // turn (query) "notifier"
-            if (newValue) {
-                // It's the user's turn
-                // Update the UI accordingly
-                // ...
-            } else {
-                // It's not the user's turn
-                // Update the UI accordingly
-                // ...
-            }
-        });
-
-           viewModel.isUserchallengeProperty().addListener((observable, oldValue, newValue) -> { // challenge "notifier"
-            if (newValue) {
-                // It's the user's turn
-                // Update the UI accordingly
-                // ...
-            } else {
-                // It's not the user's turn
-                // Update the UI accordingly
-                // ...
-            }
-        });
-
-     */
 
         /*
         // Update the UI components based on changes to the board property
         viewModel.boardProperty().addListener((observable, oldValue, newValue) -> {
             updateBoardUI(newValue);
         });
-
-
-
-
-
         */
 
     }
 
-    public void start123(){
-        boolean ishost;
-        boolean islocal;
-        String num = "null";
-        String ip = "null";
-        String port = "null";
-        String playerType;
-        String gameType;
 
-        Scanner input = new Scanner(System.in);
-        System.out.println("Please enter your name");
-        String name = input.nextLine();
-
-        System.out.println("What type of player are you? Enter 1 for Host, Enter 2 for Guest");
-        playerType = input.nextLine();
-
-        if (playerType.equals("1")){ // HOST
-            ishost = true;
-            System.out.println("you are now in Host mode");
-            System.out.println("Do you want to play a local game or host a remote game? for local enter: 1, for remote enter: 2");
-            gameType = input.nextLine();
-            System.out.println("How many player including you are playing? 1-4");
-            num = input.nextLine();
-
-            if(gameType.equals("1")) // LOCAL
+    public void setViewMode(String name, String ip, String port, boolean isHost, boolean isLocal, int numOfPlayers)
+    {
+        if(isHost) // host
+        {
+            if(isLocal) // local
             {
-                islocal = true;
-                for(int i = 2; i < Integer.parseInt(num) + 1; i++)
-                System.out.println("Please enter player " + i + " name");
-                name = name + "|" +  input.nextLine();
+                this.viewModel = new MainViewModel(name, "null", "null", isHost, isLocal, numOfPlayers);
             }
-            else { // REMOTE
-                islocal = false;
+            else // remote
+            {
+                this.viewModel = new MainViewModel(name, "null", "null", isHost, isLocal, numOfPlayers);
             }
         }
-        else { // GUEST
-            ishost = false;
-            islocal = false;
-            System.out.println("you are now in Guest mode");
-            System.out.println("Please enter server ip");
-            ip = input.nextLine();
-            System.out.println("Please enter server port");
-            port = input.nextLine();
+        else // guest
+        {
+            this.viewModel = new MainViewModel(name, ip, port, isHost, false, 1);
+        }
 
-        }
-        // TODO - create the viewmodel object after a startgame button was pressed
-        this.viewModel = new MainViewModel(name, ip, port, ishost, islocal, Integer.parseInt(num));
+        this.BindAll();
+
+
+        // Observe the ViewModel's properties
+        viewModel.isUserTurnProperty().addListener((observable, oldValue, newValue) -> { // turn (query) "notifier"
+            if (newValue) {
+                System.out.println("view got user turn true");
+                submitWord.setDisable(false);
+                passTurn.setDisable(false);
+            } else {
+                System.out.println("view got user turn false");
+                submitWord.setDisable(true);
+                passTurn.setDisable(true);
+            }
+        });
+
+        viewModel.isUserchallengeProperty().addListener((observable, oldValue, newValue) -> { // challenge "notifier"
+            if (newValue) {
+                challengeB.setDisable(false);
+                passChallenge.setDisable(false);
+            } else {
+                challengeB.setDisable(true);
+                passChallenge.setDisable(true);
+            }
+        });
+
     }
 
     /*
@@ -209,9 +184,7 @@ public class MainViewController {
 
 
 
-    public void BindAll() {
-
-
+    private void BindAll() {
         //NAME - Bind name
         nameLabel.textProperty().bind(viewModel.nameProperty());
         //SCORE - Bind score
@@ -219,16 +192,16 @@ public class MainViewController {
         // MESSAGE - Bind message
         msgLabel.textProperty().bind(viewModel.MsgProperty());
         //TILES - Bind the items of the ListView to the tilesProperty in the ViewModel
-        Bindings.bindContent(tilesListView.getItems(), viewModel.tilesProperty());
+//        Bindings.bindContent(tilesListView.getItems(), viewModel.tilesProperty());
         // Bind board
-        this.initializeBoard();
+    //    this.initializeBoard();
 
         // Bind query and challenge (will not show to the user)
         this.isUserTurnProperty = viewModel.isUserTurnProperty();
         this.isUserChallengeProperty = viewModel.isUserchallengeProperty();
     }
 
-    public void initializeBoard() {
+    /*public void initializeBoard() {
        //String[][] initialBoard = new String[15][15]; - check if needed
         //viewModel.updateBoardFromModel(initialBoard); - check if needed
 
@@ -242,4 +215,20 @@ public class MainViewController {
             }
         }
     }
+    */
+
+    public void initializeBoard() {
+        //String[][] initialBoard = new String[15][15]; - check if needed
+        //viewModel.updateBoardFromModel(initialBoard); - check if needed
+
+        // Bind the labelGrid to the boardProperty in the ViewModel
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                Label cellLabel = new Label();
+                labelGrid.add(cellLabel, i, j);
+
+            }
+        }
+    }
+
 }

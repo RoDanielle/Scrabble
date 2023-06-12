@@ -38,11 +38,6 @@ public class WelcomeScreenController {
             GameModeController GameModeController = loader.getController();
             GameModeController.setIsHost(true); // Pass the boolean parameter here
 
-            /*
-            stage = (Stage) host.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("GameMode.fxml"));
-            stage.setTitle("Game Mode");
-            */
         }
         else{ //guest
             this.isHost = false;
@@ -54,12 +49,6 @@ public class WelcomeScreenController {
             ConnectController connectController = loader.getController();
             connectController.setIsHost(false); // Pass the boolean parameter here
 
-            /*
-            stage = (Stage) guest.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("Connect.fxml"));
-            stage.setTitle("connect");
-
-             */
         }
         stage.setScene(new Scene(root));
     }

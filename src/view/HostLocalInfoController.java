@@ -38,15 +38,13 @@ public class HostLocalInfoController implements Initializable {
     @FXML
     private void HostLocalAction (ActionEvent event) throws Exception {
         num = numbers.getValue();
-        System.out.println(s_hostName);
-        System.out.println(num);
 
         Stage stage = (Stage) submit.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("LocalPlayersInfo.fxml"));
         Parent root = loader.load();
         stage.setTitle("Players Names");
         LocalPlayersInfoController localPlayersController = loader.getController();
-        localPlayersController.setInfo(this.isLocal,this.isHost, Integer.parseInt(this.num)); // Pass the boolean parameter here
+        localPlayersController.setInfo(this.isLocal,this.isHost, Integer.parseInt(this.num));
         localPlayersController.createTextFields();
         stage.setScene(new Scene(root));
     }

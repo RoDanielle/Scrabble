@@ -191,6 +191,8 @@ public class GuestModel extends Observable implements GameModel{
                 this.guest_player.strTiles.add(s);
         }
         this.notifyObserver("tiles");
+        for(String s : guest_player.strTiles)
+        System.out.println(s);
     }
 
     public void updateMatrixBoard(String word, String row, String col, String vertical) {
@@ -261,7 +263,7 @@ public class GuestModel extends Observable implements GameModel{
         if(fromHost[1].equals("true") && !fromHost[4].equals(this.guest_player.name)) // other users word was placed on board
         {
             wordEnteredByOtherUser(fromHost);
-            this.setMessage(fromHost[4] + "put a new word in the board");
+            this.setMessage(fromHost[4] + " put a new word in the board");
         }
 
         else if(fromHost[1].equals("true") && fromHost[4].equals(this.guest_player.name)) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
@@ -285,14 +287,19 @@ public class GuestModel extends Observable implements GameModel{
         {
             this.setMessage("challenge returned false, you lose 10 points");
             this.decreaseScore(10);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
         this.setMessage("turn over");
     }
 
     public void gameOver(String fromHost)
     {
-        this.setMessage(fromHost); // winner message
-        this.setMessage("Game Over");
+        // TODO - make into a popup screen
+        this.setMessage(fromHost + "Game Over"); // winner message
         this.gameRunning = false;
 
         try{

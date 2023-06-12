@@ -1,5 +1,6 @@
 package viewModel;
 
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import model.GameModel;
 import model.GuestModel;
@@ -63,11 +64,15 @@ public class MainViewModel implements Observer {
         {
             if(arg.equals("score"))
             {
-                updateScoreFromModel(gameModel.getScore());
+                Platform.runLater(() -> {
+                    updateScoreFromModel(gameModel.getScore());
+                });
             }
             else if(arg.equals("name"))
             {
-                updateNameFromModel(gameModel.getName());
+                Platform.runLater(() -> {
+                    updateNameFromModel(gameModel.getName());
+                });
             }
             else if(arg.equals("board"))
             {
@@ -82,6 +87,10 @@ public class MainViewModel implements Observer {
                 message = gameModel.getMessage();
                 if(message.contains("turn") && !message.contains("over") && !message.contains("wait"))
                 {
+                    Platform.runLater(() -> {
+                        // Update the bound property here
+                        updateMessageFromModel(message); // messages to show on screen without getting input from user
+                    });
                     startUserQueryTurn();
                 }
                 else if(message.contains("challenge") && !message.contains("failed"))
@@ -89,7 +98,10 @@ public class MainViewModel implements Observer {
                     startUserChallengeTurn();
                 }
                 else {
-                    updateMessageFromModel(message); // messages to show on screen without getting input from user
+                    //updateMessageFromModel(message); // messages to show on screen without getting input from user
+                    Platform.runLater(() -> {
+                        updateMessageFromModel(message); // messages to show on screen without getting input from user
+                    });
                 }
             }
         }
@@ -105,6 +117,7 @@ public class MainViewModel implements Observer {
     public void startUserQueryTurn() {
         // Perform any necessary actions to set up the user's turn
         isUserTurn.set(true);
+        System.out.println("set user turn to true in viewmodel");
     }
 
     public void startUserChallengeTurn() {

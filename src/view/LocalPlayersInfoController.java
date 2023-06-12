@@ -2,11 +2,16 @@ package view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +37,7 @@ public class LocalPlayersInfoController implements Initializable {
     }
 
     @FXML
-    private void localNamesHandler(ActionEvent event) {
+    private void localNamesHandler(ActionEvent event) throws IOException {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < textFieldList.size(); i++) {
             TextField textField = textFieldList.get(i);
@@ -44,6 +49,15 @@ public class LocalPlayersInfoController implements Initializable {
         }
         allNames = builder.toString();
         System.out.println(allNames); // For debugging purposes
+
+        // main view
+        Stage stage = (Stage) submitNames.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
+        Parent root = loader.load();
+        stage.setTitle("Game");
+        MainViewController view = loader.getController();
+        view.setViewMode(allNames,"null","null", this.isLocal,this.isHost, numOfPlayers); // Pass the boolean parameter here
+        stage.setScene(new Scene(root));
     }
 
 

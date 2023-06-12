@@ -264,9 +264,9 @@ public class HostModel extends Observable implements GameModel {
         if(isLocal)
         {
             MyServer s=new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
+            System.out.println("started game server from host mode");
             s.start(); // delete after implementing the game server changes
             this.setLocalPlayers(names);
-            this.setMessage("You are now hosting a local game");
             startGame_local("localhost", 8080);
             s.close();
             //this.gameServerSocket.close(); // needed to be called only after startGame_local stopped running, meaning after the game is over.
@@ -301,7 +301,6 @@ public class HostModel extends Observable implements GameModel {
     public void TryPutWordInBoard(String requestType, String word, String row, String col,String vertical){
         Word w = this.current_player.create_word(word, row,col,vertical);
         int score = this.boardObject.tryPlaceWord(w);
-        this.setMessage("word was found in dictionary, trying to place on board");
         if(score != 0) // word was put into board
         {
             if(requestType.equals("C"))
@@ -309,13 +308,12 @@ public class HostModel extends Observable implements GameModel {
                 score+=10;
             }
 
-            this.setMessage("you got " + score + " points for the word");
             this.addScore(score);
             this.current_player.removeStrTiles(word);
             this.giveTiles(this.current_player); // fill missing tiles
             this.notifyObserver("tiles");
             this.updateMatrixBoard(w); // updating matrix board
-            this.setMessage("turn over");
+            this.setMessage("you got " + score + " turn over");
         }
         else
         {
@@ -362,19 +360,27 @@ public class HostModel extends Observable implements GameModel {
             {
                 this.setMessage("challenge failed you lose 10 points");
                 this.decreaseScore(10);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         this.setMessage("turn over");
     }
 
     public void playerTurn(Socket gameSocket, Player player){
+        System.out.println("entered player turn function");
         giveTiles(player); // in first turn gives 7 tiles
         this.notifyObserver("name");
         this.notifyObserver("score");
         this.notifyObserver("tiles");
         this.setMessage(player.name + " turn");
-
-        printmatrix(); // -----------------delete after view is set
+        for(String t : player.strTiles)
+        {
+            System.out.println(t);
+        }
     }
 
     boolean testDictionary(String requestType, String word, String row, String col, String vertical, Socket gameSocket)
@@ -383,12 +389,12 @@ public class HostModel extends Observable implements GameModel {
         if(requestType.equals("Q"))
         {
             String fullWord = fill_spaces(word,row,col,vertical);
-            args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
+            args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt" + fullWord;
         }
         else // "C"
         {
             String fullWord = fill_spaces(word,row,col,vertical);
-            args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
+            args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt" + fullWord;
         }
 
         this.write_to_socket(args, gameSocket);
@@ -436,14 +442,15 @@ public class HostModel extends Observable implements GameModel {
         this.hostPlayer.setName(playersNames[0]);
         this.current_player = hostPlayer;
         players.add(this.hostPlayer);
-
+        System.out.println("added a host player: " + playersNames[0]);
         for(int i = 1; i < playersNames.length; i++){
             Player player = new Player();
             player.setName(playersNames[i]);
             players.add(player);
+            System.out.println("added a new player: " + playersNames[i]);
         }
     }
-    public void startGame_local(String gameServerIP, int gameServerPort) {
+    public void startGame_local(String gameServerIP, int gameServerPort){
         this.setMessage("starting game");
         this.setTurns();
 
@@ -451,12 +458,18 @@ public class HostModel extends Observable implements GameModel {
         {
             this.current_player = this.players.get(0);
             try {
-
                 ConnectToGameServer(gameServerIP,gameServerPort);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             playerTurn(this.gameServerSocket, this.current_player);
+
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("time ended");
             this.passesCountLocal(); // count turn passes in order to know if the game needs to be stopped
             Player p = this.players.remove(0);
             this.players.add(p);
@@ -496,7 +509,13 @@ public class HostModel extends Observable implements GameModel {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        // TODO - make these message in a popup screen
         this.setMessage("the winner is: " + winner.name + " with " + winner.getScore() + " points");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         this.setMessage("Game Over");
     }
 

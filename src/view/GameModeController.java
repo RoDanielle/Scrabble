@@ -27,11 +27,11 @@ public class GameModeController {
         if(event.getSource()==local){
             this.isLocal = true;
             stage = (Stage) local.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("HostLocaIInfo.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("HostLocalInfo.fxml"));
             root = loader.load();
             stage.setTitle("Local game info");
             HostLocalInfoController localController = loader.getController();
-            localController.setInfo(this.isLocal,this.isHost); // Pass the boolean parameter here
+            localController.setInfo(this.isHost,this.isLocal);
         }
 
         else{ //remote
@@ -42,7 +42,7 @@ public class GameModeController {
             root = loader.load();
             stage.setTitle("Remote game info");
             HostRemoteInfoController remoteController = loader.getController();
-            remoteController.setInfo(this.isLocal,this.isHost); // Pass the boolean parameter here
+            remoteController.setInfo(this.isHost,this.isLocal); // Pass the boolean parameter here
         }
         stage.setScene(new Scene(root));
     }
