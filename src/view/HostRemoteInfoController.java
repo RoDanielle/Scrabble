@@ -46,7 +46,7 @@ public class HostRemoteInfoController implements Initializable {
         Parent root = loader.load();
         stage.setTitle("Game");
         MainViewController view = loader.getController();
-        view.setViewMode(s_hostName,"null","null", this.isLocal,this.isHost, Integer.parseInt(num));
+        view.setViewMode(s_hostName,"null","null", this.isHost, this.isLocal, Integer.parseInt(num));
         stage.setScene(new Scene(root));
     }
 

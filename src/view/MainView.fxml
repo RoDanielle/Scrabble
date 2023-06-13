@@ -14,7 +14,7 @@
    <children>
       <AnchorPane layoutX="732.0" layoutY="442.0" prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Button layoutX="118.0" layoutY="113.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="no">
+            <Button fx:id="passChallenge" layoutX="118.0" layoutY="113.0" mnemonicParsing="false" onAction="#challengeHandler" prefHeight="25.0" prefWidth="57.0" text="no">
                <font>
                   <Font size="14.0" />
                </font>
@@ -24,7 +24,7 @@
                   <Font size="19.0" />
                </font>
             </Label>
-            <Button layoutX="31.0" layoutY="113.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="yes">
+            <Button fx:id="challengeB" layoutX="31.0" layoutY="113.0" mnemonicParsing="false" onAction="#challengeHandler" prefHeight="25.0" prefWidth="57.0" text="yes">
                <font>
                   <Font size="13.0" />
                </font>
@@ -36,7 +36,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="msgLabel" layoutX="14.0" layoutY="25.0" prefHeight="44.0" prefWidth="542.0" text="MESSAGE BOX">
+      <Label fx:id="msgLabel" layoutX="14.0" layoutY="25.0" prefHeight="44.0" prefWidth="542.0" text="MESSAGE BOX" textAlignment="CENTER">
          <font>
             <Font size="15.0" />
          </font></Label>
@@ -124,7 +124,11 @@
             <Button cancelButton="true" mnemonicParsing="false" prefHeight="102.0" prefWidth="95.0" text="tile7" textFill="#eb0b0b" textOverrun="CLIP" GridPane.columnIndex="6" />
          </children>
       </GridPane>
-      <Label fx:id="scoreLabel" layoutX="889.0" layoutY="44.0" />
+      <Label fx:id="scoreLabel" layoutX="881.0" layoutY="30.0" prefHeight="44.0" prefWidth="51.0">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
       <Label fx:id="nameLabel" layoutX="669.0" layoutY="35.0" prefHeight="34.0" prefWidth="149.0">
          <font>
             <Font size="22.0" />

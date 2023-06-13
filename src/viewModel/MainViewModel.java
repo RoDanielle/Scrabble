@@ -127,11 +127,12 @@ public class MainViewModel implements Observer {
 
     public void processQueryInput(String userInput) {  // TODO - should be: word|row|col|vertical from View
         System.out.println("entered query pros");
-        // TODO maybe do validations with users tiles
+        // TODO  - maybe do validations with users tiles
+        // TODO - make all word letters to Uppercase before moving to model
         if (isUserTurn.get()) {
             // Process the user's input
             String[] request = userInput.split("[|]");
-            if(request[0].equals("xxx") || request[0].equals("XXX"))
+            if(request[0].equals("xxx"))
             {
                 gameModel.setUserQueryInput(request[0],"null","null","null");
             }
@@ -143,11 +144,9 @@ public class MainViewModel implements Observer {
         isUserTurn.set(false); // Indicate the end of the user's turn
     }
     public void processChallengeInput(String userInput) {
+        System.out.println("entered challenge pros");
         if (isUserChallenge.get()) {
-            // Process the user's input
-            // ...
-            isUserChallenge.set(false); // Indicate the end of the user's turn
-            if(userInput.equals(1)) // TODO - put info accordingly
+            if(userInput.equals("yes"))
             {
                 gameModel.setUserChallengeInput("C");
             }
@@ -155,6 +154,7 @@ public class MainViewModel implements Observer {
                 gameModel.setUserChallengeInput("xxx");
             }
         }
+        isUserChallenge.set(false); // Indicate the end of the user's turn
     }
 
     // tiles update and get

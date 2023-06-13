@@ -80,6 +80,7 @@ public class GuestModel extends Observable implements GameModel{
 
     @Override
     public String getName() {
+        System.out.println("guest name from getName: " + this.guest_player.name);
         return this.guest_player.name;
     }
 
@@ -143,7 +144,6 @@ public class GuestModel extends Observable implements GameModel{
     public void setName(String name)
     {
         this.guest_player.setName(name);
-        this.notifyObserver("name");
     }
 
     public Socket getMySocket() {
@@ -254,6 +254,7 @@ public class GuestModel extends Observable implements GameModel{
     }
     public void case0(String fromHost) // got 7 tiles
     {
+        this.notifyObserver("name");
         this.setMessage("game started, you got seven tiles, wait for your turn");
         addTiles(fromHost);
     }

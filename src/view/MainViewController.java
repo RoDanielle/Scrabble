@@ -67,6 +67,7 @@ public class MainViewController implements Initializable{
             s_row = row.getValue();
             s_col = col.getValue();
             s_vertical = vertical.getValue();
+            word.clear();
         }
         else // pass
         {
@@ -90,13 +91,13 @@ public class MainViewController implements Initializable{
 
         if(event.getSource()==challengeB)
         {
-            challengeInput = "C";
+            challengeInput = "yes";
         }
         else // pass
         {
-            challengeInput = "xxx";
+            challengeInput = "no";
         }
-        viewModel.processQueryInput(challengeInput);
+        viewModel.processChallengeInput(challengeInput);
     }
 
     // activation buttons for query and challenge (triggered activation from view model)
@@ -133,7 +134,7 @@ public class MainViewController implements Initializable{
         }
         else // guest
         {
-            this.viewModel = new MainViewModel(name, ip, port, isHost, false, 1);
+            this.viewModel = new MainViewModel(name, ip, port, false, false, 1);
         }
 
         this.BindAll();

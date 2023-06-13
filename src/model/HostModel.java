@@ -240,12 +240,16 @@ public class HostModel extends Observable implements GameModel {
         //TODO - add a connection succeeded or failes message
     }
 
-    public static boolean GameServerAvailabilityCheck() {
+    public boolean GameServerAvailabilityCheck() {
         try (Socket s = new Socket("localhost", 8080)) {
+            this.write_to_socket("check", s);
+            System.out.println("game server is up, sent check and closed ");
+            s.close();
             // TODO - send test connection message to let the server know to not keep this connection and port open
             //  TODO - close the socket
             return true;
         } catch (IOException ex) {
+            System.out.println("game server is not up, need to create it");
             /* ignore */
         }
         return false;
@@ -265,7 +269,7 @@ public class HostModel extends Observable implements GameModel {
         {
             MyServer s=new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
             System.out.println("started game server from host mode");
-            s.start(); // delete after implementing the game server changes
+            s.start(); // TODO - delete after implementing the game server changes
             this.setLocalPlayers(names);
             startGame_local("localhost", 8080);
             s.close();
@@ -275,7 +279,7 @@ public class HostModel extends Observable implements GameModel {
             this.hostPlayer.setName(names);
             this.current_player = hostPlayer;
             MyServer s = new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
-            s.start(); // delete after implementing the game server changes
+            s.start(); //  TODO - delete after implementing the game server changes
             this.hs = new HostServer(this);
             this.hs.start();
             //s.close();
@@ -313,7 +317,7 @@ public class HostModel extends Observable implements GameModel {
             this.giveTiles(this.current_player); // fill missing tiles
             this.notifyObserver("tiles");
             this.updateMatrixBoard(w); // updating matrix board
-            this.setMessage("you got " + score + " turn over");
+            this.setMessage("you got " + score + " points, turn over");
         }
         else
         {
