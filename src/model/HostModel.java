@@ -32,10 +32,10 @@ public class HostModel extends Observable implements GameModel {
     private String[][] board;
 
     // data for managing game
-    public boolean gameRunning;
+    boolean gameRunning;
     private Board boardObject;
     private Tile.Bag bag;
-    public int numbOfPlayers;
+    int numbOfPlayers;
     Socket gameServerSocket;
     String message;
 
@@ -46,7 +46,7 @@ public class HostModel extends Observable implements GameModel {
     int myPort;
 
     // data for local game
-    public List<Player> players;
+    private List<Player> players;
     public Player current_player; // in local game will have a different player in every turn, in remote game will hold only the host.
     // with this data member we will get the necessary information to show in view each turn
 
@@ -164,6 +164,7 @@ public class HostModel extends Observable implements GameModel {
         tileString = valueOf(t.letter) + "," + Integer.toString(t.score);
         return tileString;
     }
+
 
     public void stopGame() {
         this.gameRunning = false;
@@ -455,9 +456,7 @@ public class HostModel extends Observable implements GameModel {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if (this.gameServerSocket != null && this.current_player != null)
-                playerTurn(this.gameServerSocket, this.current_player);
-
+            playerTurn(this.gameServerSocket, this.current_player);
             this.passesCountLocal(); // count turn passes in order to know if the game needs to be stopped
             Player p = this.players.remove(0);
             this.players.add(p);
@@ -465,11 +464,11 @@ public class HostModel extends Observable implements GameModel {
         this.stopLocalGame();
     }
 
-    public void passesCountLocal(){
+    private void passesCountLocal(){
         int numOfPasses = 0;
         for(int i = 0; i < this.numbOfPlayers; i++)
         {
-            if(this.players.get(i).wordDetails[0].equals("xxx"))
+            if(this.players.get(i).wordDetails[0].equals("xxx") || this.players.get(i).wordDetails[0].equals("xxx"))
             {
                 numOfPasses++;
             }
@@ -482,7 +481,7 @@ public class HostModel extends Observable implements GameModel {
 
 
 
-    public void stopLocalGame()
+    private void stopLocalGame()
     {
         Player winner = this.hostPlayer;
         for(Player p : this.players)

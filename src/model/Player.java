@@ -13,7 +13,7 @@ public class Player {
 
     int score;
 
-    public String[] wordDetails;
+    String[] wordDetails;
 
     public Player() {
         this.name = null;
@@ -28,10 +28,6 @@ public class Player {
         this.wordDetails[3] = "null";
     }
 
-    public String getName()
-    {
-        return this.name;
-    }
     public void setName(String name) {
         this.name = name;
     }
