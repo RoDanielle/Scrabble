@@ -21,11 +21,12 @@ import javafx.beans.property.StringProperty;
 public class MainViewModel implements Observer {
 
     private String message;
-   private final ObservableList<String> tilesProperty;
+   //private final ObservableList<String> tilesProperty;
+    private final List<StringProperty> tilesProperty;
     private final StringProperty nameProperty;
     private final StringProperty msgProperty;
     private final IntegerProperty scoreProperty;
-   private final ObjectProperty<StringProperty[][]> boardProperty;
+    private final ObjectProperty<StringProperty[][]> boardProperty;
     private final GameModel gameModel;
     private final BooleanProperty isUserTurn;
     private final BooleanProperty isUserChallenge;
@@ -80,7 +81,9 @@ public class MainViewModel implements Observer {
             }
             else if(arg.equals("tiles"))
             {
-                this.updateTilesFromModel(gameModel.getTiles());
+                Platform.runLater(() -> {
+                    this.updateTilesFromModel(gameModel.getTiles());
+                });
             }
             else // message
             {
@@ -159,10 +162,16 @@ public class MainViewModel implements Observer {
 
     // tiles update and get
     public void updateTilesFromModel(List<String> updatedTiles) {
-        tilesProperty.setAll(updatedTiles);
+        tilesProperty.clear();
+        for(String s : updatedTiles)
+        {
+            StringProperty sp = new SimpleStringProperty();
+            sp.set(s);
+            tilesProperty.add(sp);
+        }
     }
 
-    public ObservableList<String> tilesProperty() {
+    public List<StringProperty> tilesProperty() {
         return tilesProperty;
     }
 
@@ -198,13 +207,57 @@ public class MainViewModel implements Observer {
     public ObjectProperty<StringProperty[][]> boardProperty() {
         return boardProperty;
     }
+
     public void updateBoardFromModel(String[][] updatedBoard) {
         StringProperty[][] boardWrapper = new StringProperty[updatedBoard.length][updatedBoard[0].length];
         for (int i = 0; i < updatedBoard.length; i++) {
+
             for (int j = 0; j < updatedBoard[i].length; j++) {
                 boardWrapper[i][j] = new SimpleStringProperty(updatedBoard[i][j]);
             }
         }
         boardProperty.set(boardWrapper);
+        //printmatrix();
+    }
+
+    public void printmatrix() // will move to view later on
+    {
+        System.out.println("the board from view model is: ");
+        System.out.print("  ");
+        for(int k = 0; k < 15; k++)
+        {
+            System.out.print(" " + k + " ");
+        }
+        System.out.println("");
+        for(int i = 0; i < 15; i++)
+        {
+            System.out.print( i + " " );
+            for(int j = 0; j < 15; j++)
+            {
+                if(this.boardProperty.get()[i][j] != null)
+                {
+                    if(j < 11)
+                    {
+                        System.out.print(" " + this.boardProperty.get()[i][j]+ " ");
+                    }
+                    else
+                    {
+                        System.out.print("  " + boardProperty.get()[i][j] + " ");
+                    }
+
+                }
+                else {
+                    if(j < 11)
+                    {
+                        System.out.print(" _ ");
+                    }
+                    else
+                    {
+                        System.out.print("  _ ");
+                    }
+                }
+            }
+            System.out.println("");
+        }
     }
 }

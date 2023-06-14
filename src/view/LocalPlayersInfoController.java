@@ -56,6 +56,7 @@ public class LocalPlayersInfoController implements Initializable {
         Parent root = loader.load();
         stage.setTitle("Game");
         MainViewController view = loader.getController();
+        //view.createLabelTiles();
         view.setViewMode(allNames,"null","null", this.isLocal,this.isHost, numOfPlayers); // Pass the boolean parameter here
         stage.setScene(new Scene(root));
     }

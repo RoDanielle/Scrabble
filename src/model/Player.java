@@ -55,7 +55,7 @@ public class Player {
         int row = Integer.parseInt(_row);
         int col = Integer.parseInt(_col);
         boolean vertical;
-        if (_vertical.equals("V") || _vertical.equals("v"))
+        if (_vertical.equals("vertical"))
             vertical = true;
         else
             vertical = false;

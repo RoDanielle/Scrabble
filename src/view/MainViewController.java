@@ -12,12 +12,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import viewModel.MainViewModel;
 import javafx.beans.property.StringProperty;
 import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -34,7 +36,7 @@ public class MainViewController implements Initializable{
     @FXML GridPane labelGrid;
     //@FXML private Label[][] labelGrid;
     @FXML
-    private ListView<String> tilesListView;
+    private GridPane tilesListView;
 
     // vars for user word (query)
     @FXML
@@ -47,12 +49,23 @@ public class MainViewController implements Initializable{
     @FXML private Button submitWord;
     @FXML private Button passTurn;
 
+    // var for user challenge
+    @FXML private Button challengeB;
+    @FXML private Button passChallenge;
+    @FXML AnchorPane container;
+    @FXML private Button Colors;
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         row.getItems().addAll(rowAndCol);
         col.getItems().addAll(rowAndCol);
         vertical.getItems().addAll(ver);
+        //this.tilesListView = new GridPane();
+        //this.labelGrid = new GridPane();
+        //this.container = new AnchorPane();
     }
 
     @FXML
@@ -67,6 +80,28 @@ public class MainViewController implements Initializable{
             s_row = row.getValue();
             s_col = col.getValue();
             s_vertical = vertical.getValue();
+
+            if(s_vertical == "vertical")
+            {
+                for(int i=0; i<s_word.length(); i++)
+                {
+                    labelGrid.add(new Label(s_word.charAt(i)+""), Integer.parseInt(s_col), Integer.parseInt(s_row)+i);
+                    Label l = new Label("temp");
+                    l.setStyle("-fx-background-color: #00FFFF; -fx-border-color: black;");
+                    tilesListView.add(l, 0,0);
+
+
+                }
+            }
+            else //"horizontal"
+            {
+                for(int i=0; i<s_word.length(); i++)
+                {
+                    labelGrid.add(new Label(s_word.charAt(i)+""), Integer.parseInt(s_col)+i, Integer.parseInt(s_row));
+                }
+            }
+
+
             word.clear();
         }
         else // pass
@@ -81,9 +116,7 @@ public class MainViewController implements Initializable{
         viewModel.processQueryInput(userQueryInput);
     }
 
-    // var for user challenge
-    @FXML private Button challengeB;
-    @FXML private Button passChallenge;
+
 
     @FXML
     private void challengeHandler (ActionEvent event) throws Exception { //word|row|col|vertical
@@ -116,6 +149,15 @@ public class MainViewController implements Initializable{
         });
         */
 
+    }
+    @FXML
+    private void setColors(ActionEvent event) throws Exception {
+        for (int i=0; i<7; i++) {
+            Cell cell = new Cell<>();
+            //Label label = (Label) tilesListView.lookup("#label");
+            cell.setStyle("-fx-background-color: #00FFFF; -fx-border-color: black;");
+            tilesListView.add(cell, i, 0);
+        }
     }
 
 
@@ -186,6 +228,7 @@ public class MainViewController implements Initializable{
 
 
     private void BindAll() {
+        //createLabelTiles();
         //NAME - Bind name
         nameLabel.textProperty().bind(viewModel.nameProperty());
         //SCORE - Bind score
@@ -193,7 +236,7 @@ public class MainViewController implements Initializable{
         // MESSAGE - Bind message
         msgLabel.textProperty().bind(viewModel.MsgProperty());
         //TILES - Bind the items of the ListView to the tilesProperty in the ViewModel
-//        Bindings.bindContent(tilesListView.getItems(), viewModel.tilesProperty());
+        bindTiles();
         // Bind board
     //    this.initializeBoard();
 
@@ -202,7 +245,28 @@ public class MainViewController implements Initializable{
         this.isUserChallengeProperty = viewModel.isUserchallengeProperty();
     }
 
-    /*public void initializeBoard() {
+    private void bindTiles(){
+
+        for (int i=0; i<viewModel.tilesProperty().size(); i++) {
+            Label label = (Label) tilesListView.getChildren().get(i);
+            label.textProperty().bind(viewModel.tilesProperty().get(i));
+            //StringBuilder sb = new StringBuilder();
+           // sb.append(item);
+            //label.textProperty().bindBidirectional(item);
+
+
+        }
+    }
+    @FXML
+    public void createLabelTiles(ActionEvent event) throws Exception{
+        for (int i=0; i<7; i++) {
+            Label label = new Label("kaka");
+            label.setStyle("-fx-font-size: 16px; -fx-text-fill: blue;");
+            tilesListView.add(label, i, 0);
+        }
+    }
+/*
+    public void initializeBoard() {
        //String[][] initialBoard = new String[15][15]; - check if needed
         //viewModel.updateBoardFromModel(initialBoard); - check if needed
 
@@ -216,7 +280,9 @@ public class MainViewController implements Initializable{
             }
         }
     }
-    */
+
+ */
+
 
     public void initializeBoard() {
         //String[][] initialBoard = new String[15][15]; - check if needed

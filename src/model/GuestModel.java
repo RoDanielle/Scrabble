@@ -196,7 +196,7 @@ public class GuestModel extends Observable implements GameModel{
     }
 
     public void updateMatrixBoard(String word, String row, String col, String vertical) {
-        if(vertical.equals("v") || vertical.equals("V"))
+        if(vertical.equals("vertical"))
         {
             for(int i = 0; i < word.length(); i++)
             {

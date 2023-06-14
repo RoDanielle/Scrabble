@@ -533,7 +533,7 @@ public class HostModel extends Observable implements GameModel {
                 if (word.charAt(i) == '_')
                 {
 
-                    if (vertical.equals("V") ||  vertical.equals("v"))
+                    if (vertical.equals("vertical"))
                     {
                         chars[i] = this.boardObject.getTiles()[Integer.parseInt(row) + i][Integer.parseInt(col)].letter;
                     }
