@@ -44,7 +44,6 @@ public class ConnectController {
                 stage.setTitle("Scrabble");
                 MainViewController view = loader.getController();
                 view.setViewMode(s_name,s_ip,s_port,isHost,false,1);
-                view.initializeBoard();
                 stage.setScene(new Scene(root));
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

@@ -334,6 +334,11 @@ public class HostModel extends Observable implements GameModel {
             this.current_player.wordDetails[2] = col;
             this.current_player.wordDetails[3] = vertical;
 
+            try {
+                ConnectToGameServer("localhost",8080);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
             if(testDictionary("Q",this.current_player.wordDetails[0],this.current_player.wordDetails[1], this.current_player.wordDetails[2], this.current_player.wordDetails[3],this.gameServerSocket)) // word found in dictionary
             {
@@ -356,6 +361,12 @@ public class HostModel extends Observable implements GameModel {
     public void setUserChallengeInput(String request){
         if(request.equals("c") || request.equals("C"))
         {
+            try {
+                ConnectToGameServer("localhost",8080);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             if (testDictionary("C",this.current_player.wordDetails[0],this.current_player.wordDetails[1], this.current_player.wordDetails[2], this.current_player.wordDetails[3],this.gameServerSocket))
             {
                 this.TryPutWordInBoard("C",this.current_player.wordDetails[0],this.current_player.wordDetails[1], this.current_player.wordDetails[2], this.current_player.wordDetails[3]);
@@ -374,7 +385,7 @@ public class HostModel extends Observable implements GameModel {
         this.setMessage("turn over");
     }
 
-    public void playerTurn(Socket gameSocket, Player player){
+    public void playerTurn(Player player){
         System.out.println("entered player turn function");
         giveTiles(player); // in first turn gives 7 tiles
         this.notifyObserver("name");
@@ -461,12 +472,13 @@ public class HostModel extends Observable implements GameModel {
         while (gameRunning)
         {
             this.current_player = this.players.get(0);
+            /*
             try {
                 ConnectToGameServer(gameServerIP,gameServerPort);
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-            playerTurn(this.gameServerSocket, this.current_player);
+            }*/
+            playerTurn(this.current_player);
 
             try {
                 Thread.sleep(30000);

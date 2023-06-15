@@ -44,7 +44,7 @@ public class HostRemoteInfoController implements Initializable {
         Stage stage = (Stage) submit.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
         Parent root = loader.load();
-        stage.setTitle("Game");
+        stage.setTitle("Scrabble Game");
         MainViewController view = loader.getController();
         view.setViewMode(s_hostName,"null","null", this.isHost, this.isLocal, Integer.parseInt(num));
         stage.setScene(new Scene(root));

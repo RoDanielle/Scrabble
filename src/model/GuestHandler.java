@@ -185,9 +185,13 @@ public class GuestHandler implements Runnable {
                     {
                         guestPlayer.name = guestResponse[5];
                     }
-
+                    System.out.println("REACHED PLAYER QUERY ");
+                    // TODO - CHANGE THE ! HERE , DELETE IT
+                    this.myHost.ConnectToGameServer("localhost",8080);
                     if(this.myHost.testDictionary("Q",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) // word found in dictionary
                     {
+                        System.out.println("REACHED PLAYER QUERY TRUE");
+
                         toGuest = "2" + "|" + "true";
                         Word w = guestPlayer.create_word(guestResponse[1], guestResponse[2], guestResponse[3], guestResponse[4]);
                         int score = this.myHost.getBoardObject().tryPlaceWord(w);
@@ -206,6 +210,10 @@ public class GuestHandler implements Runnable {
                         guestResponse = inFromClient.readLine().split("[|]");
                         //guestResponse = this.myHost.read_from_socket(this.clientSocket).split("[|]");
                         if (guestResponse[1].equals("c") || guestResponse[1].equals("C")) {
+                            System.out.println("REACHED PLAYER CHALLENGE");
+
+                            this.myHost.ConnectToGameServer("localhost", 8080);
+
                             if (this.myHost.testDictionary("C",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) //challenge return true
                             {
                                 toGuest = "3" + "|true";

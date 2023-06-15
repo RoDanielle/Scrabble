@@ -202,7 +202,7 @@ public class GuestModel extends Observable implements GameModel{
             {
                 if(word.charAt(i) != '_')
                 {
-                    this.board[Integer.parseInt(row) + i][Integer.parseInt(col)] = String.valueOf(word.charAt(i));
+                    this.board[Integer.parseInt(row) + i][Integer.parseInt(col)] = String.valueOf(word.charAt(i)) + "," + letterToScore.get(String.valueOf(word.charAt(i)));
                 }
             }
         }
@@ -212,7 +212,7 @@ public class GuestModel extends Observable implements GameModel{
             {
                 if(word.charAt(i) != '_')
                 {
-                    this.board[Integer.parseInt(row)][Integer.parseInt(col) + i] = String.valueOf(word.charAt(i));
+                    this.board[Integer.parseInt(row)][Integer.parseInt(col) + i] = String.valueOf(word.charAt(i)) + "," + letterToScore.get(String.valueOf(word.charAt(i)));
                 }
             }
         }
@@ -264,6 +264,7 @@ public class GuestModel extends Observable implements GameModel{
         if(fromHost[1].equals("true") && !fromHost[4].equals(this.guest_player.name)) // other users word was placed on board
         {
             wordEnteredByOtherUser(fromHost);
+            //this.notifyObserver("board");
             this.setMessage(fromHost[4] + " put a new word in the board");
         }
 
@@ -312,6 +313,7 @@ public class GuestModel extends Observable implements GameModel{
 
     public void wordEnteredByOtherUser(String[] fromHost)
     {
+        System.out.println("updating word by other user");
         updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
     }
 

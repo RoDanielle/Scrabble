@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 
@@ -25,7 +24,6 @@ public class HostLocalInfoController implements Initializable {
 
     @FXML private Button submit;
     @FXML private Label question;
-    //@FXML private Label name;
     @FXML private ChoiceBox<String> numbers;
     private String[] nums = {"1","2","3","4"};
 

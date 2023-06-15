@@ -10,9 +10,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.ObjectProperty;
 import java.util.List;
 import javafx.beans.property.StringProperty;
 
@@ -21,12 +18,11 @@ import javafx.beans.property.StringProperty;
 public class MainViewModel implements Observer {
 
     private String message;
-   //private final ObservableList<String> tilesProperty;
     private final List<StringProperty> tilesProperty;
     private final StringProperty nameProperty;
     private final StringProperty msgProperty;
     private final IntegerProperty scoreProperty;
-    private final ObjectProperty<StringProperty[][]> boardProperty;
+    private final StringProperty[][] boardProperty;
     private final GameModel gameModel;
     private final BooleanProperty isUserTurn;
     private final BooleanProperty isUserChallenge;
@@ -46,7 +42,7 @@ public class MainViewModel implements Observer {
         // tiles
         this.tilesProperty = FXCollections.observableArrayList();
         // board
-        this.boardProperty = new SimpleObjectProperty<>();
+        this.boardProperty = new StringProperty[15][15];
         // name
         this.nameProperty = new SimpleStringProperty();
         // score
@@ -56,7 +52,33 @@ public class MainViewModel implements Observer {
 
         this.isUserTurn = new SimpleBooleanProperty(false);
         this.isUserChallenge = new SimpleBooleanProperty(false);
+
+        initializeTiles();
+        initializeBoard();
     }
+
+    private void initializeTiles()
+    {
+        for(int i = 0; i < 7; i++)
+        {
+            StringProperty strprop = new SimpleStringProperty();
+            tilesProperty.add(strprop);
+        }
+    }
+
+    private void initializeBoard()
+    {
+        for(int i = 0; i < 15; i++)
+        {
+            for(int j = 0; j < 15; j++)
+            {
+                StringProperty strprop = new SimpleStringProperty("      ");
+                boardProperty[i][j] = strprop;
+            }
+        }
+    }
+
+
 
 
     @Override
@@ -77,7 +99,9 @@ public class MainViewModel implements Observer {
             }
             else if(arg.equals("board"))
             {
-                updateBoardFromModel(gameModel.getBoard());
+                Platform.runLater(() -> {
+                    updateBoardFromModel(gameModel.getBoard());
+                });
             }
             else if(arg.equals("tiles"))
             {
@@ -91,7 +115,6 @@ public class MainViewModel implements Observer {
                 if(message.contains("turn") && !message.contains("over") && !message.contains("wait"))
                 {
                     Platform.runLater(() -> {
-                        // Update the bound property here
                         updateMessageFromModel(message); // messages to show on screen without getting input from user
                     });
                     startUserQueryTurn();
@@ -101,7 +124,6 @@ public class MainViewModel implements Observer {
                     startUserChallengeTurn();
                 }
                 else {
-                    //updateMessageFromModel(message); // messages to show on screen without getting input from user
                     Platform.runLater(() -> {
                         updateMessageFromModel(message); // messages to show on screen without getting input from user
                     });
@@ -118,17 +140,14 @@ public class MainViewModel implements Observer {
         return isUserChallenge;
     }
     public void startUserQueryTurn() {
-        // Perform any necessary actions to set up the user's turn
         isUserTurn.set(true);
-        System.out.println("set user turn to true in viewmodel");
     }
 
     public void startUserChallengeTurn() {
-        // Perform any necessary actions to set up the user's turn
         isUserChallenge.set(true);
     }
 
-    public void processQueryInput(String userInput) {  // TODO - should be: word|row|col|vertical from View
+    public void processQueryInput(String userInput) {  //  word|row|col|vertical from View
         System.out.println("entered query pros");
         // TODO  - maybe do validations with users tiles
         // TODO - make all word letters to Uppercase before moving to model
@@ -162,12 +181,11 @@ public class MainViewModel implements Observer {
 
     // tiles update and get
     public void updateTilesFromModel(List<String> updatedTiles) {
-        tilesProperty.clear();
+        int i = 0;
         for(String s : updatedTiles)
         {
-            StringProperty sp = new SimpleStringProperty();
-            sp.set(s);
-            tilesProperty.add(sp);
+            this.tilesProperty.get(i).setValue(s);
+            i++;
         }
     }
 
@@ -204,20 +222,20 @@ public class MainViewModel implements Observer {
     }
 
     // board update and get
-    public ObjectProperty<StringProperty[][]> boardProperty() {
+    public StringProperty[][] boardProperty() {
         return boardProperty;
     }
 
     public void updateBoardFromModel(String[][] updatedBoard) {
-        StringProperty[][] boardWrapper = new StringProperty[updatedBoard.length][updatedBoard[0].length];
-        for (int i = 0; i < updatedBoard.length; i++) {
-
-            for (int j = 0; j < updatedBoard[i].length; j++) {
-                boardWrapper[i][j] = new SimpleStringProperty(updatedBoard[i][j]);
+        for(int i = 0; i < 15; i++)
+        {
+            for(int j = 0; j < 15; j++)
+            {
+                if(updatedBoard[i][j] != null) {
+                    boardProperty[i][j].setValue(updatedBoard[i][j]);
+                }
             }
         }
-        boardProperty.set(boardWrapper);
-        //printmatrix();
     }
 
     public void printmatrix() // will move to view later on
@@ -234,15 +252,15 @@ public class MainViewModel implements Observer {
             System.out.print( i + " " );
             for(int j = 0; j < 15; j++)
             {
-                if(this.boardProperty.get()[i][j] != null)
+                if(this.boardProperty[i][j] != null)
                 {
                     if(j < 11)
                     {
-                        System.out.print(" " + this.boardProperty.get()[i][j]+ " ");
+                        System.out.print(" " + this.boardProperty[i][j]+ " ");
                     }
                     else
                     {
-                        System.out.print("  " + boardProperty.get()[i][j] + " ");
+                        System.out.print("  " + boardProperty[i][j] + " ");
                     }
 
                 }

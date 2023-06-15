@@ -1,31 +1,24 @@
 package view;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import viewModel.MainViewModel;
-import javafx.beans.property.StringProperty;
 import javafx.scene.layout.GridPane;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable{
 
     private MainViewModel viewModel;
+    @FXML AnchorPane fullScreen;
+
     // binded vars with the viewmodel
     @FXML
     private Label msgLabel;
@@ -33,8 +26,8 @@ public class MainViewController implements Initializable{
     private Label nameLabel;
     @FXML
     private Label scoreLabel;
-    @FXML GridPane labelGrid;
-    //@FXML private Label[][] labelGrid;
+    @FXML
+    private GridPane BoardGrid;
     @FXML
     private GridPane tilesListView;
 
@@ -52,9 +45,6 @@ public class MainViewController implements Initializable{
     // var for user challenge
     @FXML private Button challengeB;
     @FXML private Button passChallenge;
-    @FXML AnchorPane container;
-    @FXML private Button Colors;
-
 
 
     @Override
@@ -63,9 +53,6 @@ public class MainViewController implements Initializable{
         row.getItems().addAll(rowAndCol);
         col.getItems().addAll(rowAndCol);
         vertical.getItems().addAll(ver);
-        //this.tilesListView = new GridPane();
-        //this.labelGrid = new GridPane();
-        //this.container = new AnchorPane();
     }
 
     @FXML
@@ -81,27 +68,6 @@ public class MainViewController implements Initializable{
             s_col = col.getValue();
             s_vertical = vertical.getValue();
 
-            if(s_vertical == "vertical")
-            {
-                for(int i=0; i<s_word.length(); i++)
-                {
-                    labelGrid.add(new Label(s_word.charAt(i)+""), Integer.parseInt(s_col), Integer.parseInt(s_row)+i);
-                    Label l = new Label("temp");
-                    l.setStyle("-fx-background-color: #00FFFF; -fx-border-color: black;");
-                    tilesListView.add(l, 0,0);
-
-
-                }
-            }
-            else //"horizontal"
-            {
-                for(int i=0; i<s_word.length(); i++)
-                {
-                    labelGrid.add(new Label(s_word.charAt(i)+""), Integer.parseInt(s_col)+i, Integer.parseInt(s_row));
-                }
-            }
-
-
             word.clear();
         }
         else // pass
@@ -115,7 +81,6 @@ public class MainViewController implements Initializable{
         System.out.println("FROM VIEW: " + userQueryInput);
         viewModel.processQueryInput(userQueryInput);
     }
-
 
 
     @FXML
@@ -139,28 +104,6 @@ public class MainViewController implements Initializable{
     private BooleanProperty isUserChallengeProperty;
 
 
-    private void setupUI() {
-        // Set up your JavaFX UI components
-
-        /*
-        // Update the UI components based on changes to the board property
-        viewModel.boardProperty().addListener((observable, oldValue, newValue) -> {
-            updateBoardUI(newValue);
-        });
-        */
-
-    }
-    @FXML
-    private void setColors(ActionEvent event) throws Exception {
-        for (int i=0; i<7; i++) {
-            Cell cell = new Cell<>();
-            //Label label = (Label) tilesListView.lookup("#label");
-            cell.setStyle("-fx-background-color: #00FFFF; -fx-border-color: black;");
-            tilesListView.add(cell, i, 0);
-        }
-    }
-
-
     public void setViewMode(String name, String ip, String port, boolean isHost, boolean isLocal, int numOfPlayers)
     {
         if(isHost) // host
@@ -179,9 +122,9 @@ public class MainViewController implements Initializable{
             this.viewModel = new MainViewModel(name, ip, port, false, false, 1);
         }
 
+        this.UILoarder();
         this.BindAll();
-
-
+        
         // Observe the ViewModel's properties
         viewModel.isUserTurnProperty().addListener((observable, oldValue, newValue) -> { // turn (query) "notifier"
             if (newValue) {
@@ -197,38 +140,19 @@ public class MainViewController implements Initializable{
 
         viewModel.isUserchallengeProperty().addListener((observable, oldValue, newValue) -> { // challenge "notifier"
             if (newValue) {
+                System.out.println("view got user challenge true");
                 challengeB.setDisable(false);
                 passChallenge.setDisable(false);
             } else {
+                System.out.println("view got user challenge false");
                 challengeB.setDisable(true);
                 passChallenge.setDisable(true);
             }
         });
-
     }
-
-    /*
-    private void updateBoardUI(String[][] board) {
-     // Update the UI components based on the board property
-    // ...
-
-        boardGridPane.getChildren().clear();
-
-        for (int row = 0; row < board.length; row++) {
-            for (int col = 0; col < board[row].length; col++) {
-               Label label = new Label(board[row][col]);
-                boardGridPane.add(label, col, row);
-            }
-     }
-
-    // ...
-    }
-     */
-
-
 
     private void BindAll() {
-        //createLabelTiles();
+
         //NAME - Bind name
         nameLabel.textProperty().bind(viewModel.nameProperty());
         //SCORE - Bind score
@@ -236,9 +160,9 @@ public class MainViewController implements Initializable{
         // MESSAGE - Bind message
         msgLabel.textProperty().bind(viewModel.MsgProperty());
         //TILES - Bind the items of the ListView to the tilesProperty in the ViewModel
-        bindTiles();
+        this.bindTiles();
         // Bind board
-    //    this.initializeBoard();
+        this.bindBoard();
 
         // Bind query and challenge (will not show to the user)
         this.isUserTurnProperty = viewModel.isUserTurnProperty();
@@ -246,56 +170,148 @@ public class MainViewController implements Initializable{
     }
 
     private void bindTiles(){
+        System.out.println("entered bind tiles func");
+        int i = 0;
 
-        for (int i=0; i<viewModel.tilesProperty().size(); i++) {
-            Label label = (Label) tilesListView.getChildren().get(i);
-            label.textProperty().bind(viewModel.tilesProperty().get(i));
-            //StringBuilder sb = new StringBuilder();
-           // sb.append(item);
-            //label.textProperty().bindBidirectional(item);
-
-
+        for (Node node : tilesListView.getChildren()) {
+            if (node instanceof Label && i < viewModel.tilesProperty().size()) {
+                Label label = (Label) node;
+                label.textProperty().bind(viewModel.tilesProperty().get(i));
+                i++;
+            }
         }
     }
-    @FXML
-    public void createLabelTiles(ActionEvent event) throws Exception{
-        for (int i=0; i<7; i++) {
-            Label label = new Label("kaka");
-            label.setStyle("-fx-font-size: 16px; -fx-text-fill: blue;");
+
+    private void bindBoard()
+    {
+        int i = 0;
+        int j = 0;
+        for (Node node : BoardGrid.getChildren()) {
+            if (node instanceof Label) {
+                Label label = (Label) node;
+                label.textProperty().bind(viewModel.boardProperty()[i][j]);
+                    i++;
+                if(i == 15)
+                {
+                    i = 0;
+                    j++;
+                }
+            }
+        }
+    }
+
+    private void screenInit(){
+        fullScreen.setStyle("-fx-background-color: white;"); // Set a background color for demonstration purposes
+        // Set the anchor constraints to cover the entire screen
+        AnchorPane.setTopAnchor(fullScreen, 0.0);
+        AnchorPane.setRightAnchor(fullScreen, 0.0);
+        AnchorPane.setBottomAnchor(fullScreen, 0.0);
+        AnchorPane.setLeftAnchor(fullScreen, 0.0);
+
+    }
+
+    private void createTiles() {
+        tilesListView.addRow(0);
+        for (int i = 0; i < 7; i++) {
+            tilesListView.addColumn(i);
+        }
+        tilesListView.setStyle("-fx-font-size: 16px; -fx-text-fill: green; -fx-background-color: pink;");
+        tilesListView.setLayoutX(70);
+        tilesListView.setLayoutY(718);
+        tilesListView.setGridLinesVisible(true);
+
+        for (int i = 0; i < 7; i++) {
+            Label label = new Label();
+            label.setStyle("-fx-font-size: 16px; -fx-text-fill: blue; -fx-background-color: yellow;");
+            label.setText("index " + i);
             tilesListView.add(label, i, 0);
         }
     }
-/*
-    public void initializeBoard() {
-       //String[][] initialBoard = new String[15][15]; - check if needed
-        //viewModel.updateBoardFromModel(initialBoard); - check if needed
 
-        // Bind the labelGrid to the boardProperty in the ViewModel
-        ObjectProperty<StringProperty[][]> boardProperty = viewModel.boardProperty();
-        for (int i = 0; i < labelGrid.length; i++) {
-            for (int j = 0; j < labelGrid[i].length; j++) {
-                int row = i;
-                int col = j;
-                labelGrid[row][col].textProperty().bindBidirectional(boardProperty.get()[row][col]);
-            }
+    private void creatBoard(){
+        for (int i = 0; i < 15; i++) {
+            BoardGrid.addColumn(i);
+            BoardGrid.addRow(i);
         }
+        //BoardGrid.setStyle("-fx-font-size: 16px; -fx-text-fill: red; -fx-background-color: lightGrey;");
+        BoardGrid.setLayoutX(28);
+        BoardGrid.setLayoutY(84);
+        BoardGrid.setGridLinesVisible(true);
+
+       for(int i = 0; i < 15; i ++)
+       {
+           for(int j = 0; j < 15; j++)
+           {
+               Label label = new Label();
+               BoardGrid.add(setColor(i,j,label), i, j);
+           }
+       }
     }
 
- */
-
-
-    public void initializeBoard() {
-        //String[][] initialBoard = new String[15][15]; - check if needed
-        //viewModel.updateBoardFromModel(initialBoard); - check if needed
-
-        // Bind the labelGrid to the boardProperty in the ViewModel
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
-                Label cellLabel = new Label();
-                labelGrid.add(cellLabel, i, j);
-
-            }
+    private Label setColor(int i,int j,Label label){
+        if(i == 7 && j == 7)
+        {
+            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: gold;");
         }
+        else if(isRed(i,j))
+        {
+            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: red;");
+        }
+        else if(isYellow(i,j))
+        {
+            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: yellow;");
+        }
+        else if(isBlue(i,j))
+        {
+            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: blue;");
+        }
+        else if(isBabyBlue(i,j))
+        {
+            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: lightBlue;");
+        }
+        else
+            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: green;");
+
+        return label;
+    }
+
+    private boolean isRed(int i, int j)
+    {
+        if((i % 7 == 0 && j % 7 == 0) && i != 7 && j!= 7)
+            return true;
+
+        return false;
+    }
+
+    private boolean isYellow(int i, int j)
+    {
+        if(((0<i && i<5) && (i==j || i+j == 14)) || ((9 < i && i < 14) && (i == j || i + j == 14)))
+            return true;
+
+        return false;
+    }
+
+    private boolean isBlue(int i, int j)
+    {
+        if(((i == 1 || i == 3) && (j == 5 || j == 9)) || ((i== 5 || i == 9) && (j == 1 || j == 5 || j == 9 || j==13)))
+            return true;
+
+        return false;
+    }
+
+    private boolean isBabyBlue(int i, int j)
+    {
+        if(((i == 8 || i == 6) && (j == 8 || j == 6)) || ((i == 3 || i == 11) && (j % 7 == 0)) || ((j == 3 || j == 11) && i% 7 == 0) ||((i == 2 || i == 12) && (j== 6 || j ==8)) || ((i == 8 || i == 6) && (j == 2 || j == 12)))
+            return true;
+
+        return false;
+    }
+
+    private void UILoarder()
+    {
+        screenInit();
+        createTiles();
+        creatBoard();
     }
 
 }

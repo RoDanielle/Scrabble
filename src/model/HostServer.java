@@ -70,27 +70,43 @@ public class HostServer {
 
         while (this.hostModel.gameRunning) {
             Socket gameServer = null;
-            try {
-                this.hostModel.ConnectToGameServer("localhost",8080); // connect to game server for each turn
-                gameServer = this.hostModel.gameServerSocket;
+           // try {
+                //this.hostModel.ConnectToGameServer("localhost",8080); // connect to game server for each turn
+                //gameServer = this.hostModel.gameServerSocket;
                 // Check if it's the server's turn
                 if (isHostTurn) {
                     hostModel.setMessage("trying to connect to game server");
                     int hostScore = this.hostModel.getScore();
-                    this.hostModel.playerTurn(gameServer, this.hostModel.current_player);
-                    // Set the flag to indicate the client's turn
-                    isHostTurn = false;
-
+                    this.hostModel.playerTurn(this.hostModel.current_player);
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     if(hostScore != this.hostModel.getScore()) // host added a word into the board
                     {
                         // TODO - notify all remote players the board was changed
                         notifyRemotes(this.hostModel.current_player.wordDetails, this.hostModel.current_player.name);
                     }
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    // Set the flag to indicate the client's turn
+                    isHostTurn = false;
                 }
                 else {
+                    System.out.println("entered guest section - turn");
+
                     // Client's turn logic
                     clientHandlers.get(0).setClientTurn(true);
                     clientHandlers.get(0).run();
+                    try {
+                        Thread.sleep(30000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     clientHandlers.get(0).setClientTurn(false);
                     Guestturns +=1; // a guest played its turn
 
@@ -102,6 +118,12 @@ public class HostServer {
                         clientHandlers.get(0).addedWordStr = "null";
                     }
 
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     GuestHandler tmp = clientHandlers.remove(0);
                     clientHandlers.add(tmp);
 
@@ -111,9 +133,9 @@ public class HostServer {
                         Guestturns = 0;
                     }
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+           // } catch (IOException e) {
+               // throw new RuntimeException(e);
+            //}
             if(passCount()) // count turn passes in order to know if the game needs to be stopped
             {
                 this.hostModel.stopGame();

@@ -54,9 +54,8 @@ public class LocalPlayersInfoController implements Initializable {
         Stage stage = (Stage) submitNames.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
         Parent root = loader.load();
-        stage.setTitle("Game");
+        stage.setTitle("Scrabble Game");
         MainViewController view = loader.getController();
-        //view.createLabelTiles();
         view.setViewMode(allNames,"null","null", this.isLocal,this.isHost, numOfPlayers); // Pass the boolean parameter here
         stage.setScene(new Scene(root));
     }
