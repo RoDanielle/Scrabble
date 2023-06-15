@@ -89,8 +89,6 @@ public class HostServer {
                     }
                     if(hostScore != this.hostModel.getScore()) // host added a word into the board
                     {
-                        System.out.println("trying to notify guests");
-                        // TODO - notify all remote players the board was changed
                         notifyRemotes(this.hostModel.current_player.wordDetails, this.hostModel.current_player.name);
                     }
                     try {
@@ -115,7 +113,7 @@ public class HostServer {
                     clientHandlers.get(0).setClientTurn(false);
                     Guestturns +=1; // a guest played its turn
 
-                    // TODO - notify all other remote players and the host the board was changed
+                    // notify all other remote players and the host the board was changed
                     if(!clientHandlers.get(0).addedWordStr.equals("null")) // user put a word in the board
                     {
                         notifyBoardChanged(clientHandlers.get(0).addedWordStr, clientHandlers.get(0).addedWord);
