@@ -77,14 +77,19 @@ public class HostServer {
                 if (isHostTurn) {
                     hostModel.setMessage("trying to connect to game server");
                     int hostScore = this.hostModel.getScore();
-                    this.hostModel.playerTurn(this.hostModel.current_player);
+
+                    new Thread(()-> {
+                        this.hostModel.playerTurn(this.hostModel.current_player);
+                    }).start();
+
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(30000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                     if(hostScore != this.hostModel.getScore()) // host added a word into the board
                     {
+                        System.out.println("trying to notify guests");
                         // TODO - notify all remote players the board was changed
                         notifyRemotes(this.hostModel.current_player.wordDetails, this.hostModel.current_player.name);
                     }
