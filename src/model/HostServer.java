@@ -75,38 +75,59 @@ public class HostServer {
                 //gameServer = this.hostModel.gameServerSocket;
                 // Check if it's the server's turn
                 if (isHostTurn) {
-                    hostModel.setMessage("trying to connect to game server");
                     int hostScore = this.hostModel.getScore();
 
-                    new Thread(()-> {
+                    Thread thread = new Thread(() -> {
+                        Boolean notOver = true;
                         this.hostModel.playerTurn(this.hostModel.current_player);
-                    }).start();
+                        while(notOver)
+                        {
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if(this.hostModel.getMessage().contains("turn over"))
+                            {
+                                notOver = false;
+                            }
+                        }
+                    });
+                    thread.start();
 
                     try {
-                        Thread.sleep(30000);
+                        thread.join();
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
+
                     if(hostScore != this.hostModel.getScore()) // host added a word into the board
                     {
                         notifyRemotes(this.hostModel.current_player.wordDetails, this.hostModel.current_player.name);
                     }
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+
                     // Set the flag to indicate the client's turn
                     isHostTurn = false;
                 }
                 else {
-                    System.out.println("entered guest section - turn");
 
                     // Client's turn logic
                     clientHandlers.get(0).setClientTurn(true);
-                    clientHandlers.get(0).run();
+
+                    Thread guestThread = new Thread(() -> {
+
+                        clientHandlers.get(0).run();
+                    });
+                    guestThread.start();
+
                     try {
-                        Thread.sleep(30000);
+                        guestThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -119,12 +140,6 @@ public class HostServer {
                         notifyBoardChanged(clientHandlers.get(0).addedWordStr, clientHandlers.get(0).addedWord);
                         clientHandlers.get(0).addedWord = null;
                         clientHandlers.get(0).addedWordStr = "null";
-                    }
-
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
                     }
 
                     GuestHandler tmp = clientHandlers.remove(0);
@@ -197,7 +212,7 @@ public class HostServer {
                 }
             }
             String win = "The winner is: " + winner.name + " with: " + winner.getScore() + " points";
-            this.hostModel.setMessage(win);
+            this.hostModel.setMessage(win + ", Game Over");
             this.hostModel.gameServerSocket.close();
             win = "4|" + win;
             for(GuestHandler guest : this.clientHandlers)

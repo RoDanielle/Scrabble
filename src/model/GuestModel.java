@@ -271,6 +271,11 @@ public class GuestModel extends Observable implements GameModel{
         else if(fromHost[1].equals("true") && fromHost[4].equals(this.guest_player.name)) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
         {
             wordEnteredByMe(fromHost);
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             this.setMessage("turn over");
         }
         else // my query request returned false received:"2|false|name"
@@ -301,7 +306,7 @@ public class GuestModel extends Observable implements GameModel{
     public void gameOver(String fromHost)
     {
         // TODO - make into a popup screen
-        this.setMessage(fromHost + "Game Over"); // winner message
+        this.setMessage(fromHost + ", Game Over"); // winner message
         this.gameRunning = false;
 
         try{
@@ -325,7 +330,6 @@ public class GuestModel extends Observable implements GameModel{
             updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
             this.addScore(Integer.parseInt(fromHost[2]));
 
-            //this.guest_player.removeStrTiles(fromHost[5]); // remove the tiles used in the word that was put into the board -- guesthandler handels this part
             this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board (recieved all of my tiles)
         }
         else //"2|true|0|name"
@@ -340,7 +344,6 @@ public class GuestModel extends Observable implements GameModel{
             this.setMessage( "your word was placed on the board, you get " + tmp_score + " points");
             updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
             this.addScore(tmp_score);
-            //this.guest_player.removeStrTiles(fromHost[5]);
             this.addTiles(fromHost[3]);
         }
         else // only challenge correct received: "3|true|0|name"
@@ -392,6 +395,11 @@ public class GuestModel extends Observable implements GameModel{
                         break;
                     case "1": // my turn
                         printboard();
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         this.setMessage("your turn");
                         break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 

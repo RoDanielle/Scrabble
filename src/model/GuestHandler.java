@@ -36,8 +36,6 @@ public class GuestHandler implements Runnable {
     private HostModel myHost;
     public Socket clientSocket;
     private boolean isClientTurn;
-    private BufferedReader inFromGameS;
-    private PrintWriter outToGameS;
     private BufferedReader inFromClient;
     private PrintWriter outToClient;
 
@@ -71,8 +69,6 @@ public class GuestHandler implements Runnable {
     public void closeAllFiles()  // TODO - check if we need to close the input output files when games finishes
     {
         try {
-            inFromGameS.close();
-            outToGameS.close();
             inFromClient.close();
             outToClient.close();
         } catch (IOException e) {
@@ -94,7 +90,6 @@ public class GuestHandler implements Runnable {
     private void turnNotifier()
     {
         outToClient.println("1|your turn");
-        //this.myHost.write_to_socket("1|your turn",this.clientSocket);
     }
 
     public void wordOkResponse(String msgTag, String word, String row, String col,String vertical, int score, Word w){
@@ -105,7 +100,6 @@ public class GuestHandler implements Runnable {
         this.outToClient.println(toGuest);
         this.outToClient.flush();
 
-        //this.myHost.write_to_socket(toGuest,this.clientSocket);
         this.addedWord = w;
         this.addedWordStr = toGuest;
     }
@@ -116,7 +110,6 @@ public class GuestHandler implements Runnable {
         guestPlayer.decreaseScore(10);
         outToClient.println(toGuest);
         outToClient.flush();
-        //this.myHost.write_to_socket(toGuest, this.clientSocket);
     }
 
     public void wordPlacementFailed(String msgTag, Word w)
@@ -124,7 +117,6 @@ public class GuestHandler implements Runnable {
         String toGuest = msgTag + "|0|" + guestPlayer.name; //"2|true|0|name"
         outToClient.println(toGuest);
         outToClient.flush();
-        //this.myHost.write_to_socket(toGuest,this.clientSocket);
 
         List<Tile> tmplst = new ArrayList<>();
         tmplst = Arrays.asList(w.tiles);
@@ -168,15 +160,11 @@ public class GuestHandler implements Runnable {
             }
 
             if (isClientTurn()) {  // Check if it's the client's turn
-                // communication with game server for query and challenge
-                //inFromGameS = new BufferedReader(new InputStreamReader(this.myHost.gameServerSocket.getInputStream()));
-                //outToGameS = new PrintWriter(this.myHost.gameServerSocket.getOutputStream(), true);
 
                 // Client's turn logic
 
                 turnNotifier(); // case 1
                 guestResponse = inFromClient.readLine().split("[|]");
-                //guestResponse = this.myHost.read_from_socket(this.clientSocket).split("[|]"); // word from user
                 updateRequest(guestResponse);
 
                 if (!guestResponse[1].equals("xxx") && !guestResponse[1].equals("XXX"))
@@ -208,7 +196,6 @@ public class GuestHandler implements Runnable {
                     {
                         toGuest = "2" + "|" + "false" + guestPlayer.name; //query return false "2|false|name"
                         guestResponse = inFromClient.readLine().split("[|]");
-                        //guestResponse = this.myHost.read_from_socket(this.clientSocket).split("[|]");
                         if (guestResponse[1].equals("c") || guestResponse[1].equals("C")) {
                             System.out.println("REACHED PLAYER CHALLENGE");
 

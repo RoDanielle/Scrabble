@@ -124,6 +124,12 @@ public class MainViewModel implements Observer {
                     startUserChallengeTurn();
                 }
                 else {
+                    /*
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }*/
                     Platform.runLater(() -> {
                         updateMessageFromModel(message); // messages to show on screen without getting input from user
                     });
@@ -215,6 +221,11 @@ public class MainViewModel implements Observer {
     // message update and get
     public void updateMessageFromModel(String msg)
     {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         msgProperty.set(msg);
     }
     public StringProperty MsgProperty() {
@@ -238,44 +249,4 @@ public class MainViewModel implements Observer {
         }
     }
 
-    public void printmatrix() // will move to view later on
-    {
-        System.out.println("the board from view model is: ");
-        System.out.print("  ");
-        for(int k = 0; k < 15; k++)
-        {
-            System.out.print(" " + k + " ");
-        }
-        System.out.println("");
-        for(int i = 0; i < 15; i++)
-        {
-            System.out.print( i + " " );
-            for(int j = 0; j < 15; j++)
-            {
-                if(this.boardProperty[i][j] != null)
-                {
-                    if(j < 11)
-                    {
-                        System.out.print(" " + this.boardProperty[i][j]+ " ");
-                    }
-                    else
-                    {
-                        System.out.print("  " + boardProperty[i][j] + " ");
-                    }
-
-                }
-                else {
-                    if(j < 11)
-                    {
-                        System.out.print(" _ ");
-                    }
-                    else
-                    {
-                        System.out.print("  _ ");
-                    }
-                }
-            }
-            System.out.println("");
-        }
-    }
 }

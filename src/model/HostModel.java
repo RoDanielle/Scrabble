@@ -156,6 +156,8 @@ public class HostModel extends Observable implements GameModel {
             }
         }
         this.notifyObserver("board");
+        this.setMessage("a new word was put into the board");
+
         printmatrix(); // TODO - delete after view is done
     }
 
@@ -386,7 +388,6 @@ public class HostModel extends Observable implements GameModel {
     }
 
     public void playerTurn(Player player){
-        System.out.println("entered player turn function");
         giveTiles(player); // in first turn gives 7 tiles
         this.notifyObserver("name");
         this.notifyObserver("score");
@@ -457,12 +458,10 @@ public class HostModel extends Observable implements GameModel {
         this.hostPlayer.setName(playersNames[0]);
         this.current_player = hostPlayer;
         players.add(this.hostPlayer);
-        System.out.println("added a host player: " + playersNames[0]);
         for(int i = 1; i < playersNames.length; i++){
             Player player = new Player();
             player.setName(playersNames[i]);
             players.add(player);
-            System.out.println("added a new player: " + playersNames[i]);
         }
     }
     public void startGame_local(String gameServerIP, int gameServerPort){
