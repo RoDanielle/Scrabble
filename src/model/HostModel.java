@@ -50,6 +50,8 @@ public class HostModel extends Observable implements GameModel {
     public Player current_player; // in local game will have a different player in every turn, in remote game will hold only the host.
     // with this data member we will get the necessary information to show in view each turn
 
+
+
     public HostModel(String name, Boolean isLocal, int numPlayers) {
         this.isLocal = isLocal;
         this.hostPlayer = new Player();
@@ -260,28 +262,28 @@ public class HostModel extends Observable implements GameModel {
     public void GameManagement(boolean isLocal, String names){
 
         // use this after implementing game server changes
-        /*
+
         if(!GameServerAvailabilityCheck()) // the game server is not up - this host will create it
         {
             MyServer s=new MyServer(8080, new BookScrabbleHandler());
             s.start();
-        }*/
+        }
+
 
         if(isLocal)
         {
-            MyServer s=new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
-            System.out.println("started game server from host mode");
-            s.start(); // TODO - delete after implementing the game server changes
+            //MyServer s=new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
+            //s.start(); // TODO - delete after implementing the game server changes
             this.setLocalPlayers(names);
             startGame_local("localhost", 8080);
-            s.close();
+            //s.close();
             //this.gameServerSocket.close(); // needed to be called only after startGame_local stopped running, meaning after the game is over.
         }
         else { //remote
             this.hostPlayer.setName(names);
             this.current_player = hostPlayer;
-            MyServer s = new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
-            s.start(); //  TODO - delete after implementing the game server changes
+            //MyServer s = new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
+           // s.start(); //  TODO - delete after implementing the game server changes
             this.hs = new HostServer(this);
             this.hs.start();
             //s.close();
@@ -324,7 +326,7 @@ public class HostModel extends Observable implements GameModel {
         else
         {
             this.returnTiles(w, this.current_player);
-            this.setMessage("your word could not be put into the board, you get 0 points");
+            this.setMessage("wrong word or placement, you get 0 points, turn over");
         }
     }
 
@@ -426,6 +428,15 @@ public class HostModel extends Observable implements GameModel {
 
     public void returnTiles(Word word, Player player)
     {
+        for(int i = 0; i < word.getTiles().length; i++)
+        {
+            Tile t =  word.getTiles()[i];
+            if (t != null)
+                player.tiles.add(t);
+            word.getTiles()[i] = null;
+        }
+
+        /*
         List<Tile> tmplst = new ArrayList<>();
         tmplst = Arrays.stream(word.tiles).collect(Collectors.toList());
         while(tmplst.size() > 0)
@@ -433,7 +444,7 @@ public class HostModel extends Observable implements GameModel {
             Tile t = tmplst.remove(0);
             if(t != null)
                 player.tiles.add(t);   // give the player its tiles back
-        }
+        }*/
     }
 
     public void setTurns()
@@ -444,7 +455,7 @@ public class HostModel extends Observable implements GameModel {
             player.tiles.add(t);
         }
 
-        players.sort((a,b)->Character.getNumericValue(a.tiles.get(0).letter) - Character.getNumericValue(b.tiles.get(0).letter));
+        players.sort(Comparator.comparingInt(a -> Character.getNumericValue(a.tiles.get(0).letter)));
         for(Player player : players)
         {
             Tile t= player.tiles.remove(0);

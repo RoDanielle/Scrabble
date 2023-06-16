@@ -30,6 +30,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GuestHandler implements Runnable {
 
@@ -114,16 +115,16 @@ public class GuestHandler implements Runnable {
 
     public void wordPlacementFailed(String msgTag, Word w)
     {
-        String toGuest = msgTag + "|0|" + guestPlayer.name; //"2|true|0|name"
+        String toGuest = msgTag + "|0|" + "null" + "|" + guestPlayer.name; //"2|true|0|null|name"
         outToClient.println(toGuest);
         outToClient.flush();
 
-        List<Tile> tmplst = new ArrayList<>();
-        tmplst = Arrays.asList(w.tiles);
-        while (tmplst.size() > 0) {
-            Tile t = tmplst.remove(0);
+        for(int i = 0; i < w.getTiles().length; i++)
+        {
+            Tile t =  w.getTiles()[i];
             if (t != null)
-                guestPlayer.tiles.add(t);   // give the player its tiles back
+                guestPlayer.tiles.add(t);
+            w.getTiles()[i] = null;
         }
     }
     private void updateRequest(String[] request)
@@ -194,7 +195,7 @@ public class GuestHandler implements Runnable {
                     }
                     else
                     {
-                        toGuest = "2" + "|" + "false" + guestPlayer.name; //query return false "2|false|name"
+                        toGuest = "2" + "|" + "false" + "|" + "null" + "|" + "null" + "|" + guestPlayer.name; //query return false "2|false|null|null|name"
                         guestResponse = inFromClient.readLine().split("[|]");
                         if (guestResponse[1].equals("c") || guestResponse[1].equals("C")) {
                             System.out.println("REACHED PLAYER CHALLENGE");

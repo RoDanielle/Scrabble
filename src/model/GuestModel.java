@@ -259,8 +259,10 @@ public class GuestModel extends Observable implements GameModel{
         addTiles(fromHost);
     }
 
-    public void serverWordResponse(String[] fromHost)
+    public void serverWordResponse(String[] fromHost) //my word failed"2|true|0|null|name"
     {
+        for(String s : fromHost)
+            System.out.println(s);
         if(fromHost[1].equals("true") && !fromHost[4].equals(this.guest_player.name)) // other users word was placed on board
         {
             wordEnteredByOtherUser(fromHost);
@@ -278,7 +280,7 @@ public class GuestModel extends Observable implements GameModel{
             }
             this.setMessage("turn over");
         }
-        else // my query request returned false received:"2|false|name"
+        else // my query request returned false received:"2|false|null|null|name"
         {
            this.setMessage("challenge");
         }
@@ -333,7 +335,7 @@ public class GuestModel extends Observable implements GameModel{
             this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board (recieved all of my tiles)
         }
         else //"2|true|0|name"
-            this.setMessage("your word couldn't be fit into the board");
+            this.setMessage("wrong word or placement, you get 0 points, turn over");
     }
 
     public void challengeTrue(String[] fromHost)

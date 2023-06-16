@@ -257,7 +257,7 @@ public class MainViewController implements Initializable{
     private Label setColor(int i,int j,Label label){
         if(i == 7 && j == 7)
         {
-            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: gold;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: orange;");
         }
         else if(isRed(i,j))
         {
@@ -278,13 +278,17 @@ public class MainViewController implements Initializable{
         else
             label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: green;");
 
+
         return label;
     }
 
     private boolean isRed(int i, int j)
     {
+        if( i == j && i == 7)
+            return false;
+
         if((i % 7 == 0 && j % 7 == 0))
-            return true;
+                return true;
 
         return false;
     }
@@ -299,7 +303,7 @@ public class MainViewController implements Initializable{
 
     private boolean isBlue(int i, int j)
     {
-        if(((i == 1 || i == 3 || i == 11 || i == 13) && (j == 5 || j == 9)) || ((i== 5 || i == 9) && (j == 1 || j == 5 || j == 9 || j==13)))
+        if((i == 1 && (j == 5 || j == 9)) || (i == 5 && (j == 1 || j == 5 || j == 9 || j== 13)) || (i == 9 && (j == 1 || j == 5 || j == 9 || j== 13)) || (i == 13 && (j == 5 || j == 9)))
             return true;
 
         return false;

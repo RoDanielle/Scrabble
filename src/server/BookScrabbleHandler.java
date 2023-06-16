@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 public class BookScrabbleHandler implements ClientHandler{
 
-    //DictionaryManager dm = DictionaryManager.get();
     PrintWriter out;
     Scanner in;
 
@@ -18,15 +17,13 @@ public class BookScrabbleHandler implements ClientHandler{
         String[] str = in.next().split(",");
         String[] args = new String[str.length - 1];
         System.arraycopy(str, 1, args, 0, str.length - 1);
-            /*
+
         if(str[0].equalsIgnoreCase("check"))
         {
             System.out.println("entered check if server is up connection");
         }
 
-         */
-
-        if(str[0].equalsIgnoreCase("Q")){ // query
+        else if(str[0].equalsIgnoreCase("Q")){ // query
             System.out.println("checking query request");
             DictionaryManager dm = new DictionaryManager();
             if(dm.query(args))

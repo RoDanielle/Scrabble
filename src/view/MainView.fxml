@@ -10,16 +10,16 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="fullScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="821.0" prefWidth="953.0" style="-fx-background-color: #0;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainViewController">
+<AnchorPane fx:id="fullScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="821.0" prefWidth="953.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainViewController">
    <children>
       <Label fx:id="nameLabel" layoutX="669.0" layoutY="35.0" prefHeight="34.0" prefWidth="149.0">
          <font>
-            <Font size="22.0" />
+            <Font name="System Bold Italic" size="22.0" />
          </font>
       </Label>
       <Label fx:id="scoreLabel" layoutX="881.0" layoutY="30.0" prefHeight="44.0" prefWidth="51.0">
          <font>
-            <Font size="25.0" />
+            <Font name="System Bold Italic" size="25.0" />
          </font>
       </Label>
       <Label layoutX="565.0" layoutY="35.0" prefHeight="34.0" prefWidth="92.0" text="PLAYER NAME">
@@ -29,15 +29,15 @@
       </Label>
       <Label fx:id="msgLabel" layoutX="26.0" layoutY="30.0" prefHeight="44.0" prefWidth="542.0" text="MESSAGE BOX" textAlignment="CENTER" textFill="#f8039a">
          <font>
-            <Font size="18.0" />
+            <Font name="System Bold Italic" size="19.0" />
          </font>
       </Label>
-      <Label layoutX="832.0" layoutY="35.0" prefHeight="34.0" prefWidth="57.0" text="score">
+      <Label layoutX="832.0" layoutY="35.0" prefHeight="34.0" prefWidth="57.0" text="SCORE">
          <font>
-            <Font size="16.0" />
+            <Font size="14.0" />
          </font>
       </Label>
-      <AnchorPane layoutX="732.0" layoutY="442.0" prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane layoutX="732.0" layoutY="399.0" prefHeight="200.0" prefWidth="200.0">
          <children>
             <Button fx:id="passChallenge" layoutX="118.0" layoutY="113.0" mnemonicParsing="false" onAction="#challengeHandler" prefHeight="25.0" prefWidth="57.0" text="no">
                <font>
@@ -46,7 +46,7 @@
             </Button>
             <Label layoutX="52.0" layoutY="35.0" prefHeight="56.0" prefWidth="112.0" text="challenge?">
                <font>
-                  <Font size="19.0" />
+                  <Font name="System Bold" size="19.0" />
                </font>
             </Label>
             <Button fx:id="challengeB" layoutX="31.0" layoutY="113.0" mnemonicParsing="false" onAction="#challengeHandler" prefHeight="25.0" prefWidth="57.0" text="yes">
@@ -66,7 +66,10 @@
             <Label layoutX="17.0" layoutY="214.0" text="VERTICAL" />
             <Button fx:id="submitWord" layoutX="14.0" layoutY="248.0" mnemonicParsing="false" onAction="#submitWordHandler" text="SUBMIT WORD" />
             <ChoiceBox fx:id="vertical" layoutX="83.0" layoutY="210.0" prefHeight="17.0" prefWidth="82.0" />
-            <Label layoutX="23.0" layoutY="14.0" text="ENTER WORD DETAILS" />
+            <Label layoutX="23.0" layoutY="14.0" text="ENTER WORD DETAILS">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font></Label>
             <ChoiceBox fx:id="col" layoutX="83.0" layoutY="150.0" prefHeight="25.0" prefWidth="82.0" />
             <Button fx:id="passTurn" layoutX="139.0" layoutY="248.0" mnemonicParsing="false" onAction="#submitWordHandler" text="PASS" />
          </children>
@@ -107,9 +110,9 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Label layoutX="28.0" layoutY="671.0" prefHeight="34.0" prefWidth="149.0" text="my tiles">
+      <Label alignment="CENTER_RIGHT" layoutX="65.0" layoutY="673.0" prefHeight="39.0" prefWidth="112.0" text="my tiles" textOverrun="WORD_ELLIPSIS">
          <font>
-            <Font size="19.0" />
+            <Font name="System Bold Italic" size="27.0" />
          </font>
       </Label>
       <GridPane fx:id="tilesListView" gridLinesVisible="true" layoutX="70.0" layoutY="718.0" prefHeight="89.0" prefWidth="647.0">
@@ -276,5 +279,11 @@
             <Font size="14.0" />
          </font>
       </Label>
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="758.0" layoutY="701.0" prefHeight="34.0" prefWidth="149.0" style="-fx-background-color: blue;" text="TRIPLE LETTER SCORE" textAlignment="JUSTIFY" textFill="#e0d8d8" />
+      <Label alignment="CENTER" layoutX="758.0" layoutY="735.0" prefHeight="34.0" prefWidth="149.0" style="-fx-background-color: lightblue;" text="DOUBLE LETTER SCORE" />
+      <Label alignment="CENTER" layoutX="758.0" layoutY="668.0" prefHeight="34.0" prefWidth="149.0" style="-fx-background-color: yellow;" text="DOUBLE WORD SCOER" />
+      <Label alignment="CENTER" layoutX="758.0" layoutY="634.0" prefHeight="34.0" prefWidth="149.0" style="-fx-background-color: red;" text="TRIPPLE WORD SCORE" textFill="#fdf5f5" />
+      <Label alignment="CENTER" layoutX="758.0" layoutY="603.0" prefHeight="34.0" prefWidth="149.0" style="-fx-background-color: orange;" text="STAR - ONLY FIRST WORD" textFill="#410606" />
+      <Label alignment="CENTER" layoutX="758.0" layoutY="769.0" prefHeight="34.0" prefWidth="149.0" style="-fx-background-color: green;" text="REGULAR LETTER SCORE" textFill="#ede8e8" />
    </children>
 </AnchorPane>
