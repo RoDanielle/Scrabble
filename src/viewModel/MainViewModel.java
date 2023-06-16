@@ -124,12 +124,6 @@ public class MainViewModel implements Observer {
                     startUserChallengeTurn();
                 }
                 else {
-                    /*
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }*/
                     Platform.runLater(() -> {
                         updateMessageFromModel(message); // messages to show on screen without getting input from user
                     });
@@ -221,11 +215,6 @@ public class MainViewModel implements Observer {
     // message update and get
     public void updateMessageFromModel(String msg)
     {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         msgProperty.set(msg);
     }
     public StringProperty MsgProperty() {

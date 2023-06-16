@@ -76,7 +76,11 @@ public class HostServer {
                 // Check if it's the server's turn
                 if (isHostTurn) {
                     int hostScore = this.hostModel.getScore();
-
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     Thread thread = new Thread(() -> {
                         Boolean notOver = true;
                         this.hostModel.playerTurn(this.hostModel.current_player);
