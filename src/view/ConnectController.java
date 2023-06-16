@@ -31,9 +31,6 @@ public class ConnectController {
             s_port = port.getText();
             s_name = name.getText();
 
-            System.out.println(s_ip);
-            System.out.println(s_port);
-            System.out.println(s_name);
 
             // main view
             Stage stage = (Stage) connect.getScene().getWindow();
@@ -41,7 +38,7 @@ public class ConnectController {
             Parent root = null;
             try {
                 root = loader.load();
-                stage.setTitle("Scrabble");
+                stage.setTitle("Scrabble Game");
                 MainViewController view = loader.getController();
                 view.setViewMode(s_name,s_ip,s_port,isHost,false,1);
                 stage.setScene(new Scene(root));

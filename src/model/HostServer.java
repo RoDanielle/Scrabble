@@ -217,7 +217,9 @@ public class HostServer {
             }
             String win = "The winner is: " + winner.name + " with: " + winner.getScore() + " points";
             this.hostModel.setMessage(win + ", Game Over");
-            this.hostModel.gameServerSocket.close();
+            if(this.hostModel.gameServerSocket != null)
+                if(this.hostModel.gameServerSocket.isClosed())
+                    this.hostModel.gameServerSocket.close();
             win = "4|" + win;
             for(GuestHandler guest : this.clientHandlers)
             {

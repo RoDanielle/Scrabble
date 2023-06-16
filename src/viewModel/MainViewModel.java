@@ -6,6 +6,7 @@ import model.GameModel;
 import model.GuestModel;
 import model.HostModel;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -13,6 +14,7 @@ import javafx.collections.FXCollections;
 import java.util.List;
 import javafx.beans.property.StringProperty;
 
+import static java.lang.String.valueOf;
 
 
 public class MainViewModel implements Observer {
@@ -26,6 +28,7 @@ public class MainViewModel implements Observer {
     private final GameModel gameModel;
     private final BooleanProperty isUserTurn;
     private final BooleanProperty isUserChallenge;
+    private final boolean isLocal;
     public MainViewModel(String name, String ip, String port, boolean isHost, boolean isLocal, int numOfPlayers) {
         if(isHost)
         {
@@ -52,6 +55,8 @@ public class MainViewModel implements Observer {
 
         this.isUserTurn = new SimpleBooleanProperty(false);
         this.isUserChallenge = new SimpleBooleanProperty(false);
+
+        this.isLocal = isLocal;
 
         initializeTiles();
         initializeBoard();
@@ -149,8 +154,6 @@ public class MainViewModel implements Observer {
 
     public void processQueryInput(String userInput) {  //  word|row|col|vertical from View
         System.out.println("entered query pros");
-        // TODO  - maybe do validations with users tiles
-        // TODO - make all word letters to Uppercase before moving to model
         if (isUserTurn.get()) {
             // Process the user's input
             String[] request = userInput.split("[|]");
@@ -160,11 +163,47 @@ public class MainViewModel implements Observer {
             }
             else
             {
-                gameModel.setUserQueryInput(request[0],request[1],request[2],request[3]);
+                String upperCase = request[0].toUpperCase();
+
+                int charFound = 0;
+                List tilesStrs = new ArrayList<String>();
+                for(StringProperty str : this.tilesProperty)
+                {
+                    String s = str.getValue();
+                    tilesStrs.add(s);
+                }
+
+                for(int i = 0; i < upperCase.length(); i++)
+                {
+                    if(upperCase.charAt(i) != '_')
+                    {
+                        for(int j = 0; j < tilesStrs.size(); j++) {
+                            if(tilesStrs.get(j).toString().contains(valueOf(upperCase.charAt(i)))){
+                                tilesStrs.remove(i);
+                                charFound++;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        charFound++;
+                    }
+                }
+
+                if(charFound == upperCase.length())
+                {
+                    gameModel.setUserQueryInput(upperCase,request[1],request[2],request[3]);
+                }
+                else{
+                    this.updateMessageFromModel("invalid word, turn automatically passed");
+                    gameModel.setUserQueryInput("xxx","null","null","null");
+                }
             }
         }
         isUserTurn.set(false); // Indicate the end of the user's turn
     }
+
     public void processChallengeInput(String userInput) {
         System.out.println("entered challenge pros");
         if (isUserChallenge.get()) {

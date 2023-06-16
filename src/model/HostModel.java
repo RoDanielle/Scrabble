@@ -531,7 +531,11 @@ public class HostModel extends Observable implements GameModel {
             }
         }
         try {
-            this.gameServerSocket.close();
+            if(this.gameServerSocket != null)
+            {
+                if(!this.gameServerSocket.isClosed())
+                    this.gameServerSocket.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
