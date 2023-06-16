@@ -436,7 +436,7 @@ public class Board {
 
 	public boolean isRed(int i, int j)
 	{
-		if((i % 7 == 0 && j % 7 == 0) && i != 7 && j!= 7)
+		if((i % 7 == 0 && j % 7 == 0))
 			return true;
 
 		return false;
@@ -450,9 +450,9 @@ public class Board {
 		return false;
 	}
 
-	public boolean isBlue(int i, int j)
+	private boolean isBlue(int i, int j)
 	{
-		if(((i == 1 || i == 3) && (j == 5 || j == 9)) || ((i== 5 || i == 9) && (j == 1 || j == 5 || j == 9 || j==13)))
+		if(((i == 1 || i == 3 || i == 11 || i == 13) && (j == 5 || j == 9)) || ((i== 5 || i == 9) && (j == 1 || j == 5 || j == 9 || j==13)))
 			return true;
 
 		return false;

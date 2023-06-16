@@ -4,9 +4,13 @@ import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.TextAlignment;
 import javafx.util.converter.NumberStringConverter;
 import viewModel.MainViewModel;
 import javafx.scene.layout.GridPane;
@@ -178,6 +182,8 @@ public class MainViewController implements Initializable{
                 Label label = (Label) node;
                 label.textProperty().bind(viewModel.tilesProperty().get(i));
                 i++;
+                GridPane.setHalignment(label, HPos.CENTER); // Horizontal alignment
+                GridPane.setValignment(label, VPos.CENTER); // Vertical alignment
             }
         }
     }
@@ -215,14 +221,14 @@ public class MainViewController implements Initializable{
         for (int i = 0; i < 7; i++) {
             tilesListView.addColumn(i);
         }
-        tilesListView.setStyle("-fx-font-size: 16px; -fx-text-fill: green; -fx-background-color: pink;");
+        tilesListView.setStyle("-fx-font-size: 16px; -fx-text-fill: black; -fx-background-color: beige;");
         tilesListView.setLayoutX(70);
         tilesListView.setLayoutY(718);
         tilesListView.setGridLinesVisible(true);
 
         for (int i = 0; i < 7; i++) {
             Label label = new Label();
-            label.setStyle("-fx-font-size: 16px; -fx-text-fill: blue; -fx-background-color: yellow;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
             label.setText("index " + i);
             tilesListView.add(label, i, 0);
         }
@@ -251,33 +257,33 @@ public class MainViewController implements Initializable{
     private Label setColor(int i,int j,Label label){
         if(i == 7 && j == 7)
         {
-            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: gold;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: gold;");
         }
         else if(isRed(i,j))
         {
-            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: red;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: red;");
         }
         else if(isYellow(i,j))
         {
-            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: yellow;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: yellow;");
         }
         else if(isBlue(i,j))
         {
-            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: blue;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: blue;");
         }
         else if(isBabyBlue(i,j))
         {
-            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: lightBlue;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: lightBlue;");
         }
         else
-            label.setStyle("-fx-font-size: 12px; -fx-text-fill: black; -fx-background-color: green;");
+            label.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-background-color: green;");
 
         return label;
     }
 
     private boolean isRed(int i, int j)
     {
-        if((i % 7 == 0 && j % 7 == 0) && i != 7 && j!= 7)
+        if((i % 7 == 0 && j % 7 == 0))
             return true;
 
         return false;
@@ -293,7 +299,7 @@ public class MainViewController implements Initializable{
 
     private boolean isBlue(int i, int j)
     {
-        if(((i == 1 || i == 3) && (j == 5 || j == 9)) || ((i== 5 || i == 9) && (j == 1 || j == 5 || j == 9 || j==13)))
+        if(((i == 1 || i == 3 || i == 11 || i == 13) && (j == 5 || j == 9)) || ((i== 5 || i == 9) && (j == 1 || j == 5 || j == 9 || j==13)))
             return true;
 
         return false;
