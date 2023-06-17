@@ -175,7 +175,6 @@ public class GuestHandler implements Runnable {
                         guestPlayer.name = guestResponse[5];
                     }
                     System.out.println("REACHED PLAYER QUERY ");
-                    // TODO - CHANGE THE ! HERE , DELETE IT
                     this.myHost.ConnectToGameServer("localhost",8080);
                     if(this.myHost.testDictionary("Q",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) // word found in dictionary
                     {

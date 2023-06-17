@@ -34,12 +34,10 @@ public class HostServer {
 
             // Create a server socket to listen for client connections
             ServerSocket serverSocket = new ServerSocket(port);
-            hostModel.setMessage("Server started. Listening on ip 'loclhost' and port " + port);
-            hostModel.setMessage("You are now hosting a remote game");
 
             // Start accepting client connections
             while (!stop) {
-                hostModel.setMessage("Waiting for remote players.....");
+                hostModel.setMessage("Waiting for remote players on ip 'localhost' and port " + port);
                 // Accept a client connection
                 Socket clientSocket = serverSocket.accept();
                 hostModel.setMessage("New client connected: " + clientSocket);
@@ -105,7 +103,7 @@ public class HostServer {
                         e.printStackTrace();
                     }
 
-                    if(hostScore != this.hostModel.getScore()) // host added a word into the board
+                    if(hostScore < this.hostModel.getScore()) // host added a word into the board
                     {
                         notifyRemotes(this.hostModel.current_player.wordDetails, this.hostModel.current_player.name);
                     }

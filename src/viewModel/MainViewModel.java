@@ -126,6 +126,9 @@ public class MainViewModel implements Observer {
                 }
                 else if(message.contains("challenge") && !message.contains("failed"))
                 {
+                    Platform.runLater(() -> {
+                        updateMessageFromModel(message); // messages to show on screen without getting input from user
+                    });
                     startUserChallengeTurn();
                 }
                 else {
@@ -159,7 +162,17 @@ public class MainViewModel implements Observer {
             String[] request = userInput.split("[|]");
             if(request[0].equals("xxx"))
             {
-                gameModel.setUserQueryInput(request[0],"null","null","null");
+                Thread passThread = new Thread(() -> {
+
+                    gameModel.setUserQueryInput(request[0],"null","null","null");
+                    System.out.println("viewmodel sent query - pass");
+                });
+                passThread.start();
+                try {
+                    passThread.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
             else
             {
@@ -179,7 +192,7 @@ public class MainViewModel implements Observer {
                     {
                         for(int j = 0; j < tilesStrs.size(); j++) {
                             if(tilesStrs.get(j).toString().contains(valueOf(upperCase.charAt(i)))){
-                                tilesStrs.remove(i);
+                                tilesStrs.remove(j);
                                 charFound++;
                                 break;
                             }
@@ -194,10 +207,12 @@ public class MainViewModel implements Observer {
                 if(charFound == upperCase.length())
                 {
                     gameModel.setUserQueryInput(upperCase,request[1],request[2],request[3]);
+                    System.out.println("viewmodel sent query - query");
                 }
                 else{
                     this.updateMessageFromModel("invalid word, turn automatically passed");
                     gameModel.setUserQueryInput("xxx","null","null","null");
+                    System.out.println("viewmodel sent query - invalid");
                 }
             }
         }
@@ -210,9 +225,11 @@ public class MainViewModel implements Observer {
             if(userInput.equals("yes"))
             {
                 gameModel.setUserChallengeInput("C");
+                System.out.println("challenge sent c");
             }
             else {
                 gameModel.setUserChallengeInput("xxx");
+                System.out.println("challenge sent xxx");
             }
         }
         isUserChallenge.set(false); // Indicate the end of the user's turn

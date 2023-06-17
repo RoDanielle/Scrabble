@@ -25,20 +25,30 @@ public class BookScrabbleHandler implements ClientHandler{
 
         else if(str[0].equalsIgnoreCase("Q")){ // query
             System.out.println("checking query request");
-            DictionaryManager dm = new DictionaryManager();
-            if(dm.query(args))
+            DictionaryManager dm = DictionaryManager.get();
+            if(dm.query(args)) {
                 out.println("true");
-            else
+                System.out.println("book scrabble handler - true");
+            }
+            else{
                 out.println("false");
+                System.out.println("book scrabble handler - false");
+            }
         }
         else // challenge
         {
             System.out.println("checking challenge request");
             DictionaryManager dm = new DictionaryManager();
-            if(dm.challenge(args))
+            if(dm.challenge(args)) {
                 out.println("true");
-            else
+                System.out.println("book scrabble handler - true");
+            }
+
+            else {
                 out.println("false");
+                System.out.println("book scrabble handler - false");
+            }
+
         }
         out.flush();
     }

@@ -80,7 +80,6 @@ public class GuestModel extends Observable implements GameModel{
 
     @Override
     public String getName() {
-        System.out.println("guest name from getName: " + this.guest_player.name);
         return this.guest_player.name;
     }
 
@@ -122,6 +121,7 @@ public class GuestModel extends Observable implements GameModel{
         if(request.equals("c") || request.equals("C"))
         {
             this.request_to_server = "3" + "|" + "C" + "|" + this.guest_player.wordDetails[0] + this.guest_player.wordDetails[1] + "|" + this.guest_player.wordDetails[2] + "|" + this.guest_player.wordDetails[3] + this.getName();
+            System.out.println(this.request_to_server);
             write_to_server(request_to_server,this.getMySocket()); // request challenge or not
         }
         else
