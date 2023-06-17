@@ -15,7 +15,7 @@ public class Dictionary {
         fileNames = files;
         LRU_CM = new CacheManager(400, new LRU());
         LFU_CM = new CacheManager(100, new LFU());
-        Bloom = new BloomFilter(256,"MD5","SHA1");
+        Bloom = new BloomFilter(256,"MD5","SHA1"); //new size: 1048576
         for(int i = 0; i < files.length; i++) // adds words from files to bloomfilter
     	{
             loadFile(files[i]);
