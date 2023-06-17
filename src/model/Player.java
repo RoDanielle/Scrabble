@@ -8,6 +8,7 @@ public class Player {
     String name;
     public Socket socket;
     List<Tile> tiles;
+    int numOfTiles;
 
     List<String> strTiles;
 
@@ -19,6 +20,7 @@ public class Player {
         this.name = null;
         this.socket = null;
         this.tiles = new ArrayList<>();
+        this.numOfTiles = this.tiles.size();
         this.score = 0;
         this.strTiles = new ArrayList<>();
         this.wordDetails = new String[4];
@@ -32,6 +34,11 @@ public class Player {
         this.name = name;
     }
 
+    public String getName()
+    {
+        return this.name;
+    }
+
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
@@ -39,6 +46,17 @@ public class Player {
     public int getScore()
     {
         return this.score;
+    }
+    public List<Tile> getTiles()
+    {
+        return this.tiles;
+    }
+    public void setTiles(List<Tile> tiles) {
+        this.tiles = tiles;
+    }
+    public int getNumOfTiles()
+    {
+        return this.numOfTiles;
     }
 
     public void addScore(int score)

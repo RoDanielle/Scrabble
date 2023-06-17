@@ -354,7 +354,7 @@ public class GuestModel extends Observable implements GameModel{
         }
     }
 
-    public void printboard() {
+    public void printBoard() {
         System.out.println("the board is: ");
         System.out.print("  ");
         for (int k = 0; k < 15; k++) {
@@ -396,7 +396,7 @@ public class GuestModel extends Observable implements GameModel{
                         case0(fromHost[1]);
                         break;
                     case "1": // my turn
-                        printboard();
+                        printBoard();
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
