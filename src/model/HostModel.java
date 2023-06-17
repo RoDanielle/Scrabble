@@ -337,7 +337,7 @@ public class HostModel extends Observable implements GameModel {
             this.current_player.wordDetails[1]= row;
             this.current_player.wordDetails[2] = col;
             this.current_player.wordDetails[3] = vertical;
-            System.out.println("enter to setUserQueryInput in hostModel");
+
             try {
                 ConnectToGameServer("localhost",8080);
             } catch (IOException e) {
@@ -407,12 +407,12 @@ public class HostModel extends Observable implements GameModel {
         if(requestType.equals("Q"))
         {
             String fullWord = fill_spaces(word,row,col,vertical);
-            args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
+            args = "Q,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt" + fullWord;
         }
         else // "C"
         {
             String fullWord = fill_spaces(word,row,col,vertical);
-            args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt," + fullWord;
+            args = "C,alice_in_wonderland.txt,Harry_Potter.txt,mobydick.txt,shakespeare.txt,The_Matrix.txt,pg10.txt" + fullWord;
         }
 
         this.write_to_socket(args, gameSocket);

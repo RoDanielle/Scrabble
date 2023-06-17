@@ -15,15 +15,11 @@ public class Dictionary {
         fileNames = files;
         LRU_CM = new CacheManager(400, new LRU());
         LFU_CM = new CacheManager(100, new LFU());
-        Bloom = new BloomFilter(1048576,"MD5","SHA1");
+        Bloom = new BloomFilter(256,"MD5","SHA1");
         for(int i = 0; i < files.length; i++) // adds words from files to bloomfilter
     	{
             loadFile(files[i]);
     	}
-        for(String s : fileNames)
-        {
-            System.out.println("files name from dictionary: " + s.toString());
-        }
     }
     
     public void loadFile(String fileName) { // loads words from a file in order to feed it to bloomfilter 
@@ -40,17 +36,13 @@ public class Dictionary {
 
     public boolean query(String word){
         if(LRU_CM.query(word)){ // search in LRU (existing word)
-            System.out.println("lru");
             return true;
         }
-        if(LFU_CM.query(word)){ // search in LFU (none existing word)
-            System.out.println("lfu");
+        if(LFU_CM.query(word)){ // search in LFU (non existing word)
             return false;
         }
         boolean CheckbloomFilter = Bloom.contains(word);
-        System.out.println("bloom filter dictionary - " + CheckbloomFilter);
-        if(CheckbloomFilter){
-
+        if(CheckbloomFilter){ 
         	LRU_CM.add(word); // word found, adding to LRU
         }
         else{

@@ -101,23 +101,6 @@ public class MainViewController implements Initializable{
         }
         viewModel.processChallengeInput(challengeInput);
     }
-/*
-    @FXML
-    private void stopGameHandler (ActionEvent event) throws Exception {
-        String challengeInput;
-
-        if(event.getSource()==challengeB)
-        {
-            challengeInput = "yes";
-        }
-        else // pass
-        {
-            challengeInput = "no";
-        }
-        viewModel.processChallengeInput(challengeInput);
-    }
-
- */
 
     // activation buttons for query and challenge (triggered activation from view model)
 
@@ -149,11 +132,11 @@ public class MainViewController implements Initializable{
         // Observe the ViewModel's properties
         viewModel.isUserTurnProperty().addListener((observable, oldValue, newValue) -> { // turn (query) "notifier"
             if (newValue) {
-                //System.out.println("view got user turn true");
+                System.out.println("view got user turn true");
                 submitWord.setDisable(false);
                 passTurn.setDisable(false);
             } else {
-                //System.out.println("view got user turn false");
+                System.out.println("view got user turn false");
                 submitWord.setDisable(true);
                 passTurn.setDisable(true);
             }
