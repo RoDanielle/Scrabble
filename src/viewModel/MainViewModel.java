@@ -124,9 +124,14 @@ public class MainViewModel implements Observer {
                     });
                     startUserQueryTurn();
                 }
-                else if(message.contains("challenge") && !message.contains("failed"))
+                else if(message.contains("challenge"))
                 {
-                    startUserChallengeTurn();
+                    Platform.runLater(() -> {
+                        updateMessageFromModel(message); // messages to show on screen without getting input from user
+                    });
+                    if(!message.contains("failed")) {
+                        startUserChallengeTurn();
+                    }
                 }
                 else {
                     Platform.runLater(() -> {
@@ -179,7 +184,7 @@ public class MainViewModel implements Observer {
                     {
                         for(int j = 0; j < tilesStrs.size(); j++) {
                             if(tilesStrs.get(j).toString().contains(valueOf(upperCase.charAt(i)))){
-                                tilesStrs.remove(i);
+                                tilesStrs.remove(j);
                                 charFound++;
                                 break;
                             }

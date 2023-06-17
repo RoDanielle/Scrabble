@@ -25,7 +25,7 @@ public class BookScrabbleHandler implements ClientHandler{
 
         else if(str[0].equalsIgnoreCase("Q")){ // query
             System.out.println("checking query request");
-            DictionaryManager dm = new DictionaryManager();
+            DictionaryManager dm = DictionaryManager.get();
             if(dm.query(args))
                 out.println("true");
             else
@@ -34,7 +34,7 @@ public class BookScrabbleHandler implements ClientHandler{
         else // challenge
         {
             System.out.println("checking challenge request");
-            DictionaryManager dm = new DictionaryManager();
+            DictionaryManager dm = DictionaryManager.get();
             if(dm.challenge(args))
                 out.println("true");
             else
