@@ -436,8 +436,9 @@ public class Board {
 
 	public boolean isRed(int i, int j)
 	{
-		if( i == j && i == 7)
-			return false;
+		if( i == 7 )
+			if(j == 7)
+				return false;
 
 		if((i % 7 == 0 && j % 7 == 0))
 			return true;

@@ -212,6 +212,7 @@ public class HostServer {
             {
                 if(winner.getScore() < guest.guestPlayer.getScore())
                 {
+                    System.out.println(guest.guestPlayer.getScore());
                     winner = guest.guestPlayer;
                 }
             }
