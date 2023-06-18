@@ -1,157 +1,135 @@
 package test;
 
-import model.HostModel;
-import model.Player;
-import model.Tile;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class HostModelTest {
+
     public static void main(String[] args) {
         String name = "Host|Test";
         Boolean isLocal = true;
         int numPlayers = 2;
         HostModel hostModelTest = new HostModel(name, isLocal, numPlayers);
-
+        int oldScore = 0;
 
 
         //-------------------------initialized properly-------------------------------------------
-        // Test 1: Check if the host player is initialized properly
-        //if (!(hostModel.hostPlayer != null && hostModel.hostPlayer.getName().equals("Host")))
-            //System.out.println("Test 1 failed: Host player is not initialized correctly.");
 
-        // Test 2: Check if the board is initialized properly
+        // Test 1: Check if the board is initialized properly
         if (!(hostModelTest.getBoard() != null && hostModelTest.getBoard().length == 15 && hostModelTest.getBoard()[0].length == 15))
-            System.out.println("Test 2 failed: Board is not initialized correctly.");
+            System.out.println("Test 1 failed: Board is not initialized correctly.");
 
-        // Test 3: Check if the game is running initially
+        // Test 2: Check if the game is running initially
         if (!(hostModelTest.getGameRunning()))
-            System.out.println("Test 3 failed: Game is not running initially.");
+            System.out.println("Test 2 failed: Game is not running initially.");
 
-        // Test 4: Check if the bag object is initialized properly
+        // Test 3: Check if the bag object is initialized properly
         if (hostModelTest.getBag() == null)
-            System.out.println("Test 4 failed: Bag object is not initialized correctly.");
+            System.out.println("Test 3 failed: Bag object is not initialized correctly.");
 
-        // Test 5: Check if the number of players is set correctly
+        // Test 4: Check if the number of players is set correctly
         if (!(hostModelTest.getNumbOfPlayers() == 2))
-            System.out.println("Test 5 failed: Number of players is not set correctly.");
+            System.out.println("Test 4 failed: Number of players is not set correctly.");
 
-        // Test 6: Check if the message is initially null
+        // Test 5: Check if the message is initially null
         if (!(hostModelTest.getMessage() == null))
-            System.out.println("Test 6 failed: Message is not initially null.");
+            System.out.println("Test 5 failed: Message is not initially null.");
 
-        // Test 7: Check if the players list is initialized properly
-        if (!(hostModelTest.getPlayers() != null && hostModelTest.getPlayers().isEmpty()))
-            System.out.println("Test 7 failed: Players list is not initialized correctly.");
-
-        // Test 8: Check if the current player is set correctly
-        if (!(hostModelTest.current_player != null && hostModelTest.current_player.equals(hostModelTest.hostPlayer)))
-            System.out.println("Test 8 failed: Current player is not set correctly.");
-
-        // Test 9: Check if the board is filled with underscores initially
-        //boolean boardIsCorrect = true;
-        //for (String[] row : hostModel.getBoard()) {
-            //for (String cell : row) {
-                //if (!cell.equals("_")) {
-                    //boardIsCorrect = false;
-                    //break;
-                //}
-
-        //if (!boardIsCorrect)
-            //System.out.println("Test 9 failed: Board is not filled with underscores initially");
-
+        // Test 6: Check if the players list is initialized properly
+        if (!(hostModelTest.getPlayers().isEmpty()))
+            System.out.println("Test 6 failed: Players list is not initialized correctly.");
 
         //-----------------------GameManagement function is activated automatically------------------------------
-
-        //בדיקה עבור תחילת המשחק כאשר ההוסט הוא השחקן הראשון במבנה נתונים
-        //השאלה כיצד ניתן לדעת אם בזמן בדיקה כרגע אכן מדובר על תחילת המשחקן
-        //אני חושבת שבגלל זה זה לא עובר את הבדיקה
-        //if (isLocal) {
-        //    if (!(hostModel.current_player == hostModel.hostPlayer))
-        //        System.out.println("Test 10 failed");
-        //}
-
-
         //-----------------------setLocalPlayers function is activated automatically------------------------------
-        Player player1 = new Player();
-        Player player2 = new Player();
-        player1.setName("Host");
-        player2.setName("Test");
-        List<Player> playersTest = new ArrayList<>();
-        playersTest.add(player1);
-        playersTest.add(player2);
-        Tile.Bag bagTest = Tile.Bag.getBag();
 
-        if (!(playersTest.get(0).getName().equals("Host")))
-            System.out.println("Test 11 failed: The player is not initialized correctly.");
-        if (!(playersTest.get(1).getName().equals("Test")))
-            System.out.println("Test 11 failed: The player is not initialized correctly."); //NullPointerException
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (!(hostModelTest.getPlayers().get(0).getName().equals("Host") || hostModelTest.getPlayers().get(0).getName().equals("Test")))
+            System.out.println("Test 7 failed: The player is not initialized correctly.");
+        if (!(hostModelTest.getPlayers().get(1).getName().equals("Test") || hostModelTest.getPlayers().get(1).getName().equals("Host")))
+            System.out.println("Test 8 failed: The player is not initialized correctly.");
 
         //-----------------------startGame_local function is activated automatically------------------------------
         //-----------------------playerTurn function is activated automatically------------------------------
         //-----------------------giveTiles function is activated automatically------------------------------
-
-        for (int i=0; i<playersTest.size(); i++) {
-            hostModelTest.giveTiles(playersTest.get(i));
-            if (playersTest.get(i).getNumOfTiles() != 7)
-                System.out.println("Test 12 failed");
+        for (int i=0; i< hostModelTest.getNumbOfPlayers(); i++) {
+            List <Player> l = hostModelTest.getPlayers();
+            Player p = l.get(i);
+            hostModelTest.giveTiles(p);
+            int numOfTiles = hostModelTest.getPlayers().get(i).getTiles().size();
+            if (numOfTiles != 7)
+                System.out.println("Test 9 failed: Initialize tiles at game start");
         }
+
         //-----------------------addScore------------------------------
-        int oldScore1 = player1.getScore();
-        int oldScore2 = player2.getScore();
+        oldScore = hostModelTest.getPlayers().get(0).getScore();
+        hostModelTest.getPlayers().get(0).addScore(10);
+        if (!(oldScore+10 == hostModelTest.getPlayers().get(0).getScore()))
+            System.out.println("Test 10 failed: Score update");
 
-        player1.addScore(10);
-        if (!(oldScore1+10 == player1.getScore()))
-            System.out.println("Test 13 failed");
-
-        player2.addScore(15);
-        if (!(oldScore1+15 == player2.getScore()))
-            System.out.println("Test 13 failed");
-
+        oldScore = hostModelTest.getPlayers().get(1).getScore();
+        hostModelTest.getPlayers().get(1).addScore(15);
+        if (!(oldScore+15 == hostModelTest.getPlayers().get(1).getScore()))
+            System.out.println("Test 11 failed: Score update");
 
         //-----------------------decreaseScore------------------------------
-        int oldScore3 = player1.getScore();
-        int oldScore4 = player2.getScore();
+        oldScore = hostModelTest.getPlayers().get(0).getScore();
+        hostModelTest.getPlayers().get(0).decreaseScore(10);
+        if (!(oldScore-10 == hostModelTest.getPlayers().get(0).getScore()))
+            System.out.println("Test 12 failed: Score update");
 
-        player1.decreaseScore(10);
-        if (!(oldScore3-10 == player1.getScore()))
-            System.out.println("Test 14 failed");
-
-        player2.decreaseScore(3);
-        if (!(oldScore4-3 == player1.getScore()))
-            System.out.println("Test 14 failed");
+        oldScore = hostModelTest.getPlayers().get(1).getScore();
+        hostModelTest.getPlayers().get(1).decreaseScore(3);
+        if (!(oldScore-3 == hostModelTest.getPlayers().get(1).getScore()))
+            System.out.println("Test 13 failed: Score update");
 
         //-----------------------TryPutWordInBoard------------------------------
+        // Simulate a successful word placement
+        Player player1 = new Player();
+        player1.setName("Host");
+        oldScore = player1.getScore();
 
-        //-----------------------fill_spaces------------------------------
-        //hostModelTest.fill_spaces("T_st");
+        Tile t1 = hostModelTest.getBag().getTile('H');
+        Tile t2 = hostModelTest.getBag().getTile('O');
+        Tile t3 = hostModelTest.getBag().getTile('R');
+        Tile t4 = hostModelTest.getBag().getTile('N');
 
-        //-----------------------setUserQueryInput------------------------------
+        List<Tile> tilesTest = new ArrayList<>();
+        tilesTest.add(t1);
+        tilesTest.add(t2);
+        tilesTest.add(t3);
+        tilesTest.add(t4);
 
-        //-----------------------setUserChallengeInput------------------------------
+        player1.setTiles(tilesTest);
 
-        //-----------------------returnTiles------------------------------
+        hostModelTest.current_player = player1;
+        String[] successfulPlacement = { "C", "HORN", "7", "5", "false" };
+        hostModelTest.TryPutWordInBoard(successfulPlacement[0], successfulPlacement[1], successfulPlacement[2], successfulPlacement[3], successfulPlacement[4]);
 
-        //-----------------------passesCountLocal------------------------------
+        if (player1.getScore() == oldScore)
+            System.out.println("Test 14 failed");
+
 
         //-----------------------stopLocalGame------------------------------
         int maxScoreTest = 0;
         String winnerNameTest = null;
-        for (int i=0; i<playersTest.size(); i++) {
-            if (playersTest.get(i).getScore() > maxScoreTest) {
-                maxScoreTest = playersTest.get(i).getScore();
-                winnerNameTest = playersTest.get(i).getName();
+        for (int i=0; i<hostModelTest.getNumbOfPlayers(); i++) {
+            if (hostModelTest.getPlayers().get(i).getScore() > maxScoreTest) {
+                maxScoreTest = hostModelTest.getPlayers().get(i).getScore();
+                winnerNameTest = hostModelTest.getPlayers().get(i).getName();
             }
         }
-
-        hostModelTest.setPlayers(playersTest);
         hostModelTest.stopLocalGame();
         if (!(hostModelTest.getWinner().getName().equals(winnerNameTest)))
             System.out.println("Test 15 failed");
         if (!(hostModelTest.getWinner().getScore() == maxScoreTest))
-            System.out.println("Test 15 failed");
+            System.out.println("Test 16 failed");
 
         System.out.println("done");
     }

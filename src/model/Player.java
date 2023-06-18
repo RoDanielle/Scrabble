@@ -54,11 +54,7 @@ public class Player {
     public void setTiles(List<Tile> tiles) {
         this.tiles = tiles;
     }
-    public int getNumOfTiles()
-    {
-        return this.numOfTiles;
-    }
-
+    public int getNumOfTiles() {return this.numOfTiles;}
     public void addScore(int score)
     {
         this.score += score;
