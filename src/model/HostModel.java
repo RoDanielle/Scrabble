@@ -20,16 +20,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
-import java.util.stream.Collectors;
-
 import static java.lang.String.valueOf;
 
 public class HostModel extends Observable implements GameModel {
-
     // data for host player
     private List<Observer> myObservers;
     public Player hostPlayer;
     private String[][] board;
+    Player winner;
+
 
     // data for managing game
     boolean gameRunning;
@@ -38,18 +37,18 @@ public class HostModel extends Observable implements GameModel {
     int numbOfPlayers;
     Socket gameServerSocket;
     String message;
-
     Boolean isLocal;
+
 
     // data  for remote game
     private HostServer hs;
     int myPort;
 
+
     // data for local game
     private List<Player> players;
     public Player current_player; // in local game will have a different player in every turn, in remote game will hold only the host.
     // with this data member we will get the necessary information to show in view each turn
-
 
 
     public HostModel(String name, Boolean isLocal, int numPlayers) {
@@ -65,6 +64,7 @@ public class HostModel extends Observable implements GameModel {
         this.numbOfPlayers = numPlayers;
         this.gameServerSocket = null;
         this.myPort = 8081;
+        this.winner = new Player();
         new Thread(()-> {
             this.GameManagement(isLocal, name);
         }).start();
@@ -74,9 +74,19 @@ public class HostModel extends Observable implements GameModel {
         return this.boardObject;
     }
 
+    public boolean getGameRunning() {
+        return this.gameRunning;
+    }
+
+    public int getNumbOfPlayers() {return this.numbOfPlayers;}
+
+    public List<Player> getPlayers() {return this.players;}
+    public void setPlayers(List<Player> players) {players= this.players;}
+
     public Tile.Bag getBag() {
         return this.bag;
     }
+    public Player getWinner() {return this.winner;}
 
     private void notifyObserver(String change) {
         setChanged();
@@ -160,7 +170,7 @@ public class HostModel extends Observable implements GameModel {
         this.notifyObserver("board");
         this.setMessage("a new word was put into the board");
 
-        printmatrix(); // TODO - delete after view is done
+        printMatrix(); // TODO - delete after view is done
     }
 
     public String tileToString (Tile t) {
@@ -174,7 +184,7 @@ public class HostModel extends Observable implements GameModel {
         this.gameRunning = false;
     }
 
-    public void printmatrix() // will move to view later on
+    public void printMatrix() // will move to view later on
     {
         System.out.println("the board is: ");
         System.out.print("  ");
@@ -508,7 +518,7 @@ public class HostModel extends Observable implements GameModel {
         int numOfPasses = 0;
         for(int i = 0; i < this.numbOfPlayers; i++)
         {
-            if(this.players.get(i).wordDetails[0].equals("xxx") || this.players.get(i).wordDetails[0].equals("xxx"))
+            if(this.players.get(i).wordDetails[0].equals("xxx"))
             {
                 numOfPasses++;
             }
@@ -521,14 +531,14 @@ public class HostModel extends Observable implements GameModel {
 
 
 
-    private void stopLocalGame()
+    public void stopLocalGame()
     {
-        Player winner = this.hostPlayer;
+        this.winner = this.hostPlayer;
         for(Player p : this.players)
         {
-            if(winner.getScore() < p.getScore())
+            if(this.winner.getScore() < p.getScore())
             {
-                winner = p;
+                this.winner = p;
             }
         }
         try {
@@ -541,7 +551,7 @@ public class HostModel extends Observable implements GameModel {
             throw new RuntimeException(e);
         }
         // TODO - make these message in a popup screen
-        this.setMessage("the winner is: " + winner.name + " with " + winner.getScore() + " points");
+        this.setMessage("the winner is: " + this.winner.name + " with " + this.winner.getScore() + " points");
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
