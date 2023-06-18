@@ -8,14 +8,14 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.HostLocalInfoController">
     <children>
-        <Label fx:id="question" layoutX="59.0" layoutY="59.0" prefHeight="80.0" prefWidth="452.0" text="Choose number of players (including host)">
+        <Label fx:id="question" layoutX="59.0" layoutY="61.0" prefHeight="78.0" prefWidth="497.0" text="Choose number of players (including host)" textFill="#ae1495">
             <font>
-                <Font size="22.0" />
+                <Font name="Bell MT Bold" size="26.0" />
             </font>
         </Label>
-        <Button fx:id="submit" layoutX="237.0" layoutY="303.0" mnemonicParsing="false" onAction="#HostLocalAction" prefHeight="53.0" prefWidth="95.0" text="submit">
+        <Button fx:id="submit" layoutX="237.0" layoutY="303.0" mnemonicParsing="false" onAction="#HostLocalAction" prefHeight="53.0" prefWidth="95.0" text="submit" textFill="#a3118d">
             <font>
-                <Font size="19.0" />
+                <Font name="System Italic" size="19.0" />
             </font>
         </Button>
         <ChoiceBox fx:id="numbers" layoutX="189.0" layoutY="156.0" prefHeight="44.0" prefWidth="192.0" />

@@ -8,29 +8,29 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ConnectController">
    <children>
-      <Label fx:id="title" layoutX="89.0" prefHeight="55.0" prefWidth="422.0" text="connect to remote game">
+      <Label fx:id="title" layoutX="106.0" layoutY="14.0" prefHeight="55.0" prefWidth="422.0" text="connect to remote game" textFill="#ba17a9">
          <font>
-            <Font size="38.0" />
+            <Font name="Bell MT" size="40.0" />
          </font>
       </Label>
       <Label fx:id="enter_port" layoutX="6.0" layoutY="146.0" prefHeight="55.0" prefWidth="214.0" text="Enter port">
          <font>
-            <Font size="38.0" />
+            <Font size="33.0" />
          </font>
       </Label>
       <Label fx:id="enter_ip" layoutX="9.0" layoutY="74.0" prefHeight="55.0" prefWidth="137.0" text="Enter ip">
          <font>
-            <Font size="38.0" />
+            <Font size="33.0" />
          </font>
       </Label>
       <Label fx:id="enter_name" layoutX="9.0" layoutY="219.0" prefHeight="55.0" prefWidth="207.0" text="Enter name">
          <font>
-            <Font size="38.0" />
+            <Font size="33.0" />
          </font>
       </Label>
-      <Button fx:id="connect" layoutX="460.0" layoutY="317.0" mnemonicParsing="false" onAction="#initialize" prefHeight="55.0" prefWidth="103.0" text="connect">
+      <Button fx:id="connect" layoutX="460.0" layoutY="317.0" mnemonicParsing="false" onAction="#initialize" prefHeight="55.0" prefWidth="103.0" text="connect" textFill="#c50eb6">
          <font>
-            <Font size="20.0" />
+            <Font name="System Italic" size="20.0" />
          </font></Button>
       <TextField fx:id="ip" layoutX="230.0" layoutY="83.0" prefHeight="36.0" prefWidth="173.0" />
       <TextField fx:id="name" layoutX="230.0" layoutY="228.0" prefHeight="36.0" prefWidth="173.0" />

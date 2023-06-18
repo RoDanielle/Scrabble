@@ -9,17 +9,17 @@
     <children>
         <!-- Other UI elements in the view -->
 
-        <AnchorPane fx:id="container" layoutX="238.0" layoutY="83.0" prefHeight="200" prefWidth="200">
+        <AnchorPane fx:id="container" layoutX="217.0" layoutY="83.0" prefHeight="200" prefWidth="200">
             <!-- The dynamically created TextFields will be added here -->
         </AnchorPane>
-      <Button fx:id="submitNames" layoutX="224.0" layoutY="320.0" mnemonicParsing="false" onAction="#localNamesHandler" prefHeight="50.0" prefWidth="139.0" text="submit names">
+      <Button fx:id="submitNames" layoutX="224.0" layoutY="320.0" mnemonicParsing="false" onAction="#localNamesHandler" prefHeight="50.0" prefWidth="139.0" text="submit names" textFill="#9e07a3">
          <font>
-            <Font size="17.0" />
+            <Font name="System Italic" size="18.0" />
          </font>
       </Button>
-      <Label layoutX="93.0" layoutY="33.0" text="Enter all players names ">
+      <Label layoutX="100.0" layoutY="28.0" text="Enter all players names " textFill="#93299d">
          <font>
-            <Font size="34.0" />
+            <Font name="Bell MT Bold" size="37.0" />
          </font>
       </Label>
     </children>

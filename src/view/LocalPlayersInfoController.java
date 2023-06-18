@@ -75,7 +75,7 @@ public class LocalPlayersInfoController implements Initializable {
         container.getChildren().clear();
         textFieldList.clear();
         double initialY = 20.0; // Initial Y position for the first TextField
-        double spacing = 20.0; // Spacing between TextField elements
+        double spacing = 50.0; // Spacing between TextField elements
         for (int i = 0; i < numOfPlayers; i++) {
             TextField textField = new TextField();
             textFieldList.add(textField);
