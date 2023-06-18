@@ -239,7 +239,7 @@ public class MainViewModel implements Observer {
 
     // score update and get
     public void updateScoreFromModel(int score) {
-       scoreProperty.set(score);
+        scoreProperty.set(score);
     }
 
     public IntegerProperty scoreProperty() {

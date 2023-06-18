@@ -13,15 +13,20 @@ public class Dictionary {
     BloomFilter Bloom;
     public Dictionary(String...files){ //constructor
         fileNames = files;
+        for(String s : fileNames)
+        {
+            System.out.println("files name from dictionary: " + s.toString());
+        }
         LRU_CM = new CacheManager(400, new LRU());
         LFU_CM = new CacheManager(100, new LFU());
-        Bloom = new BloomFilter(256,"MD5","SHA1");
+        //Bloom = new BloomFilter(262144,"MD5","SHA1");
+        Bloom = new BloomFilter(262144,"MD2","MD5","SHA1","SHA-256","SHA-512");
         for(int i = 0; i < files.length; i++) // adds words from files to bloomfilter
-    	{
+        {
             loadFile(files[i]);
-    	}
+        }
     }
-    
+
     public void loadFile(String fileName) { // loads words from a file in order to feed it to bloomfilter 
         try{
             Stream<String> stringStream = Files.lines(Paths.get(fileName)); // takes a line from the file
@@ -42,11 +47,11 @@ public class Dictionary {
             return false;
         }
         boolean CheckbloomFilter = Bloom.contains(word);
-        if(CheckbloomFilter){ 
-        	LRU_CM.add(word); // word found, adding to LRU
+        if(CheckbloomFilter){
+            LRU_CM.add(word); // word found, adding to LRU
         }
         else{
-        	LFU_CM.add(word);// word not found, adding to LFU
+            LFU_CM.add(word);// word not found, adding to LFU
         }
         return CheckbloomFilter;
     }
@@ -60,10 +65,10 @@ public class Dictionary {
             return false;
         }
         if(searchTest){
-        	LRU_CM.add(word);
+            LRU_CM.add(word);
         }
         else{
-        	LFU_CM.add(word);
+            LFU_CM.add(word);
         }
         return searchTest;
     }

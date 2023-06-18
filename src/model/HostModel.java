@@ -265,7 +265,7 @@ public class HostModel extends Observable implements GameModel {
 
         if(!GameServerAvailabilityCheck()) // the game server is not up - this host will create it
         {
-            MyServer s=new MyServer(8080, new BookScrabbleHandler());
+            MyServer s = new MyServer(8080, new BookScrabbleHandler());
             s.start();
         }
 
@@ -283,7 +283,7 @@ public class HostModel extends Observable implements GameModel {
             this.hostPlayer.setName(names);
             this.current_player = hostPlayer;
             //MyServer s = new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
-           // s.start(); //  TODO - delete after implementing the game server changes
+            // s.start(); //  TODO - delete after implementing the game server changes
             this.hs = new HostServer(this);
             this.hs.start();
             //s.close();
@@ -350,7 +350,7 @@ public class HostModel extends Observable implements GameModel {
             }
             else
             {
-                this.setMessage("challenge");  // offer to challenge
+                this.setMessage("challenge?");  // offer to challenge
             }
 
         }
@@ -435,16 +435,6 @@ public class HostModel extends Observable implements GameModel {
                 player.tiles.add(t);
             word.getTiles()[i] = null;
         }
-
-        /*
-        List<Tile> tmplst = new ArrayList<>();
-        tmplst = Arrays.stream(word.tiles).collect(Collectors.toList());
-        while(tmplst.size() > 0)
-        {
-            Tile t = tmplst.remove(0);
-            if(t != null)
-                player.tiles.add(t);   // give the player its tiles back
-        }*/
     }
 
     public void setTurns()
@@ -482,20 +472,31 @@ public class HostModel extends Observable implements GameModel {
         while (gameRunning)
         {
             this.current_player = this.players.get(0);
-            /*
-            try {
-                ConnectToGameServer(gameServerIP,gameServerPort);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }*/
-            playerTurn(this.current_player);
+
+            Thread thread = new Thread(() -> {
+                Boolean notOver = true;
+                this.playerTurn(this.current_player);
+                while(notOver)
+                {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if(this.getMessage().contains("turn over"))
+                    {
+                        notOver = false;
+                    }
+                }
+            });
+            thread.start();
 
             try {
-                Thread.sleep(30000);
+                thread.join();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
-            System.out.println("time ended");
+
             this.passesCountLocal(); // count turn passes in order to know if the game needs to be stopped
             Player p = this.players.remove(0);
             this.players.add(p);

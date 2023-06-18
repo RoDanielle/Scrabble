@@ -10,7 +10,7 @@ public class IOSearcher {
 	{
 		for(int i = 0; i < files.length; i++) // searches in all files
 		{
-			try 
+			try
 			{
 				Stream<String> Fline = Files.lines(Paths.get(files[i])); // takes a line from the file
 				if(Fline.anyMatch(lines->lines.contains(word))) // searches a word in a line

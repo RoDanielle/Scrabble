@@ -97,7 +97,8 @@ public class GuestHandler implements Runnable {
 
         guestPlayer.removeStrTiles(word); // remove the tiles used in the word
         guestPlayer.addScore(score);
-        String toGuest = msgTag + "|" + score + "|" + this.giveTiles() + "|" + guestPlayer.name + "|" + word + "|" + row + "|" +col + "|" + vertical;
+        String toGuest = msgTag + "|" + score + "|" + this.giveTiles() + "|" + guestPlayer.name + "|" + word + "|" + row + "|" + col + "|" + vertical;
+        System.out.println("word response to guest: " + toGuest);
         this.outToClient.println(toGuest);
         this.outToClient.flush();
 
@@ -145,6 +146,7 @@ public class GuestHandler implements Runnable {
 
     @Override
     public void run(){
+
         try {
             // Create input and output streams for the client socket
             this.inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -175,7 +177,6 @@ public class GuestHandler implements Runnable {
                         guestPlayer.name = guestResponse[5];
                     }
                     System.out.println("REACHED PLAYER QUERY ");
-                    // TODO - CHANGE THE ! HERE , DELETE IT
                     this.myHost.ConnectToGameServer("localhost",8080);
                     if(this.myHost.testDictionary("Q",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) // word found in dictionary
                     {
@@ -183,6 +184,8 @@ public class GuestHandler implements Runnable {
 
                         toGuest = "2" + "|" + "true";
                         Word w = guestPlayer.create_word(guestResponse[1], guestResponse[2], guestResponse[3], guestResponse[4]);
+                        System.out.println("guest handler: guest name = " + this.guestPlayer.name + " tiles str size: " + this.guestPlayer.strTiles.size() + this.guestPlayer.tiles.size());
+
                         int score = this.myHost.getBoardObject().tryPlaceWord(w);
 
                         if (score != 0) // word was put into board
@@ -195,14 +198,18 @@ public class GuestHandler implements Runnable {
                     }
                     else
                     {
+                        //Thread.sleep(3000);
                         toGuest = "2" + "|" + "false" + "|" + "null" + "|" + "null" + "|" + guestPlayer.name; //query return false "2|false|null|null|name"
+                        this.outToClient.println(toGuest);
+                        this.outToClient.flush();
+                        System.out.println("guest handler - sent query failed response: " + toGuest);
                         guestResponse = inFromClient.readLine().split("[|]");
                         if (guestResponse[1].equals("c") || guestResponse[1].equals("C")) {
                             System.out.println("REACHED PLAYER CHALLENGE");
 
                             this.myHost.ConnectToGameServer("localhost", 8080);
 
-                            if (this.myHost.testDictionary("C",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) //challenge return true
+                            if (this.myHost.testDictionary("C",guestResponse[2],guestResponse[3],guestResponse[4],guestResponse[5],this.myHost.gameServerSocket)) //challenge return true
                             {
                                 toGuest = "3" + "|true";
                                 Word w = guestPlayer.create_word(guestResponse[2], guestResponse[3], guestResponse[4], guestResponse[5]);
@@ -210,7 +217,7 @@ public class GuestHandler implements Runnable {
                                 if (score != 0) // word was put into board
                                 {
                                     score += 10;
-                                    wordOkResponse(toGuest, guestResponse[1], guestResponse[2], guestResponse[3],guestResponse[4],score, w); // "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+                                    wordOkResponse(toGuest, guestResponse[2], guestResponse[3], guestResponse[4],guestResponse[5],score, w); // "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
                                 } else {
                                     wordPlacementFailed(toGuest, w); // "3|true|0|player name"
                                 }

@@ -11,7 +11,7 @@ public class DictionaryManager {
 	{
 		this.map = new HashMap<String, Dictionary>();
 	}
-	
+
 	public static DictionaryManager get( ){
 		if(_instance == null)
 		{
@@ -21,10 +21,13 @@ public class DictionaryManager {
 	}
 
 	public boolean query(String...args){
+		System.out.println("entered dictionary manager query call");
 		boolean found = false;
 		String word = args[args.length - 1];
 		for(int i = 0; i < args.length - 1; i++)
 		{
+			System.out.println("dictionary manager, searching in book:" + args[i]);
+
 			if(map.containsKey(args[i])) // search for a file(book) dictionary
 			{ // search for the word in the books dictionary and the book itself
 				if(map.get(args[i]).query(word))
@@ -32,17 +35,19 @@ public class DictionaryManager {
 			}
 			else // there is no Dictionary for the book
 			{
-				Dictionary d = new Dictionary(args[i]); 
+				Dictionary d = new Dictionary(args[i]);
 				this.map.put(args[i], d);
-				if(map.get(args[i]).query(word)) { //search for the word in the book 
+				if(map.get(args[i]).query(word)) { //search for the word in the book
 					found = true;
 				}
 			}
+			System.out.println("dictionary manager, is word in: " + args[i] + "?" + found);
 		}
-		return found;
-    }
 
-    public boolean challenge(String...args){
+		return found;
+	}
+
+	public boolean challenge(String...args){
 		boolean found = false;
 		String word = args[args.length - 1];
 		for(int i = 0; i < args.length - 1; i++)
@@ -54,21 +59,21 @@ public class DictionaryManager {
 			}
 			else // there is no Dictionary for the book
 			{
-				Dictionary d = new Dictionary(args[i]); 
+				Dictionary d = new Dictionary(args[i]);
 				this.map.put(args[i], d);
 				if(map.get(args[i]).challenge(word)) { //search for the word in the book 
 					found = true;
 				}
 
-			} 
+			}
 
 		}
 		return found;
-    }
-    	
-    public int getSize()
-    {
-    	return map.size();
-    }
-		
+	}
+
+	public int getSize()
+	{
+		return map.size();
+	}
+
 }

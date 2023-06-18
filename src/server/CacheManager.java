@@ -10,7 +10,7 @@ public class CacheManager{
 
     public CacheManager(int size, CacheReplacementPolicy policy)//constructor
     {
-    	MaxSize = size;
+        MaxSize = size;
         currentSize = 0;
         cacheM = new LinkedHashSet<>();
         MemPolicy = policy;
@@ -31,7 +31,7 @@ public class CacheManager{
         }
         else
         {
-        	MemPolicy.add(word);
+            MemPolicy.add(word);
             cacheM.add(word);
             currentSize++;
         }

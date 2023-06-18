@@ -26,7 +26,7 @@ public class LFU implements CacheReplacementPolicy{
                 temp[0] = key;
                 temp[1] = String.valueOf(val);
             }
-            else 
+            else
             {
                 if(Integer.parseInt(temp[1])> val){
                     temp[0] = key;

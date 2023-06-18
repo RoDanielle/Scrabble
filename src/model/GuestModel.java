@@ -108,6 +108,7 @@ public class GuestModel extends Observable implements GameModel{
             this.guest_player.wordDetails[3] = vertical;
         }
         else {
+            this.setMessage("turn over");
             this.guest_player.wordDetails[1] = "null";
             this.guest_player.wordDetails[2] = "null";
             this.guest_player.wordDetails[3] = "null";
@@ -121,12 +122,13 @@ public class GuestModel extends Observable implements GameModel{
     public void setUserChallengeInput(String request) {
         if(request.equals("c") || request.equals("C"))
         {
-            this.request_to_server = "3" + "|" + "C" + "|" + this.guest_player.wordDetails[0] + this.guest_player.wordDetails[1] + "|" + this.guest_player.wordDetails[2] + "|" + this.guest_player.wordDetails[3] + this.getName();
+            this.request_to_server = "3" + "|" + "C" + "|" + this.guest_player.wordDetails[0] + "|"+  this.guest_player.wordDetails[1] + "|" + this.guest_player.wordDetails[2] + "|" + this.guest_player.wordDetails[3] + "|" + this.getName();
             write_to_server(request_to_server,this.getMySocket()); // request challenge or not
         }
         else
         {
             this.setMessage("turn over");
+            write_to_server(request_to_server,this.getMySocket()); // request challenge or not
         }
     }
 
@@ -192,7 +194,7 @@ public class GuestModel extends Observable implements GameModel{
         }
         this.notifyObserver("tiles");
         for(String s : guest_player.strTiles)
-        System.out.println(s);
+            System.out.println(s);
     }
 
     public void updateMatrixBoard(String word, String row, String col, String vertical) {
@@ -282,7 +284,7 @@ public class GuestModel extends Observable implements GameModel{
         }
         else // my query request returned false received:"2|false|null|null|name"
         {
-           this.setMessage("challenge");
+            this.setMessage("challenge?");
         }
     }
 
@@ -332,7 +334,7 @@ public class GuestModel extends Observable implements GameModel{
             updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
             this.addScore(Integer.parseInt(fromHost[2]));
 
-            this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board (recieved all of my tiles)
+            this.addTiles(fromHost[3]); // add tiles received from the server replacing those used in the word add to board (received all of my tiles)
         }
         else //"2|true|0|name"
             this.setMessage("wrong word or placement, you get 0 points, turn over");
@@ -340,6 +342,11 @@ public class GuestModel extends Observable implements GameModel{
 
     public void challengeTrue(String[] fromHost)
     {
+        System.out.println("challenge true string:");
+        for(String s : fromHost)
+        {
+            System.out.println(s);
+        }
         if(!fromHost[2].equals("0")) // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
         {
             int tmp_score = Integer.parseInt(fromHost[2]) + 10;
@@ -383,41 +390,38 @@ public class GuestModel extends Observable implements GameModel{
         }
     }
 
-    public void startGuestGame(){
+    public void startGuestGame() {
         this.setMessage("please wait for Host to start the game");
         while (gameRunning){
             // reading from server
+            System.out.println("guest model loop");
             String readfromHost = this.read_from_server(this.getMySocket());
-            if(readfromHost != null)
-            {
-                String[] fromHost = readfromHost.split("[|]");
-                switch (fromHost[0]){
-                    case "0": // seven tiles at the start of the game
-                        case0(fromHost[1]);
-                        break;
-                    case "1": // my turn
-                        printboard();
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        this.setMessage("your turn");
-                        break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
+            //if(readfromHost != null)
+            //  {
+            String[] fromHost = readfromHost.split("[|]");
+            switch (fromHost[0]){
+                case "0": // seven tiles at the start of the game
+                    case0(fromHost[1]);
+                    break;
+                case "1": // my turn
+                    this.setMessage("your turn");
+                    break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
-                    case "2": // host + server response to query request ++ updated board for any entered word
-                        serverWordResponse(fromHost);
-                        break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
+                case "2": // host + server response to query request ++ updated board for any entered word
+                    System.out.println("guest model - entered query case");
+                    serverWordResponse(fromHost);
+                    break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
 
-                    case "3": // host + server response to challenge request
-                        challengeResponse(fromHost);
-                        break;
+                case "3": // host + server response to challenge request
+                    System.out.println("guest model - entered challenge case");
+                    challengeResponse(fromHost);
+                    break;
 
-                    case "4": // game over
-                        gameOver(fromHost[1]);
-                        break;
-                }
+                case "4": // game over
+                    gameOver(fromHost[1]);
+                    break;
             }
+            // }
         }
     }
 }

@@ -39,9 +39,9 @@ public class BloomFilter {
         return true;
     }
     public int getWordBit(String word, MessageDigest MD) {
-            byte[] bts = MD.digest(word.getBytes());
-            BigInteger bigInt = new BigInteger(bts);
-            return Math.abs(bigInt.intValue()) % Size;
+        byte[] bts = MD.digest(word.getBytes());
+        BigInteger bigInt = new BigInteger(bts);
+        return Math.abs(bigInt.intValue()) % Size;
     }
 
     @Override
