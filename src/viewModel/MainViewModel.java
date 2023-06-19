@@ -62,6 +62,17 @@ public class MainViewModel implements Observer {
         initializeBoard();
     }
 
+    /**
+     * The initializeTiles function initializes the tilesProperty ArrayList with 7 SimpleStringProperties.
+     * This is done so that we can bind the text of each tile to a StringProperty in this list, which will allow us to update
+     * the text of each tile from anywhere in our code.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     private void initializeTiles()
     {
         for(int i = 0; i < 7; i++)
@@ -71,6 +82,16 @@ public class MainViewModel implements Observer {
         }
     }
 
+    /**
+     * The initializeBoard function initializes the boardProperty array with 15 rows and 15 columns.
+     * Each element in the array is a StringProperty object that contains an empty string.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     private void initializeBoard()
     {
         for(int i = 0; i < 15; i++)
@@ -84,8 +105,19 @@ public class MainViewModel implements Observer {
     }
 
 
+    /**
+     * The update function is called whenever the gameModel changes.
+     * It updates the view to reflect any changes in the model.
+     *
+     *
+     * @param o Determine which observable object called the update function
 
-
+     * @param arg Determine what part of the model is being updated
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @Override
     public void update(Observable o, Object arg) {
         if (o instanceof GameModel)
@@ -142,21 +174,70 @@ public class MainViewModel implements Observer {
         }
     }
 
+    /**
+     * The isUserTurnProperty function returns a BooleanProperty that is true if it is the user's turn, and false otherwise.
+     *
+     *
+     *
+     * @return A booleanproperty object
+     *
+     * @docauthor Trelent
+     */
     public BooleanProperty isUserTurnProperty() {
         return isUserTurn;
     }
 
+    /**
+     * The isUserchallengeProperty function returns a BooleanProperty object that represents the isUserChallenge property.
+     *
+     *
+     *
+     * @return A booleanproperty
+     *
+     * @docauthor Trelent
+     */
     public BooleanProperty isUserchallengeProperty() {
         return isUserChallenge;
     }
+    /**
+     * The startUserQueryTurn function sets the isUserTurn boolean to true, which allows the user to enter a query.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void startUserQueryTurn() {
         isUserTurn.set(true);
     }
 
+    /**
+     * The startUserChallengeTurn function sets the isUserChallenge boolean to true.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void startUserChallengeTurn() {
         isUserChallenge.set(true);
     }
 
+
+    /**
+     * The processQueryInput function is called by the View when the user enters a word, row, column and orientation.
+     * The function checks if it is currently the user's turn to play. If so, it sets up an array of strings that contains
+     * each character in the word entered by the user. It then iterates through this array and checks if each character exists
+     * in any of our tiles on hand (the ones displayed on screen). If all characters exist in our tiles on hand, we set up a new string with these characters removed from their original positions (so they can't be used again) and pass this string to gameModel
+     *
+     * @param userInput Get the user's input from the view
+     *
+     * @return A boolean value indicating whether the user's input is valid
+     *
+     * @docauthor Trelent
+     */
     public void processQueryInput(String userInput) {  //  word|row|col|vertical from View
         System.out.println("entered query pros");
         if (isUserTurn.get()) {
@@ -209,6 +290,18 @@ public class MainViewModel implements Observer {
         isUserTurn.set(false); // Indicate the end of the user's turn
     }
 
+    /**
+     * The processChallengeInput function is called when the user has been challenged by another player.
+     * The function takes in a String as input, which represents the user's response to the challenge.
+     * If the user responds with &quot;yes&quot;, then we set their challenge input to &quot;C&quot;. Otherwise, we set it to &quot;xxx&quot;.
+
+     *
+     * @param userInput Get the user's input from the gui
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void processChallengeInput(String userInput) {
         System.out.println("entered challenge pros");
         if (isUserChallenge.get()) {
@@ -224,6 +317,22 @@ public class MainViewModel implements Observer {
     }
 
     // tiles update and get
+    /**
+     * The updateTilesFromModel function is called by the model when it has been updated.
+     * It takes a list of strings as an argument, and updates the tilesProperty list with these values.
+
+     *
+     * @param updatedTiles Update the tilesproperty list
+    public void updatetilesfrommodel(list&lt;string&gt; updatedtiles) {
+            int i = 0;
+            for(string s : updatedtiles)
+            {
+                this
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void updateTilesFromModel(List<String> updatedTiles) {
         int i = 0;
         for(String s : updatedTiles)
@@ -233,43 +342,130 @@ public class MainViewModel implements Observer {
         }
     }
 
+    /**
+     * The tilesProperty function returns a list of StringProperty objects.
+     *
+     *
+     *
+     * @return A list of stringproperty objects
+     *
+     * @docauthor Trelent
+     */
     public List<StringProperty> tilesProperty() {
         return tilesProperty;
     }
 
     // score update and get
+    /**
+     * The updateScoreFromModel function is called by the model when it changes.
+     * It updates the scoreProperty to reflect the new value of score in the model.
+
+     *
+     * @param score Set the scoreproperty
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void updateScoreFromModel(int score) {
         scoreProperty.set(score);
     }
 
+    /**
+     * The scoreProperty function returns the scoreProperty of the player.
+     *
+     *
+     *
+     * @return A property, which is a variable that can be observed
+     *
+     * @docauthor Trelent
+     */
     public IntegerProperty scoreProperty() {
         return scoreProperty;
     }
 
     // name update and get
+    /**
+     * The updateNameFromModel function is called by the model when it changes.
+     * It updates the nameProperty to reflect this change.
+     *
+     * @param name Set the nameproperty
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void updateNameFromModel(String name)
     {
         nameProperty.set(name);
     }
 
+    /**
+     * The nameProperty function returns the nameProperty of the object.
+     *
+     *
+     *
+     * @return A stringproperty
+     *
+     * @docauthor Trelent
+     */
     public StringProperty nameProperty() {
         return nameProperty;
     }
 
     // message update and get
+    /**
+     * The updateMessageFromModel function is a function that updates the message from the model.
+     *
+     *
+     * @param msg Set the value of msgproperty
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void updateMessageFromModel(String msg)
     {
         msgProperty.set(msg);
     }
+    /**
+     * The MsgProperty function returns the msgProperty variable.
+     *
+     *
+     *
+     * @return A stringproperty object that is bound to the msgproperty variable
+     *
+     * @docauthor Trelent
+     */
     public StringProperty MsgProperty() {
         return msgProperty;
     }
 
     // board update and get
+    /**
+     * The boardProperty function is a getter for the boardProperty array.
+     *
+     *
+     *
+     * @return A 2d array of stringproperty objects
+     *
+     * @docauthor Trelent
+     */
     public StringProperty[][] boardProperty() {
         return boardProperty;
     }
 
+    /**
+     * The updateBoardFromModel function updates the boardProperty array with the values from updatedBoard.
+     *
+     *
+     * @param updatedBoard Update the boardproperty[][]
+    }
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void updateBoardFromModel(String[][] updatedBoard) {
         for(int i = 0; i < 15; i++)
         {
