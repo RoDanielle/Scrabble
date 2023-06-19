@@ -24,8 +24,6 @@ public class Board {
    *
    *
    * @return The singleton instance of board
-   *
-   * @docauthor Trelent
    */
   	public static Board getBoard() {
 		if(_instance == null)
