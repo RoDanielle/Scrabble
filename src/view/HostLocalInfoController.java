@@ -28,11 +28,34 @@ public class HostLocalInfoController implements Initializable {
     private String[] nums = {"1","2","3","4"};
 
 
+    /**
+     * The initialize function is called when the FXML file is loaded.
+     * It sets up the ComboBox with all the numbers from 1 to 4.
+
+     *
+     * @param location Determine where the fxml file is located
+     * @param resources Load the resources for the application
+     *
+     * @return Nothing, so it should be void
+     *
+     * @docauthor Trelent
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         numbers.getItems().addAll(nums);
     }
 
+    /**
+     * The HostLocalAction function is called when the user clicks on the Host or Local Game button.
+     * It takes in an ActionEvent event as a parameter, and returns nothing.
+     * The function sets up a new stage for the next scene (LocalPlayersInfo), and passes it information about whether this game is local, if this player is hosting, and how many players are playing.
+
+     *
+     * @param event Get the source of the button that was clicked
+     *
+     * @return Nothing
+     * @docauthor Trelent
+     */
     @FXML
     private void HostLocalAction (ActionEvent event) throws Exception {
         num = numbers.getValue();
@@ -47,6 +70,17 @@ public class HostLocalInfoController implements Initializable {
         stage.setScene(new Scene(root));
     }
 
+    /**
+     * The setInfo function sets the isHost and isLocal variables to true or false.
+     *
+     *
+     * @param host Determine whether the player is a host or not
+     * @param local Determine if the game is local or not
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void setInfo(boolean host, boolean local)
     {
         this.isHost = host;

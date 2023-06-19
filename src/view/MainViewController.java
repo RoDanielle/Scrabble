@@ -51,6 +51,19 @@ public class MainViewController implements Initializable{
     @FXML private Button passChallenge;
 
 
+    /**
+     * The initialize function is called when the program starts. It sets up the
+     * dropdown menus for row, column, and vertical/horizontal selection.
+
+     *
+     * @param location Determine the location of the fxml file
+     * @param resources Get the value of a resource (string, image, locale-specific data, and other
+
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -59,6 +72,19 @@ public class MainViewController implements Initializable{
         vertical.getItems().addAll(ver);
     }
 
+    /**
+     * The submitWordHandler function is called when the user clicks on the submitWord button.
+     * It takes in a word, row, column and vertical value from the user input fields and sends them to
+     * viewModel.processQueryInput(userQueryInput) for processing. If an error occurs during this process, it will be caught by
+     * handleError(String errorMessage). The function also clears out any text that was entered into word field after submission.
+
+     *
+     * @param event Determine which button was pressed
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @FXML
     private void submitWordHandler (ActionEvent event) throws Exception { //word|row|col|vertical
         String s_word;
@@ -87,6 +113,17 @@ public class MainViewController implements Initializable{
     }
 
 
+    /**
+     * The challengeHandler function is called when the user clicks on either the challenge or pass button.
+     * It sends a message to the server with either yes or no depending on which button was clicked.
+
+     *
+     * @param event Determine which button was pressed
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @FXML
     private void challengeHandler (ActionEvent event) throws Exception { //word|row|col|vertical
         String challengeInput;
@@ -155,6 +192,18 @@ public class MainViewController implements Initializable{
         });
     }
 
+    /**
+     * The BindAll function binds the ViewModel to the View.
+     * It does this by binding all the properties in the view model to their respective labels and list views.
+     * This is done using a bindBidirectional function for score, which allows it to be changed from both sides (the view and viewmodel).
+     * The other bindings are one way, meaning that they can only be changed from one side (in this case, only from within the ViewModel).
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     private void BindAll() {
 
         //NAME - Bind name
@@ -173,6 +222,17 @@ public class MainViewController implements Initializable{
         this.isUserChallengeProperty = viewModel.isUserchallengeProperty();
     }
 
+    /**
+     * The bindTiles function binds the tiles in the viewModel to their respective labels.
+     * It does this by iterating through all the children of tilesListView, and if a child is an instance of Label,
+     * it will bind that label's textProperty to its corresponding tile in viewModel.tilesProperty().
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     private void bindTiles(){
         System.out.println("entered bind tiles func");
         int i = 0;
@@ -188,8 +248,17 @@ public class MainViewController implements Initializable{
         }
     }
 
-    private void bindBoard()
-    {
+    /**
+     * The bindBoard function binds the board to the view.
+     * It does so by iterating over all the labels in BoardGrid, and binding them to their corresponding cell in viewModel.boardProperty().
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
+    private void bindBoard() {
         int i = 0;
         int j = 0;
         for (Node node : BoardGrid.getChildren()) {
@@ -206,6 +275,16 @@ public class MainViewController implements Initializable{
         }
     }
 
+    /**
+     * The screenInit function is used to set the fullScreen AnchorPane's constraints so that it covers the entire screen.
+     * This function is called in the initialize method of this class, and should not be called again after that point.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     private void screenInit(){
         fullScreen.setStyle("-fx-background-color: white;"); // Set a background color for demonstration purposes
         // Set the anchor constraints to cover the entire screen
@@ -216,6 +295,17 @@ public class MainViewController implements Initializable{
 
     }
 
+    /**
+     * The createTiles function creates the tilesListView and adds it to the root.
+     * It also sets its style, layoutX, layoutY, and gridLinesVisible properties.
+     * Finally, it adds a label to each column of tilesListView with text index i, where i is the index of that column.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     private void createTiles() {
         tilesListView.addRow(0);
         for (int i = 0; i < 7; i++) {
@@ -234,6 +324,17 @@ public class MainViewController implements Initializable{
         }
     }
 
+    /**
+     * The creatBoard function creates the board for the game.
+     * It sets up a grid pane and adds columns and rows to it.
+     * Then, it loops through each row and column of the grid pane, adding labels to each cell in order to color them appropriately.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     private void creatBoard(){
         for (int i = 0; i < 15; i++) {
             BoardGrid.addColumn(i);
@@ -254,6 +355,17 @@ public class MainViewController implements Initializable{
        }
     }
 
+    /**
+     * The setColor function takes in the row and column of a label, and sets its color based on some conditions:
+     *
+     * @param i Represent the row number of the board
+     * @param j Represent the column and the int i parameter is used to represent the row
+     * @param label Set the color of the label
+     *
+     * @return Label
+     *
+     * @docauthor Trelent
+     */
     private Label setColor(int i,int j,Label label){
         if(i == 7 && j == 7)
         {
@@ -317,8 +429,16 @@ public class MainViewController implements Initializable{
         return false;
     }
 
-    private void UILoarder()
-    {
+    /**
+     * The UILoarder function is responsible for initializing the screen, creating tiles and creating a board.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
+    private void UILoarder() {
         screenInit();
         createTiles();
         creatBoard();

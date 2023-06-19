@@ -23,6 +23,17 @@ public class WelcomeScreenController {
 
 
 
+    /**
+     * The handleButtonAction function is a function that handles the button action of the host and guest buttons.
+     * It sets up a new scene for either GameMode or Connect depending on which button was pressed.
+     *
+     *
+     * @param event Get the source of the button that was clicked
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @FXML
     private void handleButtonAction (ActionEvent event) throws Exception {
         Stage stage;
@@ -52,7 +63,4 @@ public class WelcomeScreenController {
         }
         stage.setScene(new Scene(root));
     }
-
-
-
 }

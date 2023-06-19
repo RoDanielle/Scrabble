@@ -64,6 +64,22 @@ public class Player {
         this.score -= score;
     }
 
+    /**
+     * The create_word function takes in a string, row, column and vertical/horizontal
+     * information. It then creates an array of tiles based on the input word. If there is
+     * a blank tile in the input word, it will be represented by null in the array of tiles.
+     * The function also removes these tiles from this player's hand so that they cannot be used again.
+
+     *
+     * @param input_word Create the word
+     * @param _row Get the row of the word
+     * @param _col Get the column of the word
+     * @param _vertical Determine if the word is vertical or horizontal
+     *
+     * @return A word object
+     *
+     * @docauthor Trelent
+     */
     public Word create_word(String input_word, String _row, String _col, String _vertical) {
         Tile[] wordarr = null;
         int row = Integer.parseInt(_row);
@@ -94,8 +110,17 @@ public class Player {
         return word;
     }
 
-    public void removeStrTiles(String word)
-    {
+    /**
+     * The removeStrTiles function removes the tiles from the strTiles ArrayList that are used in a word.
+     *
+     *
+     * @param word Determine which tiles to remove from the strtiles arraylist
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
+    public void removeStrTiles(String word) {
         for(int i = 0; i < word.length(); i++)
         {
             if(word.charAt(i) != '_')

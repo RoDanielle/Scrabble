@@ -24,6 +24,16 @@ public class ConnectController {
     @FXML private Label enter_name;
     private String s_port,s_ip,s_name;
     private boolean isHost;
+    /**
+     * The initialize function is called when the FXML file is loaded.
+     * It sets up the button to call a function when it's clicked.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @FXML
     private void initialize() {
         connect.setOnAction(e -> {
@@ -48,6 +58,16 @@ public class ConnectController {
         });
     }
 
+    /**
+     * The setIsHost function sets the isHost variable to true or false.
+     *
+     *
+     * @param isHost Set the ishost variable
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void setIsHost(boolean isHost) {
         this.isHost = isHost;
     }

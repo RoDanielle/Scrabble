@@ -19,6 +19,19 @@ public class GameModeController {
     @FXML
     private Button remote;
 
+    /**
+     * The handleModeAction function is called when the user clicks on either the local or remote button.
+     * It sets a boolean value to true if the user clicked on local, and false if they clicked on remote.
+     * Then it loads up either HostLocalInfoController or HostRemoteInfoController depending on which button was pressed.
+
+     *
+     * @param event Get the source of the button that was pressed
+
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @FXML
     private void handleModeAction (ActionEvent event) throws Exception {
         Stage stage;
@@ -47,6 +60,16 @@ public class GameModeController {
         stage.setScene(new Scene(root));
     }
 
+    /**
+     * The setIsHost function sets the isHost variable to true or false.
+     *
+     *
+     * @param isHost Determine whether the user is a host or not
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void setIsHost(boolean isHost) {
         this.isHost = isHost;
     }

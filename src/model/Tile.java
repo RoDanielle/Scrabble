@@ -14,12 +14,35 @@ public class Tile {
 		this.score = score;
 	}
 
-	@Override
+	/**
+  * The hashCode function is used to generate a unique hash code for each object.
+  * This is useful when storing objects in data structures that use hashing, such as HashMaps and HashSets.
+  * The hashCode function should return the same value for two objects if they are equal according to the equals method.
+
+  *
+  *
+  * @return The hash code value for this object
+  *
+  * @docauthor Trelent
+  */
+ @Override
 	public int hashCode() {
 		return Objects.hash(letter, score);
 	}
 
-	@Override
+	/**
+  * The equals function is used to compare two objects of the same class.
+  * It returns true if the two objects are equal, and false otherwise.
+  * In this case, we want to return true if both tiles have the same letter and score.
+
+  *
+  * @param obj Compare the current object to another object
+  *
+  * @return True if the two objects are equal
+  *
+  * @docauthor Trelent
+  */
+ @Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -72,7 +95,16 @@ public class Tile {
 			tilearr[25] = new Tile('Z', 10);
 		}
 
-		public static Bag getBag( ) {
+		/**
+   * The getBag function is a static function that returns the singleton instance of the Bag class.
+   *
+   *
+   *
+   * @return A reference to the bag object
+   *
+   * @docauthor Trelent
+   */
+  public static Bag getBag() {
 			if(_instance == null)
 			{
 				_instance = new Bag();
@@ -80,8 +112,16 @@ public class Tile {
 			return _instance;
 		}
 
-		public Tile getRand()
-		{
+		/**
+   * The getRand function returns a random tile from the bag.
+   *
+   *
+   *
+   * @return A random tile from the bag
+   *
+   * @docauthor Trelent
+   */
+  public Tile getRand() {
 			if(sum == 0)
 				return null;
 			else {
@@ -95,7 +135,17 @@ public class Tile {
 			}
 		}
 
-		public Tile getTile(char cha){
+		/**
+   * The getTile function takes in a character and returns the tile object associated with that character.
+   *
+   *
+   * @param cha Determine which tile to return
+   *
+   * @return A tile with the given letter
+   *
+   * @docauthor Trelent
+   */
+  public Tile getTile(char cha){
 			if(Character.isUpperCase(cha)) {
 				if(lettercount[cha - 'A'] == 0)
 					return null;
@@ -109,8 +159,17 @@ public class Tile {
 				return null;
 		}
 
-		public void put(Tile t)
-		{
+		/**
+   * The put function adds a tile to the bag.
+   *
+   *
+   * @param t Add a tile to the bag
+   *
+   * @return Tile
+   *
+   * @docauthor Trelent
+   */
+  public void put(Tile t){
 			if(lettercount[t.letter- 'A'] < copycount[t.letter- 'A'])
 			{
 				lettercount[t.letter- 'A'] = lettercount[t.letter- 'A'] + 1;
@@ -118,13 +177,29 @@ public class Tile {
 			}
 		}
 
-		public int size()
-		{
+		/**
+   * The size function returns the number of elements in the list.
+   *
+   *
+   *
+   * @return The sum of the number of elements in each list
+   *
+   * @docauthor Trelent
+   */
+  public int size() {
 			return sum;
 		}
 
-		public int[] getQuantities()
-		{
+		/**
+   * The getQuantities function returns an array of integers that represents the number of times each letter appears in the text.
+   *
+   *
+   *
+   * @return An array of integers that contains the number of times each letter occurs in the text
+   *
+   * @docauthor Trelent
+   */
+  public int[] getQuantities() {
 			int Quantities[];
 			Quantities = new int[26];
 			System.arraycopy(lettercount, 0, Quantities,0,26);

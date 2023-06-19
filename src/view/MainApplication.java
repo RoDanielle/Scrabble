@@ -8,6 +8,17 @@ import javafx.stage.Stage;
 
 public class MainApplication extends Application {
 
+    /**
+     * The start function is the main function of the application. It loads
+     * a WelcomeScreenController and displays it to the user.
+
+     *
+     * @param primaryStage Set the scene, and to show it
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
@@ -22,6 +33,16 @@ public class MainApplication extends Application {
     }
 
 
+    /**
+     * The main function of the program.
+     *
+     *
+     * @param args Pass arguments to the application
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public static void main(String[] args) throws Exception {
         launch(args);
     }

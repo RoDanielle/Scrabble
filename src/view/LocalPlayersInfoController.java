@@ -31,11 +31,37 @@ public class LocalPlayersInfoController implements Initializable {
     @FXML
     private Button submitNames;
 
+    /**
+     * The initialize function is called when the FXML file is loaded.
+     * It sets up the textFieldList arraylist, which will be used to store all the TextFields in this scene.
+
+     *
+     * @param location Determine the location of the fxml file
+     * @param resources Load the strings from the resource bundle
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         textFieldList = new ArrayList<>();
     }
 
+    /**
+     * The localNamesHandler function is responsible for taking the names of all players and passing them to the MainViewController.
+     * It also passes a boolean value that indicates whether this game is local, as well as a boolean value indicating if this player
+     * is hosting the game. The number of players in the game are also passed to MainViewController so that it can be used later on in determining
+     * which player's turn it currently is. Finally, we set up our main view by loading its FXML file and setting its title before displaying it on screen.
+
+     *
+     * @param event Get the source of the event
+
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     @FXML
     private void localNamesHandler(ActionEvent event) throws IOException {
         StringBuilder builder = new StringBuilder();
@@ -61,6 +87,19 @@ public class LocalPlayersInfoController implements Initializable {
     }
 
 
+    /**
+     * The setInfo function sets the isHost, isLocal, and numOfPlayers variables to
+     * the values passed in as parameters.
+     *
+     *
+     * @param host Determine whether the player is a host
+     * @param local Determine whether the game is local or not
+     * @param num Set the number of players in the game
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void setInfo(boolean host, boolean local, int num) {
         this.isHost = host;
         this.isLocal = local;
@@ -71,6 +110,18 @@ public class LocalPlayersInfoController implements Initializable {
         return container;
     }
 
+    /**
+     * The createTextFields function creates a TextField for each player in the game.
+     * The number of players is determined by the numOfPlayers variable, which is set
+     * when the user selects a difficulty level from the menu.  The function also adds
+     * these TextFields to an ArrayList called textFieldList, so that they can be accessed later.
+
+     *
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public void createTextFields() {
         container.getChildren().clear();
         textFieldList.clear();
