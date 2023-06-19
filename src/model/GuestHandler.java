@@ -43,6 +43,16 @@ public class GuestHandler implements Runnable {
     public Word addedWord;
     public String addedWordStr;
 
+    /**
+     * The GuestHandler function is the constructor.
+     * It sets initializes all the information used for handling the communication between a guest and host.
+     * The GuestHandler object handles all the guest requests and sends responses to these requests using other.
+     *
+     * @param clientSocket is the socket the host server created for a guset player
+     * @param myHost Access the HostModel class
+     *
+     * @return void, created a new client handler to handel a remote player
+     */
     public GuestHandler(Socket clientSocket, HostModel myHost) {
         this.myHost = myHost;
         this.clientSocket = clientSocket;
@@ -55,16 +65,34 @@ public class GuestHandler implements Runnable {
     }
 
     // Getter for isClientTurn
+    /**
+     * The isClientTurn function returns a boolean value that indicates whether or not it is the guest player's turn.
+     *
+     * @return A boolean value
+     */
     public boolean isClientTurn() {
         return isClientTurn;
     }
 
     // Setter for isClientTurn
+    /**
+     * The setClientTurn function sets the boolean value of isClientTurn to true or false.
+     *
+     *
+     * @param isClientTurn Determine if it is the client's turn
+     *
+     * @return void
+     */
     public void setClientTurn(boolean isClientTurn) {
         this.isClientTurn = isClientTurn;
     }
 
-    public void closeAllFiles()  // TODO - check if we need to close the input output files when games finishes
+    /**
+     * The closeAllFiles function closes all the files that were used to communicate with the guest player.
+     *
+     * @return void
+     */
+    public void closeAllFiles()
     {
         try {
             inFromClient.close();
@@ -74,6 +102,12 @@ public class GuestHandler implements Runnable {
         }
     }
 
+    /**
+     * The giveTiles function is used to give the guest player their tiles.
+     *
+     *
+     * @return The tiles that are given to the guest player as a string
+     */
     private String giveTiles()
     {
         this.myHost.giveTiles(this.guestPlayer);
@@ -85,17 +119,37 @@ public class GuestHandler implements Runnable {
         return s_tiles; // return all players tiles as a String
     }
 
+    /**
+     * The turnNotifier function is called when it is the guest player's turn to play.
+     * It sends a message to the client telling them that it is their turn.
+     *
+     * @return void
+     */
     private void turnNotifier()
     {
         outToClient.println("1|your turn");
     }
 
+    /**
+     * The wordOkResponse function is called when the requested word was able to be placed on the board.
+     * It removes the tiles used in that word from the player's tile rack, adds to their score, and sends
+     * a response to the guest payer with the new score and new tiles.
+     *
+     * @param msgTag Tell the client what type of message it is
+     * @param word Pass the word that was verified
+     * @param row the row where the first letter of the word is placed
+     * @param col the column where the first letter of the word is placed
+     * @param vertical Determine if the word is vertical or horizontal
+     * @param score the score earned for the word
+     * @param w is the word object representing the word that was palced on the board
+     *
+     * @return void
+     */
     public void wordOkResponse(String msgTag, String word, String row, String col,String vertical, int score, Word w){
 
         guestPlayer.removeStrTiles(word); // remove the tiles used in the word
         guestPlayer.addScore(score);
         String toGuest = msgTag + "|" + score + "|" + this.giveTiles() + "|" + guestPlayer.name + "|" + word + "|" + row + "|" + col + "|" + vertical;
-        System.out.println("word response to guest: " + toGuest);
         this.outToClient.println(toGuest);
         this.outToClient.flush();
 
@@ -103,6 +157,14 @@ public class GuestHandler implements Runnable {
         this.addedWordStr = toGuest;
     }
 
+    /**
+     * The challengeFailed function is called when the guest player's requested challenge failed.
+     * It sends a message to the guest player informing them that they have failed, and
+     * decreases their score by 10 points.
+     *
+     *
+     * @return void
+     */
     public void challengeFailed()
     {
         String toGuest = "3" + "|false|" + guestPlayer.name;
@@ -111,6 +173,16 @@ public class GuestHandler implements Runnable {
         outToClient.flush();
     }
 
+    /**
+     * The wordPlacementFailed function is called when the word placement fails but the word was dictionary legal.
+     * It sends a message to the guest player that their word placement request (query) failed, and then adds all of the tiles from
+     * that word back into their tile rack.
+     *
+     * @param msgTag Identify the message type
+     * @param w stores the tiles from the word that was attempted to be placed
+     *
+     * @return void
+     */
     public void wordPlacementFailed(String msgTag, Word w)
     {
         String toGuest = msgTag + "|0|" + "null" + "|" + guestPlayer.name; //"2|true|0|null|name"
@@ -125,6 +197,16 @@ public class GuestHandler implements Runnable {
             w.getTiles()[i] = null;
         }
     }
+    /**
+     * The updateRequest function is used to update the wordDetails array of the guestPlayer object.
+     * The function takes in a String array as an argument, and uses it to update the wordDetails
+     * array of guestPlayer. If request[0] is "xxx" it means the user chose to pass its turn, then all elements of wordDetails are set
+     * to null, otherwise they are updated with values from request[]. This function is called by handleRequest() when a new message containing a query request has been received from client.
+     *
+     * @param request Store the request from the client (guest player)
+     *
+     * @return void
+     */
     private void updateRequest(String[] request)
     {
         this.guestPlayer.wordDetails[0] = request[1];
@@ -141,9 +223,18 @@ public class GuestHandler implements Runnable {
         }
     }
 
+    /**
+     * The run function is the main function of this class.
+     * This function is being called each time it is a guest players turn.
+     * It handles all communication between the client(guest) and server(host),
+     * handles the checks needed to be conducted for each request the guest asked for,as well as updating the board with new words,
+     * maintaining a players object representing the guest on the host side and communicating with the game server in the name of the guest.
+     *
+     *
+     * @return void
+     */
     @Override
     public void run(){
-
         try {
             // Create input and output streams for the client socket
             this.inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -228,10 +319,8 @@ public class GuestHandler implements Runnable {
                 // Set the flag to indicate the server's turn is over
                 isClientTurn = false;
             }
-
         } catch(IOException e){
             e.printStackTrace();
         }
     }
-
 }
