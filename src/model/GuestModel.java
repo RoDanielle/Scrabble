@@ -35,9 +35,20 @@ public class GuestModel extends Observable implements GameModel{
     private Map<String,String> letterToScore;
     private String request_to_server;
     private String message;
-    boolean gameRunning;
+    private boolean gameRunning;
     private List<Observer> myObservers;
 
+    /**
+     * The GuestModel function is the constructor for the GuestModel class.
+     * It initializes all of the variables that are used in this class, and it also starts a new thread to connect to server in order for the game to start.
+
+     *
+     * @param name Set the name of the player
+     * @param ip Set the ip address of the server
+     * @param port Connect to the server at this given port
+     *
+     * @return A new guestmodel object
+     */
     public GuestModel(String name, String ip, int port){
         this.myObservers = new ArrayList<>();
         this.guest_player = new Player();
@@ -78,27 +89,63 @@ public class GuestModel extends Observable implements GameModel{
         }).start();
     }
 
+    /**
+     * The getName function returns the name of the guest player.
+     *
+     *
+     * @return The name of the guest player
+     */
     @Override
     public String getName() {
-        System.out.println("guest name from getName: " + this.guest_player.name);
         return this.guest_player.name;
     }
 
+    /**
+     * The getScore function returns the score of the guest player.
+     *
+     *
+     * @return The score of the player
+     */
     @Override
     public int getScore() {
         return this.guest_player.getScore();
     }
 
+    /**
+     * The getTiles function returns a list of strings that represent the tiles
+     * currently held by the player.
+     *
+     * @return The list of tiles that the player has
+     */
     @Override
     public List<String> getTiles() {
         return this.guest_player.strTiles;
     }
 
+    /**
+     * The getMessage function returns the message that is changing from time to time.
+     * This message will be shown to the user during the game.
+     *
+     *
+     * @return The message that needs to be shown on screen.
+     */
     @Override
     public String getMessage() {
         return this.message;
     }
 
+    /**
+     * The setUserQueryInput function is used to set the user's input for a word, row, column and vertical/horizontal.
+     * It sends the players (user) word to the game server for validation according to the games rules.
+     * If the user chose to pass its turn (xxx) it sets the message on screen to be "turn over".
+     *
+     * @param word Store the word that is inputted by the user
+     * @param row Set the row of the word to be placed on the board
+     * @param col Set the column of the word to be placed on the board
+     * @param vertical Indicate whether the word is horizontal or vertical
+     *
+     * @return void
+     */
     @Override
     public void setUserQueryInput(String word, String row, String col, String vertical) {
         this.guest_player.wordDetails[0] = word;
@@ -118,6 +165,14 @@ public class GuestModel extends Observable implements GameModel{
         write_to_server(this.request_to_server,this.getMySocket());
     }
 
+    /**
+     * The setUserChallengeInput function is used to set the user's challenge input.
+     * It sends the input to the game server. If the user chose not to challenge it sets the message on screen to be "turn over".
+     *
+     * @param request Get the user's input for the offer of challenge (a specific move in the game)
+     *
+     * @return void
+     */
     @Override
     public void setUserChallengeInput(String request) {
         if(request.equals("c") || request.equals("C"))
@@ -132,44 +187,104 @@ public class GuestModel extends Observable implements GameModel{
         }
     }
 
+    /**
+     * The getBoard function returns the board.
+     *
+     *
+     * @return The board array (matrix)
+     */
     @Override
     public String[][] getBoard() {
         return this.board;
     }
 
-    public void setMessage(String msg)
+    /**
+     * The setMessage function is used to set the message that will be displayed to the user.
+     * It notifies the observer (viewmodel - mvvm) so the message on screen will be updated.
+     *
+     * @param msg the message to be shown to the user.
+     *
+     * @return void
+     */
+    private void setMessage(String msg)
     {
         this.message = msg; // messages to the user and requests for input
         this.notifyObserver("message");
     }
 
-    public void setName(String name)
+    /**
+     * The setName function sets the name of the guest player.
+     *
+     *
+     * @param name is the name of the guest player
+     *
+     * @return void
+     */
+    private void setName(String name)
     {
         this.guest_player.setName(name);
     }
 
+    /**
+     * The getMySocket function returns the socket the guest player opened for communication with the games host.
+     *
+     *
+     * @return The socket of the guest player
+     */
     public Socket getMySocket() {
 
         return this.guest_player.socket;
     }
 
-    public void setMySocket(Socket socket) {
+    /**
+     * The setMySocket function sets the socket of the guest player to a given socket.
+     *
+     *
+     * @param socket that will be set the socket of the guest player
+     *
+     * @return void
+     */
+    private void setMySocket(Socket socket) {
 
         this.guest_player.socket = socket;
     }
 
-    public void decreaseScore(int num)
+    /**
+     * The decreaseScore function decreases the score of the guest player by a given number.
+     *
+     *
+     * @param num Decrease the score of the player by that amount
+     *
+     * @return void
+     */
+    private void decreaseScore(int num)
     {
         this.guest_player.decreaseScore(num);
         this.notifyObserver("score");
     }
 
+    /**
+     * The addScore function adds the given number to the score of the guest player.
+     *
+     *
+     * @param num Add the score to the guest player
+     *
+     * @return void
+     */
     public void addScore(int num)
     {
         this.guest_player.addScore(num);
         this.notifyObserver("score");
     }
 
+    /**
+     * The notifyObserver function is used to notify all observers of the model that a change has occurred.
+     *
+     *
+     * @param change Pass the change tag (so it knows what info wad changed) to the observer
+     *
+     * @return void
+     */
     private void notifyObserver(String change) {
         setChanged();
         for(Observer obz: myObservers)
@@ -177,12 +292,28 @@ public class GuestModel extends Observable implements GameModel{
             obz.update(this, change);
         }
     }
+    /**
+     * The addObserver function adds an observer to the list of observers.
+     *
+     *
+     * @param obz is the observer that will be added to the list of observers
+     *
+     * @return void
+     */
     @Override
     public void addObserver(Observer obz)
     {
         this.myObservers.add(obz);
     }
 
+    /**
+     * The addTiles function is called when the server sends a message that contains tiles for the guest player.
+     * The function adds these tiles to the  player's strTiles arraylist, and notifies observers of this change.
+     *
+     * @param addedTiles is a string containing the received tiles from the server
+     *
+     * @return void
+     */
     public void addTiles(String addedTiles) // received all 7 tiles
     {
         this.guest_player.strTiles.clear();
@@ -197,7 +328,18 @@ public class GuestModel extends Observable implements GameModel{
             System.out.println(s);
     }
 
-    public void updateMatrixBoard(String word, String row, String col, String vertical) {
+    /**
+     * The updateMatrixBoard function updates the board matrix with the new word after it was verified by the game server.
+     *
+     *
+     * @param  word is the word that is being placed on the board
+     * @param  row is the row of where the first letter of word needs to be placed
+     * @param  col is the column of where the first letter of word needs to be placed
+     * @param  vertical Determine whether the word is placed vertically or horizontally
+     *
+     * @return void
+     */
+    private void updateMatrixBoard(String word, String row, String col, String vertical) {
         if(vertical.equals("vertical"))
         {
             for(int i = 0; i < word.length(); i++)
@@ -222,7 +364,18 @@ public class GuestModel extends Observable implements GameModel{
     }
 
 
-    public void write_to_server(String str, Socket server_socket){
+    /**
+     * The write_to_server function takes a string and a socket as input.
+     * It then writes the string to the server through that socket.
+
+     *
+     * @param str id the message to the server
+     * @param server_socket communicate (send) with the server through this socket
+     *
+     * @return void
+
+     */
+    private void write_to_server(String str, Socket server_socket){
         try {
             PrintWriter outToServer = new PrintWriter(server_socket.getOutputStream());
             outToServer.println(str);
@@ -232,7 +385,15 @@ public class GuestModel extends Observable implements GameModel{
             throw new RuntimeException(e);
         }
     }
-    public String read_from_server(Socket server_socket) {
+    /**
+     * The read_from_server function reads a line of text from the server.
+     *
+     *
+     * @param server_socket (receive) communicate with the server through this socket
+     *
+     * @return void
+     */
+    private String read_from_server(Socket server_socket) {
         try {
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(server_socket.getInputStream()));
             String serverResponse = inFromServer.readLine();
@@ -243,7 +404,17 @@ public class GuestModel extends Observable implements GameModel{
         }
     }
 
-    public void connectToServer(String ip, int port){
+    /**
+     * The connectToServer function is used to connect the guest player to the host server.
+     *
+     *
+     * @param ip is the ip address of the server
+
+     * @param port Connect to the server on a specific port
+     *
+     * @return void
+     */
+    private void connectToServer(String ip, int port){
         try {
             Socket hostServer =new Socket(ip,port);
             this.setMessage("Connection established successfully!");
@@ -254,14 +425,37 @@ public class GuestModel extends Observable implements GameModel{
             throw new RuntimeException(e);
         }
     }
-    public void case0(String fromHost) // got 7 tiles
+    /**
+     * The case0 function is called when the client receives a message from the server
+     * that it has received 7 tiles. The function then calls notifyObserver to update
+     * the GUI with this information, and sets a message for the user to see in their
+     * game window. It also adds these tiles to its own list of tiles using addTiles().
+
+     *
+     * @param fromHost is a list containing the received tiles
+     *
+     * @return void
+     */
+    private void case0(String fromHost) // got 7 tiles
     {
         this.notifyObserver("name");
         this.setMessage("game started, you got seven tiles, wait for your turn");
         addTiles(fromHost);
     }
 
-    public void serverWordResponse(String[] fromHost) //my word failed"2|true|0|null|name"
+    /**
+     * The serverWordResponse function is called when the client receives a response from the server
+     * regarding whether or not a word was successfully placed on the board.
+     * If the word was placed by other players, only the board is updated.
+     * If it successfully placed by this user, then this function will update all of the necessary data
+     * structures and notify observers that they need to be updated.
+     * If the word was not found in the dictionary an offer for a challenge will be shown.
+     *
+     * @param fromHost Store the message received from the server
+     *
+     * @return void
+     */
+    private void serverWordResponse(String[] fromHost) //my word failed"2|true|0|null|name"
     {
         for(String s : fromHost)
             System.out.println(s);
@@ -288,7 +482,16 @@ public class GuestModel extends Observable implements GameModel{
         }
     }
 
-    public void challengeResponse(String[] fromHost)
+    /**
+     * The challengeResponse function is called when the client receives a challenge response from the server.
+     * If the challenge was correct, then it will call on another function to handle that case.
+     * Otherwise, if it was incorrect, then this function will deduct 10 points from your score and display a message saying so and end the player's turn.
+     *
+     * @param fromHost Store the message received from the server
+     *
+     * @return void
+     */
+    private void challengeResponse(String[] fromHost)
     {
         if(fromHost[1].equals("true"))
         {
@@ -307,9 +510,18 @@ public class GuestModel extends Observable implements GameModel{
         this.setMessage("turn over");
     }
 
-    public void gameOver(String fromHost)
+    /**
+     * The gameOver function is called when the game has ended.
+     * It sets the message to be displayed on screen, and closes
+     * the socket of the guest player.
+
+     *
+     * @param fromHost containing the winner of the game info
+     *
+     * @return void
+     */
+    private void gameOver(String fromHost)
     {
-        // TODO - make into a popup screen
         this.setMessage(fromHost + ", Game Over"); // winner message
         this.gameRunning = false;
 
@@ -320,13 +532,31 @@ public class GuestModel extends Observable implements GameModel{
         }
     }
 
-    public void wordEnteredByOtherUser(String[] fromHost)
+    /**
+     * The wordEnteredByOtherUser function is called when the client receives a message from the server
+     * indicating that another user has entered a word.
+     * The function calls updateBoard to update the board matrix with the new word.
+     *
+     * @param  fromHost containing the information from the server
+     *
+     * @return void
+     */
+    private void wordEnteredByOtherUser(String[] fromHost)
     {
-        System.out.println("updating word by other user");
         updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
     }
 
-    public void wordEnteredByMe(String[] fromHost)
+    /**
+     * The wordEnteredByMe function is called when the client receives a message from the server that indicates
+     * the server sent a response for a requested word. The function checks if the word entered by them was valid and placed on
+     * board or not. If it was, then they get points for it and their tiles are updated accordingly. If not, then
+     * they do not get any points and their turn is over. In both cases, a message is displayed to indicate what happened.
+     *
+     * @param fromHost containing the information from the server
+     *
+     * @return void
+     */
+    private void wordEnteredByMe(String[] fromHost)
     {
         if(!fromHost[2].equals("0")) // my word was put into board
         {
@@ -340,6 +570,15 @@ public class GuestModel extends Observable implements GameModel{
             this.setMessage("wrong word or placement, you get 0 points, turn over");
     }
 
+    /**
+     * The challengeTrue function is called when the client receives a message from the server that
+     * indicates that a challenge was successful. The function updates the board and score accordingly,
+     * and sets an appropriate message to be displayed to the user.
+     *
+     * @param fromHost containing the information from the server
+     *
+     * @return : void
+     */
     public void challengeTrue(String[] fromHost)
     {
         System.out.println("challenge true string:");
@@ -362,14 +601,26 @@ public class GuestModel extends Observable implements GameModel{
     }
 
 
-    public void startGuestGame() {
+    /**
+     * The startGuestGame function is the main loop for the guest player.
+     * It waits for a message from the host, and then performs an action based on that message.
+     * The actions are:
+     * 0 - receive seven tiles at start of game (case0)
+     * 1 - it's my turn (setMessage)
+     * 2 - server response to query request + updated board for any entered word (serverWordResponse)
+     * 3 - server response to challenge request + updated board if challenge was successful or not(challengeResponse)
+     * 4 - server notifying the game has ended and provides the winner's info (gameOver).
+     *
+     *
+     * @return void
+     */
+    private void startGuestGame() {
         this.setMessage("please wait for Host to start the game");
         while (gameRunning){
             // reading from server
-            System.out.println("guest model loop");
             String readfromHost = this.read_from_server(this.getMySocket());
-
             String[] fromHost = readfromHost.split("[|]");
+
             switch (fromHost[0]){
                 case "0": // seven tiles at the start of the game
                     case0(fromHost[1]);
@@ -392,7 +643,6 @@ public class GuestModel extends Observable implements GameModel{
                     gameOver(fromHost[1]);
                     break;
             }
-
         }
     }
 }
