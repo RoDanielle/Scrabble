@@ -4,10 +4,12 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.BitSet;
 
+
 public class BloomFilter {
     private final BitSet bitset;
     private final MessageDigest[] hashFunctions;
     private final int Size;
+
     public BloomFilter(int size, String... algs) {
         // Initialize the BitSet and hash function array
         bitset = new BitSet(size);
