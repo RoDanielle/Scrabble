@@ -272,7 +272,7 @@ public class GuestModel extends Observable implements GameModel{
             this.setMessage(fromHost[4] + " put a new word in the board");
         }
 
-        else if(fromHost[1].equals("true") && fromHost[4].equals(this.guest_player.name)) // received:"2|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
+        else if(fromHost[1].equals("true") && fromHost[4].equals(this.guest_player.name)) // received:"2|true|score|a,1.b,2....|name|word(not full)|row|col|v\h"
         {
             wordEnteredByMe(fromHost);
             try {
@@ -349,10 +349,10 @@ public class GuestModel extends Observable implements GameModel{
         }
         if(!fromHost[2].equals("0")) // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
         {
-            int tmp_score = Integer.parseInt(fromHost[2]) + 10;
-            this.setMessage( "your word was placed on the board, you get " + tmp_score + " points");
+            //int tmp_score = Integer.parseInt(fromHost[2]) + 10;
+            this.setMessage( "your word was placed on the board, you get " + fromHost[2] + " points");
             updateMatrixBoard(fromHost[5],fromHost[6],fromHost[7],fromHost[8]);
-            this.addScore(tmp_score);
+            this.addScore(Integer.parseInt(fromHost[2]));
             this.addTiles(fromHost[3]);
         }
         else // only challenge correct received: "3|true|0|name"
@@ -361,34 +361,6 @@ public class GuestModel extends Observable implements GameModel{
         }
     }
 
-    public void printboard() {
-        System.out.println("the board is: ");
-        System.out.print("  ");
-        for (int k = 0; k < 15; k++) {
-            System.out.print(" " + k + " ");
-        }
-        System.out.println("");
-        for (int i = 0; i < 15; i++) {
-            System.out.print(i + " ");
-            for (int j = 0; j < 15; j++) {
-                if (this.board[i][j] != null) {
-                    if (j < 11) {
-                        System.out.print(" " + this.board[i][j] + " ");
-                    } else {
-                        System.out.print("  " + this.board[i][j] + " ");
-                    }
-
-                } else {
-                    if (j < 11) {
-                        System.out.print(" _ ");
-                    } else {
-                        System.out.print("  _ ");
-                    }
-                }
-            }
-            System.out.println("");
-        }
-    }
 
     public void startGuestGame() {
         this.setMessage("please wait for Host to start the game");
@@ -396,8 +368,7 @@ public class GuestModel extends Observable implements GameModel{
             // reading from server
             System.out.println("guest model loop");
             String readfromHost = this.read_from_server(this.getMySocket());
-            //if(readfromHost != null)
-            //  {
+
             String[] fromHost = readfromHost.split("[|]");
             switch (fromHost[0]){
                 case "0": // seven tiles at the start of the game
@@ -421,7 +392,7 @@ public class GuestModel extends Observable implements GameModel{
                     gameOver(fromHost[1]);
                     break;
             }
-            // }
+
         }
     }
 }

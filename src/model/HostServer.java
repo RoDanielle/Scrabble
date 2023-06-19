@@ -108,8 +108,6 @@ public class HostServer {
                     e.printStackTrace();
                 }
 
-
-
                 // Set the flag to indicate the client's turn
                 isHostTurn = false;
             }
@@ -155,9 +153,7 @@ public class HostServer {
                     Guestturns = 0;
                 }
             }
-            // } catch (IOException e) {
-            // throw new RuntimeException(e);
-            //}
+
             if(passCount()) // count turn passes in order to know if the game needs to be stopped
             {
                 this.hostModel.stopGame();

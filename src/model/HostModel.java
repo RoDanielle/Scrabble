@@ -259,8 +259,6 @@ public class HostModel extends Observable implements GameModel {
             this.write_to_socket("check", s);
             System.out.println("game server is up, sent check and closed ");
             s.close();
-            // TODO - send test connection message to let the server know to not keep this connection and port open
-            //  TODO - close the socket
             return true;
         } catch (IOException ex) {
             System.out.println("game server is not up, need to create it");
@@ -282,21 +280,17 @@ public class HostModel extends Observable implements GameModel {
 
         if(isLocal)
         {
-            //MyServer s=new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
-            //s.start(); // TODO - delete after implementing the game server changes
+
             this.setLocalPlayers(names);
             startGame_local("localhost", 8080);
-            //s.close();
-            //this.gameServerSocket.close(); // needed to be called only after startGame_local stopped running, meaning after the game is over.
+
         }
         else { //remote
             this.hostPlayer.setName(names);
             this.current_player = hostPlayer;
-            //MyServer s = new MyServer(8080, new BookScrabbleHandler()); // delete after implementing the game server changes
-            // s.start(); //  TODO - delete after implementing the game server changes
+
             this.hs = new HostServer(this);
             this.hs.start();
-            //s.close();
         }
     }
 
@@ -528,8 +522,6 @@ public class HostModel extends Observable implements GameModel {
             this.stopGame();
         }
     }
-
-
 
     public void stopLocalGame()
     {

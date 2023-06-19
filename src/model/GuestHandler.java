@@ -27,10 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class GuestHandler implements Runnable {
 
@@ -53,7 +50,7 @@ public class GuestHandler implements Runnable {
         this.guestPlayer = new Player();
         this.gameRunning = true;
 
-        this.addedWord = null;  ///--------
+        this.addedWord = null;
         this.addedWordStr = "null";
     }
 
@@ -221,7 +218,8 @@ public class GuestHandler implements Runnable {
                                 } else {
                                     wordPlacementFailed(toGuest, w); // "3|true|0|player name"
                                 }
-                            } else {
+                            }
+                            else {
                                 challengeFailed();
                             }
                         }
