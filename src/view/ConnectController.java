@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,9 +21,9 @@ public class ConnectController {
     @FXML public TextField name;
     @FXML private Button connect;
     @FXML private Label title;
-    @FXML private Label enter_ip;
-    @FXML private Label enter_port;
-    @FXML private Label enter_name;
+    @FXML private ImageView enter_ip;
+    @FXML private ImageView enter_port;
+    @FXML private ImageView enter_name;
     private String s_port,s_ip,s_name;
     private boolean isHost;
     /**
@@ -34,8 +36,21 @@ public class ConnectController {
      *
      * @docauthor Trelent
      */
+
+    private void loadImage()
+    {
+        Image enter_ipImage = new Image(getClass().getResourceAsStream("/view/images/ip.jpeg"));
+        enter_ip.setImage(enter_ipImage);
+        Image enter_portImage = new Image(getClass().getResourceAsStream("/view/images/port.jpeg"));
+        enter_port.setImage(enter_portImage);
+        Image enter_nameImage = new Image(getClass().getResourceAsStream("/view/images/name.jpeg"));
+        enter_name.setImage(enter_nameImage);
+    }
+
     @FXML
     private void initialize() {
+        loadImage();
+
         connect.setOnAction(e -> {
             s_ip = ip.getText();
             s_port = port.getText();

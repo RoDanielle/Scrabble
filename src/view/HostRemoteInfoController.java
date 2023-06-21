@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -25,8 +27,9 @@ public class HostRemoteInfoController implements Initializable {
     @FXML public TextField hostName;
     @FXML private Button submit;
     @FXML private Label question;
-    @FXML private Label name;
     @FXML private ChoiceBox<String> numbers;
+    @FXML private ImageView number;
+    @FXML private ImageView Pname;
     private String[] nums = {"2","3","4"};
 
 
@@ -44,8 +47,18 @@ public class HostRemoteInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        loadImage();
         numbers.getItems().addAll(nums);
     }
+
+    private void loadImage()
+    {
+        Image numberImage = new Image(getClass().getResourceAsStream("/view/images/number.jpeg"));
+        number.setImage(numberImage);
+        Image nameImage = new Image(getClass().getResourceAsStream("/view/images/name.jpeg"));
+        Pname.setImage(nameImage);
+    }
+
 
     /**
      * The HostRemoteAction function is called when the user clicks on the &quot;Host&quot; button.

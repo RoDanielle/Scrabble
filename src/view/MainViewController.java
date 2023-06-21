@@ -169,11 +169,9 @@ public class MainViewController implements Initializable{
         // Observe the ViewModel's properties
         viewModel.isUserTurnProperty().addListener((observable, oldValue, newValue) -> { // turn (query) "notifier"
             if (newValue) {
-                System.out.println("view got user turn true");
                 submitWord.setDisable(false);
                 passTurn.setDisable(false);
             } else {
-                System.out.println("view got user turn false");
                 submitWord.setDisable(true);
                 passTurn.setDisable(true);
             }
@@ -181,11 +179,9 @@ public class MainViewController implements Initializable{
 
         viewModel.isUserchallengeProperty().addListener((observable, oldValue, newValue) -> { // challenge "notifier"
             if (newValue) {
-                System.out.println("view got user challenge true");
                 challengeB.setDisable(false);
                 passChallenge.setDisable(false);
             } else {
-                System.out.println("view got user challenge false");
                 challengeB.setDisable(true);
                 passChallenge.setDisable(true);
             }

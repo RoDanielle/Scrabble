@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 
@@ -25,6 +27,9 @@ public class HostLocalInfoController implements Initializable {
     @FXML private Button submit;
     @FXML private Label question;
     @FXML private ChoiceBox<String> numbers;
+    @FXML private ImageView number;
+    @FXML private ImageView name;
+
     private String[] nums = {"1","2","3","4"};
 
 
@@ -42,7 +47,14 @@ public class HostLocalInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        loadImage();
         numbers.getItems().addAll(nums);
+    }
+
+    private void loadImage()
+    {
+        Image numberImage = new Image(getClass().getResourceAsStream("/view/images/number.jpeg"));
+        number.setImage(numberImage);
     }
 
     /**

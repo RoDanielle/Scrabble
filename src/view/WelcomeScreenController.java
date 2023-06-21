@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 
@@ -19,8 +21,21 @@ public class WelcomeScreenController {
     private Button host;
     @FXML
     private Button guest;
+    @FXML
+    private ImageView scrabble;
     private boolean isHost;
 
+
+    @FXML
+    private void initialize() {
+        loadImage();
+    }
+
+    private void loadImage()
+    {
+        Image scrabbleImage = new Image(getClass().getResourceAsStream("/view/images/scrabble.jpeg"));
+        scrabble.setImage(scrabbleImage);
+    }
 
 
     /**

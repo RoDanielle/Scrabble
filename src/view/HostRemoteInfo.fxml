@@ -4,27 +4,35 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.HostRemoteInfoController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.HostRemoteInfoController">
    <children>
-      <Label fx:id="question" layoutX="11.0" layoutY="46.0" prefHeight="80.0" prefWidth="452.0" text="Choose number of players (including host)">
-         <font>
-            <Font name="Baskerville Old Face" size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="name" layoutX="33.0" layoutY="161.0" prefHeight="53.0" prefWidth="197.0" text="Enter host name">
-         <font>
-            <Font name="Baskerville Old Face" size="25.0" />
-         </font>
-      </Label>
-      <TextField fx:id="hostName" layoutX="379.0" layoutY="165.0" prefHeight="44.0" prefWidth="186.0" />
-      <Button fx:id="submit" layoutX="237.0" layoutY="303.0" mnemonicParsing="false" onAction="#HostRemoteAction" prefHeight="53.0" prefWidth="95.0" text="submit" textFill="#a60c9b">
+      <TextField fx:id="hostName" layoutX="400.0" layoutY="214.0" prefHeight="44.0" prefWidth="186.0" />
+      <Button fx:id="submit" layoutX="237.0" layoutY="303.0" mnemonicParsing="false" onAction="#HostRemoteAction" prefHeight="53.0" prefWidth="95.0" text="submit" textFill="#312f31">
          <font>
             <Font name="System Italic" size="19.0" />
          </font>
       </Button>
-      <ChoiceBox fx:id="numbers" layoutX="472.0" layoutY="72.0" prefHeight="44.0" prefWidth="86.0" />
+      <ChoiceBox fx:id="numbers" layoutX="493.0" layoutY="75.0" prefHeight="44.0" prefWidth="86.0" />
+      <Label fx:id="question" layoutX="42.0" layoutY="35.0" prefHeight="80.0" prefWidth="162.0" text="Choose the">
+         <font>
+            <Font name="Bernard MT Condensed" size="28.0" />
+         </font>
+      </Label>
+      <Label layoutX="40.0" layoutY="102.0" prefHeight="34.0" prefWidth="296.0" text=" of players (including host)">
+         <font>
+            <Font name="Bernard MT Condensed" size="28.0" />
+         </font>
+      </Label>
+      <Label fx:id="name1" layoutX="40.0" layoutY="198.0" prefHeight="53.0" prefWidth="135.0" text="Enter host ">
+         <font>
+            <Font name="Bernard MT Condensed" size="30.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="number" fitHeight="150.0" fitWidth="200.0" layoutX="185.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="Pname" fitHeight="53.0" fitWidth="186.0" layoutX="168.0" layoutY="198.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

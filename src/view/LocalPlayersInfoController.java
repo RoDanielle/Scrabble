@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,6 +32,8 @@ public class LocalPlayersInfoController implements Initializable {
 
     @FXML
     private Button submitNames;
+    @FXML
+    private ImageView names;
 
     /**
      * The initialize function is called when the FXML file is loaded.
@@ -45,7 +49,14 @@ public class LocalPlayersInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        loadImage();
         textFieldList = new ArrayList<>();
+    }
+
+    private void loadImage()
+    {
+        Image namesImage = new Image(getClass().getResourceAsStream("/view/images/names.jpeg"));
+        names.setImage(namesImage);
     }
 
     /**

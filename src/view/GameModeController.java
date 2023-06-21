@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class GameModeController {
@@ -18,6 +20,21 @@ public class GameModeController {
     private Button local;
     @FXML
     private Button remote;
+
+    @FXML private ImageView localIm;
+    @FXML private ImageView remoteIm;
+
+    @FXML
+    private void initialize() {
+        loadImage();
+    }
+
+    private void loadImage() {
+        Image localImage = new Image(getClass().getResourceAsStream("/view/images/local.jpeg"));
+        localIm.setImage(localImage);
+        Image remoteImage = new Image(getClass().getResourceAsStream("/view/images/remote.jpeg"));
+        remoteIm.setImage(remoteImage);
+    }
 
     /**
      * The handleModeAction function is called when the user clicks on either the local or remote button.
