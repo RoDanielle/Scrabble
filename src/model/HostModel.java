@@ -64,7 +64,6 @@ public class HostModel extends Observable implements GameModel {
      * @param isLocal Determine whether the game is local or remote
      * @param numPlayers Determine how many players are playing the game
      *
-     * @return A new hostmodel object
      */
     public HostModel(String name, Boolean isLocal, int numPlayers) {
         this.isLocal = isLocal;
@@ -137,7 +136,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param change Tells the observer what has changed
      *
-     * @return Void
      */
     private void notifyObserver(String change) {
         setChanged();
@@ -153,7 +151,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param obz is added as an observer to the arraylist of observers
      *
-     * @return void
      */
     @Override
     public void addObserver(Observer obz)
@@ -167,7 +164,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param num Decrease the score of the current player by num
      *
-     * @return void
      */
     private void decreaseScore(int num)
     {
@@ -181,7 +177,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param num Add the provided num score to the current player
      *
-     * @return void
      */
     private void addScore(int num)
     {
@@ -250,7 +245,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param msg Set the message to be displayed
      *
-     * @return Void
      */
     public void setMessage(String msg)
     {
@@ -264,7 +258,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param w contains the information of the word that will be added into the board.
      *
-     * @return void
      */
     public void updateMatrixBoard(Word w) {
         if(w.vertical)
@@ -308,7 +301,6 @@ public class HostModel extends Observable implements GameModel {
     /**
      * The stopGame function sets the gameRunning variable to false, which will cause the game loop to stop running.
      *
-     * @return void
      */
     public void stopGame() {
         this.gameRunning = false;
@@ -321,7 +313,6 @@ public class HostModel extends Observable implements GameModel {
      * @param str is a message to the server
      * @param _socket Specify which socket the message should be sent to
      *
-     * @return void
      */
     public void write_to_socket(String str, Socket _socket){
         try {
@@ -357,7 +348,6 @@ public class HostModel extends Observable implements GameModel {
      * @param gameServerIP represents the ip of the game server
      * @param gameServerPort Specify the port number of the game server
      *
-     * @return void
      */
     public void ConnectToGameServer(String gameServerIP, int gameServerPort) throws IOException {
         Socket server;
@@ -397,7 +387,6 @@ public class HostModel extends Observable implements GameModel {
      * @param isLocal Determine whether the game is local or remote
      * @param names holds the names of the local players
      *
-     * @return void
      */
     private void GameManagement(boolean isLocal, String names){
         if(!GameServerAvailabilityCheck()) // the game server is not up - this host will create it
@@ -425,7 +414,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param p Give the tiles to a specific player
      *
-     * @return void
      */
     public void giveTiles(Player p)
     {
@@ -457,7 +445,6 @@ public class HostModel extends Observable implements GameModel {
      * @param col Determine the column of the first letter of a word
      * @param vertical Determine if the word is placed vertically or horizontally
      *
-     * @return void
      */
     public void TryPutWordInBoard(String requestType, String word, String row, String col,String vertical){
         Word w = this.current_player.create_word(word, row,col,vertical);
@@ -494,7 +481,6 @@ public class HostModel extends Observable implements GameModel {
      * @param col Stores the column number of the first letter of a word
      * @param vertical Determine whether the word is placed vertically or horizontally on the board
      *
-     * @return void
      */
     @Override
     public void setUserQueryInput(String word, String row, String col, String vertical){
@@ -533,7 +519,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param request Determine whether the user wants to challenge or not
      *
-     * @return void
      */
     @Override
     public void setUserChallengeInput(String request){
@@ -571,7 +556,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param player Pass the player how's turn to play to the function
      *
-     * @return Void
      */
     public void playerTurn(Player player){
         giveTiles(player); // in first turn gives 7 tiles
@@ -629,7 +613,6 @@ public class HostModel extends Observable implements GameModel {
      * @param word Access the tiles in the word
      * @param player Pass the player that will receive its tiles back
      *
-     * @return The tiles from the word to the player's hand
      */
     private void returnTiles(Word word, Player player)
     {
@@ -647,7 +630,6 @@ public class HostModel extends Observable implements GameModel {
      * It does this by giving each player a random tile from the bag, and then sorting them in ascending order based on their tiles letter values.
      * The first tile that was given to each player is then returned back into the bag.
      *
-     * @return void
      */
     private void setTurns()
     {
@@ -672,7 +654,6 @@ public class HostModel extends Observable implements GameModel {
      *
      * @param names contains the names of all players in the game
      *
-     * @return void
      */
     private void setLocalPlayers(String names)
     {
@@ -695,7 +676,6 @@ public class HostModel extends Observable implements GameModel {
      * @param gameServerIP is the ip of the game server
      * @param gameServerPort is the port the game server is listening on
      *
-     * @return A void
      */
     private void startGame_local(String gameServerIP, int gameServerPort){
         this.setMessage("starting game");
@@ -741,7 +721,6 @@ public class HostModel extends Observable implements GameModel {
      * If all players pass, it calls stopGame function to end the game.
      *
      *
-     * @return void
      */
     private void passesCountLocal(){
         int numOfPasses = 0;
@@ -761,7 +740,6 @@ public class HostModel extends Observable implements GameModel {
     /**
      * The stopLocalGame function is called when a local game ends. It sets the winner to be whoever has the highest score, and then closes all of the sockets that were opened during gameplay.
      *
-     * @return void
      */
     public void stopLocalGame()
     {

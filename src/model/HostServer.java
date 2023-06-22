@@ -34,7 +34,6 @@ public class HostServer {
     /**
      * The start function starts the server on port 8081.
      *
-     * @return Void
      */
     public void start(){
         this.stop = false;
@@ -45,11 +44,10 @@ public class HostServer {
      * The startServer function is responsible for creating a server socket and listening for client connections.
      * When a new client connects, the function creates a new ClientHandler object to handle the connection.
      * The function also starts the game when all clients have connected.
-
      *
      * @param port Specify the port that the server should listen on
      *
-     * @return Void
+     * @throws IOException
      */
     private void startServer(int port){
         try {
@@ -198,7 +196,6 @@ public class HostServer {
      * @param wordDetails Pass the details of the word that was played to this function
      * @param playerName Identify the player who made the move
      *
-     * @return void
      */
     private void notifyRemotes(String[] wordDetails, String playerName)
     {
@@ -220,7 +217,6 @@ public class HostServer {
      * @param wordinfo Send the word information to other remotes
      * @param word Update the board in the host model
      *
-     * @return Void
      */
     private void notifyBoardChanged(String wordinfo, Word word)
     {
@@ -261,7 +257,6 @@ public class HostServer {
      * The function then closes all sockets and files and stops running.
      *
      *
-     * @return void
      */
     private void stopRemoteGame(){
         try {

@@ -24,11 +24,24 @@ public class GameModeController {
     @FXML private ImageView localIm;
     @FXML private ImageView remoteIm;
 
+    /**
+     * The initialize function is called when the FXML file is loaded.
+     * It sets up the image view to display a picture of a cat, and it also
+     * sets up an event handler for mouse clicks on that image. When you click on the cat,
+     * it will print out &quot;You clicked on a cat!&quot; in your console window.  You can see this by clicking View-&gt;Show Console in Eclipse's menu bar (or using Ctrl+4).
+     *
+     *
+     */
     @FXML
     private void initialize() {
         loadImage();
     }
 
+    /**
+     * The loadImage function loads the images for the local and remote buttons.
+     *
+     *
+     */
     private void loadImage() {
         Image localImage = new Image(getClass().getResourceAsStream("/view/images/local.jpeg"));
         localIm.setImage(localImage);
@@ -40,14 +53,10 @@ public class GameModeController {
      * The handleModeAction function is called when the user clicks on either the local or remote button.
      * It sets a boolean value to true if the user clicked on local, and false if they clicked on remote.
      * Then it loads up either HostLocalInfoController or HostRemoteInfoController depending on which button was pressed.
-
      *
      * @param event Get the source of the button that was pressed
-
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     @FXML
     private void handleModeAction (ActionEvent event) throws Exception {
@@ -83,9 +92,7 @@ public class GameModeController {
      *
      * @param isHost Determine whether the user is a host or not
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void setIsHost(boolean isHost) {
         this.isHost = isHost;

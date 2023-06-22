@@ -51,7 +51,6 @@ public class GuestHandler implements Runnable {
      * @param clientSocket is the socket the host server created for a guset player
      * @param myHost Access the HostModel class
      *
-     * @return void, created a new client handler to handel a remote player
      */
     public GuestHandler(Socket clientSocket, HostModel myHost) {
         this.myHost = myHost;
@@ -81,7 +80,6 @@ public class GuestHandler implements Runnable {
      *
      * @param isClientTurn Determine if it is the client's turn
      *
-     * @return void
      */
     public void setClientTurn(boolean isClientTurn) {
         this.isClientTurn = isClientTurn;
@@ -90,7 +88,6 @@ public class GuestHandler implements Runnable {
     /**
      * The closeAllFiles function closes all the files that were used to communicate with the guest player.
      *
-     * @return void
      */
     public void closeAllFiles()
     {
@@ -123,7 +120,6 @@ public class GuestHandler implements Runnable {
      * The turnNotifier function is called when it is the guest player's turn to play.
      * It sends a message to the client telling them that it is their turn.
      *
-     * @return void
      */
     private void turnNotifier()
     {
@@ -143,7 +139,6 @@ public class GuestHandler implements Runnable {
      * @param score the score earned for the word
      * @param w is the word object representing the word that was palced on the board
      *
-     * @return void
      */
     public void wordOkResponse(String msgTag, String word, String row, String col,String vertical, int score, Word w){
 
@@ -163,7 +158,6 @@ public class GuestHandler implements Runnable {
      * decreases their score by 10 points.
      *
      *
-     * @return void
      */
     public void challengeFailed()
     {
@@ -181,7 +175,6 @@ public class GuestHandler implements Runnable {
      * @param msgTag Identify the message type
      * @param w stores the tiles from the word that was attempted to be placed
      *
-     * @return void
      */
     public void wordPlacementFailed(String msgTag, Word w)
     {
@@ -205,7 +198,6 @@ public class GuestHandler implements Runnable {
      *
      * @param request Store the request from the client (guest player)
      *
-     * @return void
      */
     private void updateRequest(String[] request)
     {
@@ -231,7 +223,6 @@ public class GuestHandler implements Runnable {
      * maintaining a players object representing the guest on the host side and communicating with the game server in the name of the guest.
      *
      *
-     * @return void
      */
     @Override
     public void run(){

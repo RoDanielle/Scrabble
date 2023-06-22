@@ -38,14 +38,11 @@ public class LocalPlayersInfoController implements Initializable {
     /**
      * The initialize function is called when the FXML file is loaded.
      * It sets up the textFieldList arraylist, which will be used to store all the TextFields in this scene.
-
      *
      * @param location Determine the location of the fxml file
      * @param resources Load the strings from the resource bundle
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,8 +50,14 @@ public class LocalPlayersInfoController implements Initializable {
         textFieldList = new ArrayList<>();
     }
 
-    private void loadImage()
-    {
+    /**
+     * The loadImage function loads the image of the names.jpeg file into a JavaFX Image object,
+     * and then sets that image to be displayed in the names ImageView object.
+     *
+     *
+     *
+     */
+    private void loadImage() {
         Image namesImage = new Image(getClass().getResourceAsStream("/view/images/names.jpeg"));
         names.setImage(namesImage);
     }
@@ -64,14 +67,10 @@ public class LocalPlayersInfoController implements Initializable {
      * It also passes a boolean value that indicates whether this game is local, as well as a boolean value indicating if this player
      * is hosting the game. The number of players in the game are also passed to MainViewController so that it can be used later on in determining
      * which player's turn it currently is. Finally, we set up our main view by loading its FXML file and setting its title before displaying it on screen.
-
      *
      * @param event Get the source of the event
-
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     @FXML
     private void localNamesHandler(ActionEvent event) throws IOException {
@@ -107,9 +106,7 @@ public class LocalPlayersInfoController implements Initializable {
      * @param local Determine whether the game is local or not
      * @param num Set the number of players in the game
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void setInfo(boolean host, boolean local, int num) {
         this.isHost = host;
@@ -117,6 +114,13 @@ public class LocalPlayersInfoController implements Initializable {
         this.numOfPlayers = num;
     }
 
+    /**
+     * The getContainer function returns the container of the current scene.
+     *
+     *
+     * @return An anchorpane object, which is a layout container
+     *
+     */
     public AnchorPane getContainer() {
         return container;
     }
@@ -126,12 +130,9 @@ public class LocalPlayersInfoController implements Initializable {
      * The number of players is determined by the numOfPlayers variable, which is set
      * when the user selects a difficulty level from the menu.  The function also adds
      * these TextFields to an ArrayList called textFieldList, so that they can be accessed later.
-
      *
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void createTextFields() {
         container.getChildren().clear();

@@ -16,6 +16,12 @@ public class Player {
 
     String[] wordDetails;
 
+    /**
+     * The Player function is a constructor that creates a new Player object.
+     *
+     *
+     *
+     */
     public Player() {
         this.name = null;
         this.socket = null;
@@ -55,12 +61,26 @@ public class Player {
         this.tiles = tiles;
     }
     public int getNumOfTiles() {return this.numOfTiles;}
-    public void addScore(int score)
-    {
+    /**
+     * The addScore function adds the score parameter to the current score.
+     *
+     *
+     * @param score Add the score to the current score
+     *
+     *
+     */
+    public void addScore(int score) {
         this.score += score;
     }
-    public void decreaseScore(int score)
-    {
+    /**
+     * The decreaseScore function decreases the score by a given amount.
+     *
+     *
+     * @param score Decrease the score by a certain amount
+     *
+     *
+     */
+    public void decreaseScore(int score) {
         this.score -= score;
     }
 
@@ -69,16 +89,13 @@ public class Player {
      * information. It then creates an array of tiles based on the input word. If there is
      * a blank tile in the input word, it will be represented by null in the array of tiles.
      * The function also removes these tiles from this player's hand so that they cannot be used again.
-
      *
      * @param input_word Create the word
      * @param _row Get the row of the word
      * @param _col Get the column of the word
      * @param _vertical Determine if the word is vertical or horizontal
      *
-     * @return A word object
      *
-     * @docauthor Trelent
      */
     public Word create_word(String input_word, String _row, String _col, String _vertical) {
         Tile[] wordarr = null;
@@ -116,9 +133,7 @@ public class Player {
      *
      * @param word Determine which tiles to remove from the strtiles arraylist
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void removeStrTiles(String word) {
         for(int i = 0; i < word.length(); i++)

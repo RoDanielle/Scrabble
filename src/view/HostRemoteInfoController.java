@@ -36,14 +36,11 @@ public class HostRemoteInfoController implements Initializable {
     /**
      * The initialize function is called when the FXML file is loaded.
      * It sets up the ComboBox with all the numbers from 2 to 4.
-
      *
      * @param location Identify the location of the fxml file
      * @param resources Access the resources for localizing and styling the application
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,14 +61,10 @@ public class HostRemoteInfoController implements Initializable {
      * The HostRemoteAction function is called when the user clicks on the &quot;Host&quot; button.
      * It sets up a new game with the host's name and number of players, then opens up
      * a new window for playing Scrabble.
-
      *
      * @param event Get the source of the event, which is used to get the stage
-
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     @FXML
     private void HostRemoteAction (ActionEvent event) throws Exception {
@@ -95,9 +88,7 @@ public class HostRemoteInfoController implements Initializable {
     * @param host Determine whether the player is a host or not
     * @param local Determine if the game is being played locally or over a network
     *
-    * @return Nothing
     *
-    * @docauthor Trelent
     */
    public void setInfo(boolean host, boolean local)
    {

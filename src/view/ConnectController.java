@@ -29,12 +29,9 @@ public class ConnectController {
     /**
      * The initialize function is called when the FXML file is loaded.
      * It sets up the button to call a function when it's clicked.
-
      *
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
 
     private void loadImage()
@@ -47,6 +44,13 @@ public class ConnectController {
         enter_name.setImage(enter_nameImage);
     }
 
+    /**
+     * The initialize function is called when the FXML file is loaded.
+     * It sets up the button to call a function when it's clicked, and loads an image into an ImageView.
+     *
+     *
+     * @trows RuntimeException
+     */
     @FXML
     private void initialize() {
         loadImage();
@@ -79,9 +83,7 @@ public class ConnectController {
      *
      * @param isHost Set the ishost variable
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void setIsHost(boolean isHost) {
         this.isHost = isHost;

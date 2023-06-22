@@ -449,7 +449,6 @@ public class MainViewModel implements Observer {
      *
      * @return A 2d array of stringproperty objects
      *
-     * @docauthor Trelent
      */
     public StringProperty[][] boardProperty() {
         return boardProperty;
@@ -460,11 +459,8 @@ public class MainViewModel implements Observer {
      *
      *
      * @param updatedBoard Update the boardproperty[][]
-    }
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void updateBoardFromModel(String[][] updatedBoard) {
         for(int i = 0; i < 15; i++)

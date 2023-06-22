@@ -26,13 +26,27 @@ public class WelcomeScreenController {
     private boolean isHost;
 
 
+    /**
+     * The initialize function is called when the FXML file is loaded.
+     * It sets up the image view to display a picture of a cat, and it also
+     * sets up an event handler for mouse clicks on that image. When you click on the cat,
+     * it will print out &quot;You clicked on a cat!&quot; in your console window.  You can see this by clicking View-&gt;Show Console in Eclipse's menu bar (or using Ctrl+4).
+     *
+     *
+     *
+     */
     @FXML
     private void initialize() {
         loadImage();
     }
 
-    private void loadImage()
-    {
+    /**
+     * The loadImage function loads the scrabble image from the images folder and sets it to be displayed in the ImageView
+     *
+     *
+     *
+     */
+    private void loadImage() {
         Image scrabbleImage = new Image(getClass().getResourceAsStream("/view/images/scrabble.jpeg"));
         scrabble.setImage(scrabbleImage);
     }
@@ -45,9 +59,7 @@ public class WelcomeScreenController {
      *
      * @param event Get the source of the button that was clicked
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     @FXML
     private void handleButtonAction (ActionEvent event) throws Exception {

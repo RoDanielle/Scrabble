@@ -40,14 +40,13 @@ public class GuestModel extends Observable implements GameModel{
 
     /**
      * The GuestModel function is the constructor for the GuestModel class.
-     * It initializes all of the variables that are used in this class, and it also starts a new thread to connect to server in order for the game to start.
+     * It initializes all the variables that are used in this class, and it also starts a new thread to connect to server in order for the game to start.
 
      *
      * @param name Set the name of the player
      * @param ip Set the ip address of the server
      * @param port Connect to the server at this given port
      *
-     * @return A new guestmodel object
      */
     public GuestModel(String name, String ip, int port){
         this.myObservers = new ArrayList<>();
@@ -144,7 +143,6 @@ public class GuestModel extends Observable implements GameModel{
      * @param col Set the column of the word to be placed on the board
      * @param vertical Indicate whether the word is horizontal or vertical
      *
-     * @return void
      */
     @Override
     public void setUserQueryInput(String word, String row, String col, String vertical) {
@@ -171,7 +169,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param request Get the user's input for the offer of challenge (a specific move in the game)
      *
-     * @return void
      */
     @Override
     public void setUserChallengeInput(String request) {
@@ -204,7 +201,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param msg the message to be shown to the user.
      *
-     * @return void
      */
     private void setMessage(String msg)
     {
@@ -218,7 +214,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param name is the name of the guest player
      *
-     * @return void
      */
     private void setName(String name)
     {
@@ -242,7 +237,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param socket that will be set the socket of the guest player
      *
-     * @return void
      */
     private void setMySocket(Socket socket) {
 
@@ -255,7 +249,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param num Decrease the score of the player by that amount
      *
-     * @return void
      */
     private void decreaseScore(int num)
     {
@@ -269,7 +262,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param num Add the score to the guest player
      *
-     * @return void
      */
     public void addScore(int num)
     {
@@ -283,7 +275,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param change Pass the change tag (so it knows what info wad changed) to the observer
      *
-     * @return void
      */
     private void notifyObserver(String change) {
         setChanged();
@@ -298,7 +289,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param obz is the observer that will be added to the list of observers
      *
-     * @return void
      */
     @Override
     public void addObserver(Observer obz)
@@ -312,7 +302,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param addedTiles is a string containing the received tiles from the server
      *
-     * @return void
      */
     public void addTiles(String addedTiles) // received all 7 tiles
     {
@@ -337,7 +326,6 @@ public class GuestModel extends Observable implements GameModel{
      * @param  col is the column of where the first letter of word needs to be placed
      * @param  vertical Determine whether the word is placed vertically or horizontally
      *
-     * @return void
      */
     private void updateMatrixBoard(String word, String row, String col, String vertical) {
         if(vertical.equals("vertical"))
@@ -367,13 +355,10 @@ public class GuestModel extends Observable implements GameModel{
     /**
      * The write_to_server function takes a string and a socket as input.
      * It then writes the string to the server through that socket.
-
      *
      * @param str id the message to the server
      * @param server_socket communicate (send) with the server through this socket
      *
-     * @return void
-
      */
     private void write_to_server(String str, Socket server_socket){
         try {
@@ -391,7 +376,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param server_socket (receive) communicate with the server through this socket
      *
-     * @return void
      */
     private String read_from_server(Socket server_socket) {
         try {
@@ -412,7 +396,7 @@ public class GuestModel extends Observable implements GameModel{
 
      * @param port Connect to the server on a specific port
      *
-     * @return void
+     * @throw RuntimeException
      */
     private void connectToServer(String ip, int port){
         try {
@@ -434,7 +418,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param fromHost is a list containing the received tiles
      *
-     * @return void
      */
     private void case0(String fromHost) // got 7 tiles
     {
@@ -453,7 +436,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param fromHost Store the message received from the server
      *
-     * @return void
      */
     private void serverWordResponse(String[] fromHost) //my word failed"2|true|0|null|name"
     {
@@ -489,7 +471,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param fromHost Store the message received from the server
      *
-     * @return void
      */
     private void challengeResponse(String[] fromHost)
     {
@@ -514,11 +495,10 @@ public class GuestModel extends Observable implements GameModel{
      * The gameOver function is called when the game has ended.
      * It sets the message to be displayed on screen, and closes
      * the socket of the guest player.
-
      *
      * @param fromHost containing the winner of the game info
      *
-     * @return void
+     * @throws RuntimeException
      */
     private void gameOver(String fromHost)
     {
@@ -539,7 +519,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param  fromHost containing the information from the server
      *
-     * @return void
      */
     private void wordEnteredByOtherUser(String[] fromHost)
     {
@@ -554,7 +533,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param fromHost containing the information from the server
      *
-     * @return void
      */
     private void wordEnteredByMe(String[] fromHost)
     {
@@ -577,7 +555,6 @@ public class GuestModel extends Observable implements GameModel{
      *
      * @param fromHost containing the information from the server
      *
-     * @return : void
      */
     public void challengeTrue(String[] fromHost)
     {
@@ -612,7 +589,6 @@ public class GuestModel extends Observable implements GameModel{
      * 4 - server notifying the game has ended and provides the winner's info (gameOver).
      *
      *
-     * @return void
      */
     private void startGuestGame() {
         this.setMessage("please wait for Host to start the game");

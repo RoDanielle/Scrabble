@@ -34,13 +34,11 @@ public class Word{
   * The equals function checks to see if the object passed in is equal to this Word.
   * It does so by checking that the row, column, and verticality are all equal.
   * Then it checks that each tile in tiles is also present in other's tiles array.
-
   *
   * @param obj Compare the two objects
   *
   * @return True if the two words are identical
   *
-  * @docauthor Trelent
   */
  @Override
 	public boolean equals(Object obj) {

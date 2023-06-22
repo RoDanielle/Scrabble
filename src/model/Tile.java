@@ -165,9 +165,7 @@ public class Tile {
    *
    * @param t Add a tile to the bag
    *
-   * @return Tile
    *
-   * @docauthor Trelent
    */
   public void put(Tile t){
 			if(lettercount[t.letter- 'A'] < copycount[t.letter- 'A'])
@@ -180,11 +178,7 @@ public class Tile {
 		/**
    * The size function returns the number of elements in the list.
    *
-   *
-   *
-   * @return The sum of the number of elements in each list
-   *
-   * @docauthor Trelent
+   * @return the size
    */
   public int size() {
 			return sum;
@@ -194,10 +188,8 @@ public class Tile {
    * The getQuantities function returns an array of integers that represents the number of times each letter appears in the text.
    *
    *
-   *
    * @return An array of integers that contains the number of times each letter occurs in the text
    *
-   * @docauthor Trelent
    */
   public int[] getQuantities() {
 			int Quantities[];

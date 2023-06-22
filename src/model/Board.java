@@ -11,7 +11,6 @@ public class Board {
   * The Board function creates a new board object and initializes the tilesBoard matrix.
   *
   *
-  * @return void, create a new object
   */
  	private Board()
 	{
