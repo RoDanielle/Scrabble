@@ -368,11 +368,9 @@ public class HostModel extends Observable implements GameModel {
     private boolean GameServerAvailabilityCheck() {
         try (Socket s = new Socket("localhost", 8080)) {
             this.write_to_socket("check", s);
-            System.out.println("game server is up, sent check and closed ");
             s.close();
             return true;
         } catch (IOException ex) {
-            System.out.println("game server is not up, need to create it");
             /* ignore */
         }
         return false;

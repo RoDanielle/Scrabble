@@ -23,8 +23,6 @@ public class Dictionary {
      */
     public Dictionary(String...files){
         fileNames = files;
-        for(String s : fileNames)
-            System.out.println("files name from dictionary: " + s.toString());
         LRU_CM = new CacheManager(400, new LRU());
         LFU_CM = new CacheManager(100, new LFU());
         //Bloom = new BloomFilter(262144,"MD5","SHA1");

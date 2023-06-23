@@ -239,7 +239,6 @@ public class MainViewModel implements Observer {
      * @docauthor Trelent
      */
     public void processQueryInput(String userInput) {  //  word|row|col|vertical from View
-        System.out.println("entered query pros");
         if (isUserTurn.get()) {
             // Process the user's input
             String[] request = userInput.split("[|]");
@@ -303,7 +302,6 @@ public class MainViewModel implements Observer {
      * @docauthor Trelent
      */
     public void processChallengeInput(String userInput) {
-        System.out.println("entered challenge pros");
         if (isUserChallenge.get()) {
             if(userInput.equals("yes"))
             {

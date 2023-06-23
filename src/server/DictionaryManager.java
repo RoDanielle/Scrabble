@@ -55,12 +55,11 @@ public class DictionaryManager {
 	 * @docauthor Trelent
   	*/
  	public boolean query(String...args){
-		System.out.println("entered dictionary manager query call");
+
 		boolean found = false;
 		String word = args[args.length - 1];
 		for(int i = 0; i < args.length - 1; i++)
 		{
-			System.out.println("dictionary manager, searching in book:" + args[i]);
 			if(map.containsKey(args[i])){
 				if(map.get(args[i]).query(word))
 					found = true;
@@ -71,7 +70,6 @@ public class DictionaryManager {
 				if(map.get(args[i]).query(word))
 					found = true;
 			}
-			System.out.println("dictionary manager, is word in: " + args[i] + "?" + found);
 		}
 		return found;
 	}

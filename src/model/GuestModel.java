@@ -313,8 +313,6 @@ public class GuestModel extends Observable implements GameModel{
                 this.guest_player.strTiles.add(s);
         }
         this.notifyObserver("tiles");
-        for(String s : guest_player.strTiles)
-            System.out.println(s);
     }
 
     /**
@@ -439,8 +437,6 @@ public class GuestModel extends Observable implements GameModel{
      */
     private void serverWordResponse(String[] fromHost) //my word failed"2|true|0|null|name"
     {
-        for(String s : fromHost)
-            System.out.println(s);
         if(fromHost[1].equals("true") && !fromHost[4].equals(this.guest_player.name)) // other users word was placed on board
         {
             wordEnteredByOtherUser(fromHost);
@@ -558,11 +554,6 @@ public class GuestModel extends Observable implements GameModel{
      */
     public void challengeTrue(String[] fromHost)
     {
-        System.out.println("challenge true string:");
-        for(String s : fromHost)
-        {
-            System.out.println(s);
-        }
         if(!fromHost[2].equals("0")) // challenge and tryplaceword correct, received: "3|true|score|a,1^b2^...|name|word(not full)|row|col|v\h"
         {
             //int tmp_score = Integer.parseInt(fromHost[2]) + 10;
@@ -606,12 +597,10 @@ public class GuestModel extends Observable implements GameModel{
                     break;//send: 1|word(not full)|row|col|v/h|name or 1|xxx|name
 
                 case "2": // host + server response to query request ++ updated board for any entered word
-                    System.out.println("guest model - entered query case");
                     serverWordResponse(fromHost);
                     break; // if user wants to challenge or not, send: 3|c/xxx|word(not full)|row|col|v/h|name
 
                 case "3": // host + server response to challenge request
-                    System.out.println("guest model - entered challenge case");
                     challengeResponse(fromHost);
                     break;
 

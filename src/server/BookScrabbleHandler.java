@@ -32,11 +32,9 @@ public class BookScrabbleHandler implements ClientHandler{
         String[] args = new String[str.length - 1];
         System.arraycopy(str, 1, args, 0, str.length - 1);
 
-        if(str[0].equalsIgnoreCase("check"))
-            System.out.println("entered check if server is up connection");
+        if(str[0].equalsIgnoreCase("check"));
 
         else if(str[0].equalsIgnoreCase("Q")){ // query
-            System.out.println("checking query request");
             DictionaryManager dm = DictionaryManager.get();
             if(dm.query(args))
                 out.println("true");
@@ -45,7 +43,6 @@ public class BookScrabbleHandler implements ClientHandler{
         }
         else // challenge
         {
-            System.out.println("checking challenge request");
             DictionaryManager dm = DictionaryManager.get();
             if(dm.challenge(args))
                 out.println("true");

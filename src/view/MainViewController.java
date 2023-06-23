@@ -9,8 +9,9 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.TextAlignment;
 import javafx.util.converter.NumberStringConverter;
 import viewModel.MainViewModel;
 import javafx.scene.layout.GridPane;
@@ -49,6 +50,7 @@ public class MainViewController implements Initializable{
     // var for user challenge
     @FXML private Button challengeB;
     @FXML private Button passChallenge;
+    @FXML private ImageView board_init;
 
 
     /**
@@ -101,7 +103,6 @@ public class MainViewController implements Initializable{
             s_vertical = "null";
         }
         String userQueryInput = s_word + "|" + s_row + "|" + s_col + "|" + s_vertical;
-        System.out.println("FROM VIEW: " + userQueryInput);
         viewModel.processQueryInput(userQueryInput);
     }
 
@@ -228,7 +229,6 @@ public class MainViewController implements Initializable{
      *
      */
     private void bindTiles(){
-        System.out.println("entered bind tiles func");
         int i = 0;
 
         for (Node node : tilesListView.getChildren()) {
@@ -332,7 +332,9 @@ public class MainViewController implements Initializable{
            for(int j = 0; j < 15; j++)
            {
                Label label = new Label();
-               BoardGrid.add(setColor(i,j,label), i, j);
+               BoardGrid.add(label, i, j);
+               //BoardGrid.add(setColor(i,j,label), i, j);
+               label.setStyle("-fx-font-size: 20px; -fx-text-fill: black;");
            }
        }
     }
@@ -416,9 +418,14 @@ public class MainViewController implements Initializable{
      *
      */
     private void UILoarder() {
+        loadImage();
         screenInit();
         createTiles();
         creatBoard();
     }
 
+    private void loadImage() {
+        Image board_image = new Image(getClass().getResourceAsStream("/view/images/board.jpeg"));
+        board_init.setImage(board_image);
+    }
 }

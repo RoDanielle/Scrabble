@@ -255,16 +255,12 @@ public class GuestHandler implements Runnable {
                     {
                         guestPlayer.name = guestResponse[5];
                     }
-                    System.out.println("REACHED PLAYER QUERY ");
                     this.myHost.ConnectToGameServer("localhost",8080);
                     if(this.myHost.testDictionary("Q",guestResponse[1],guestResponse[2],guestResponse[3],guestResponse[4],this.myHost.gameServerSocket)) // word found in dictionary
                     {
-                        System.out.println("REACHED PLAYER QUERY TRUE");
 
                         toGuest = "2" + "|" + "true";
                         Word w = guestPlayer.create_word(guestResponse[1], guestResponse[2], guestResponse[3], guestResponse[4]);
-                        System.out.println("guest handler: guest name = " + this.guestPlayer.name + " tiles str size: " + this.guestPlayer.strTiles.size() + this.guestPlayer.tiles.size());
-
                         int score = this.myHost.getBoardObject().tryPlaceWord(w);
 
                         if (score != 0) // word was put into board
@@ -281,10 +277,8 @@ public class GuestHandler implements Runnable {
                         toGuest = "2" + "|" + "false" + "|" + "null" + "|" + "null" + "|" + guestPlayer.name; //query return false "2|false|null|null|name"
                         this.outToClient.println(toGuest);
                         this.outToClient.flush();
-                        System.out.println("guest handler - sent query failed response: " + toGuest);
                         guestResponse = inFromClient.readLine().split("[|]");
                         if (guestResponse[1].equals("c") || guestResponse[1].equals("C")) {
-                            System.out.println("REACHED PLAYER CHALLENGE");
 
                             this.myHost.ConnectToGameServer("localhost", 8080);
 
