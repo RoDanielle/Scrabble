@@ -49,7 +49,7 @@ public class ConnectController {
      * It sets up the button to call a function when it's clicked, and loads an image into an ImageView.
      *
      *
-     * @trows RuntimeException
+     * @throws RuntimeException
      */
     @FXML
     private void initialize() {

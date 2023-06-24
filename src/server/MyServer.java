@@ -53,6 +53,7 @@ public class MyServer {
   	* ClientHandler object (ch), closes ch and closes the socket to this client. The loop continues until stop is set to true by stopServer function.
 
   	*
+	* @throw RuntimeException
   	* @docauthor Trelent
   	*/
  	public void startServer() {

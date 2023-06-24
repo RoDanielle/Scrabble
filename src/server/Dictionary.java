@@ -38,6 +38,7 @@ public class Dictionary {
 
      *
      * @param fileName Specify the file that will be read from
+     * @throw RuntimeException
      *
      * @docauthor Trelent
      */

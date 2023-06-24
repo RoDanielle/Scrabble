@@ -18,6 +18,7 @@ public class IOSearcher {
  	 * @param files Search in all files
  	 *
 	 * @return True if the word is found in any of the files, false otherwise
+	 * @throw RuntimeException
  	 *
   	 * @docauthor Trelent
   	*/
