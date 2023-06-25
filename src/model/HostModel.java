@@ -348,6 +348,7 @@ public class HostModel extends Observable implements GameModel {
      * @param gameServerIP represents the ip of the game server
      * @param gameServerPort Specify the port number of the game server
      *
+     * @throws IOException if the socket is failed
      */
     public void ConnectToGameServer(String gameServerIP, int gameServerPort) throws IOException {
         Socket server;

@@ -95,7 +95,7 @@ public class Player {
      * @param _col Get the column of the word
      * @param _vertical Determine if the word is vertical or horizontal
      *
-     *
+     * @return the word that was created from the relevant data.
      */
     public Word create_word(String input_word, String _row, String _col, String _vertical) {
         Tile[] wordarr = null;

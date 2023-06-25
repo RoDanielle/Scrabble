@@ -36,7 +36,7 @@ public class MainApplication extends Application {
      *
      * @param args Pass arguments to the application
      *
-     *
+     * @throws RuntimeException if the launch is failed
      */
     public static void main(String[] args) throws Exception {
         launch(args);

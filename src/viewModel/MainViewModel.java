@@ -66,12 +66,8 @@ public class MainViewModel implements Observer {
      * The initializeTiles function initializes the tilesProperty ArrayList with 7 SimpleStringProperties.
      * This is done so that we can bind the text of each tile to a StringProperty in this list, which will allow us to update
      * the text of each tile from anywhere in our code.
-
      *
      *
-     * @return Nothing
-     *
-     * @docauthor Trelent
      */
     private void initializeTiles()
     {
@@ -85,12 +81,8 @@ public class MainViewModel implements Observer {
     /**
      * The initializeBoard function initializes the boardProperty array with 15 rows and 15 columns.
      * Each element in the array is a StringProperty object that contains an empty string.
-
      *
      *
-     * @return Nothing
-     *
-     * @docauthor Trelent
      */
     private void initializeBoard()
     {
@@ -111,12 +103,9 @@ public class MainViewModel implements Observer {
      *
      *
      * @param o Determine which observable object called the update function
-
      * @param arg Determine what part of the model is being updated
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -178,10 +167,8 @@ public class MainViewModel implements Observer {
      * The isUserTurnProperty function returns a BooleanProperty that is true if it is the user's turn, and false otherwise.
      *
      *
-     *
      * @return A booleanproperty object
      *
-     * @docauthor Trelent
      */
     public BooleanProperty isUserTurnProperty() {
         return isUserTurn;
@@ -191,22 +178,16 @@ public class MainViewModel implements Observer {
      * The isUserchallengeProperty function returns a BooleanProperty object that represents the isUserChallenge property.
      *
      *
-     *
      * @return A booleanproperty
      *
-     * @docauthor Trelent
      */
     public BooleanProperty isUserchallengeProperty() {
         return isUserChallenge;
     }
     /**
      * The startUserQueryTurn function sets the isUserTurn boolean to true, which allows the user to enter a query.
-
      *
      *
-     * @return Nothing
-     *
-     * @docauthor Trelent
      */
     public void startUserQueryTurn() {
         isUserTurn.set(true);
@@ -214,12 +195,8 @@ public class MainViewModel implements Observer {
 
     /**
      * The startUserChallengeTurn function sets the isUserChallenge boolean to true.
-
      *
      *
-     * @return Nothing
-     *
-     * @docauthor Trelent
      */
     public void startUserChallengeTurn() {
         isUserChallenge.set(true);
@@ -234,9 +211,6 @@ public class MainViewModel implements Observer {
      *
      * @param userInput Get the user's input from the view
      *
-     * @return A boolean value indicating whether the user's input is valid
-     *
-     * @docauthor Trelent
      */
     public void processQueryInput(String userInput) {  //  word|row|col|vertical from View
         if (isUserTurn.get()) {
@@ -293,13 +267,10 @@ public class MainViewModel implements Observer {
      * The processChallengeInput function is called when the user has been challenged by another player.
      * The function takes in a String as input, which represents the user's response to the challenge.
      * If the user responds with &quot;yes&quot;, then we set their challenge input to &quot;C&quot;. Otherwise, we set it to &quot;xxx&quot;.
-
      *
      * @param userInput Get the user's input from the gui
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void processChallengeInput(String userInput) {
         if (isUserChallenge.get()) {
@@ -318,18 +289,10 @@ public class MainViewModel implements Observer {
     /**
      * The updateTilesFromModel function is called by the model when it has been updated.
      * It takes a list of strings as an argument, and updates the tilesProperty list with these values.
-
      *
      * @param updatedTiles Update the tilesproperty list
-    public void updatetilesfrommodel(list&lt;string&gt; updatedtiles) {
-            int i = 0;
-            for(string s : updatedtiles)
-            {
-                this
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void updateTilesFromModel(List<String> updatedTiles) {
         int i = 0;
@@ -344,10 +307,8 @@ public class MainViewModel implements Observer {
      * The tilesProperty function returns a list of StringProperty objects.
      *
      *
-     *
      * @return A list of stringproperty objects
      *
-     * @docauthor Trelent
      */
     public List<StringProperty> tilesProperty() {
         return tilesProperty;
@@ -357,13 +318,10 @@ public class MainViewModel implements Observer {
     /**
      * The updateScoreFromModel function is called by the model when it changes.
      * It updates the scoreProperty to reflect the new value of score in the model.
-
      *
      * @param score Set the scoreproperty
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void updateScoreFromModel(int score) {
         scoreProperty.set(score);
@@ -373,10 +331,8 @@ public class MainViewModel implements Observer {
      * The scoreProperty function returns the scoreProperty of the player.
      *
      *
-     *
      * @return A property, which is a variable that can be observed
      *
-     * @docauthor Trelent
      */
     public IntegerProperty scoreProperty() {
         return scoreProperty;
@@ -389,9 +345,7 @@ public class MainViewModel implements Observer {
      *
      * @param name Set the nameproperty
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void updateNameFromModel(String name)
     {
@@ -402,10 +356,8 @@ public class MainViewModel implements Observer {
      * The nameProperty function returns the nameProperty of the object.
      *
      *
-     *
      * @return A stringproperty
      *
-     * @docauthor Trelent
      */
     public StringProperty nameProperty() {
         return nameProperty;
@@ -418,9 +370,7 @@ public class MainViewModel implements Observer {
      *
      * @param msg Set the value of msgproperty
      *
-     * @return Nothing
      *
-     * @docauthor Trelent
      */
     public void updateMessageFromModel(String msg)
     {
@@ -430,10 +380,8 @@ public class MainViewModel implements Observer {
      * The MsgProperty function returns the msgProperty variable.
      *
      *
-     *
      * @return A stringproperty object that is bound to the msgproperty variable
      *
-     * @docauthor Trelent
      */
     public StringProperty MsgProperty() {
         return msgProperty;

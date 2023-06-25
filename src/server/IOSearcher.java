@@ -12,15 +12,13 @@ public class IOSearcher {
 	/**
  	 * The search function takes a word and an array of files as input.
  	 * It searches the word in all the files.
-
  	 *
 	 * @param word Search for a word in the files
  	 * @param files Search in all files
  	 *
 	 * @return True if the word is found in any of the files, false otherwise
-	 * @throw RuntimeException
+	 * @throws RuntimeException if the stream is failed
  	 *
-  	 * @docauthor Trelent
   	*/
  	public static boolean search(String word, String...files) {
 		for(int i = 0; i < files.length; i++) {

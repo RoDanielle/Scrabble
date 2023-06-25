@@ -19,7 +19,6 @@ public class BloomFilter {
      * @param size Initialize the size of the bitset
      * @param algs Parameter list of algorithm names
      *
-     * @docauthor Trelent
      */
     public BloomFilter(int size, String... algs) {
         // Initialize the BitSet and hash function array

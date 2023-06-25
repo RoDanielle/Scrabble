@@ -15,11 +15,9 @@ public class Dictionary {
 
     /**
      * The Dictionary function receives a parameter list of file names that constitute stories and inserts all the words from those files into a bloom filter.
-
      *
      * @param files Parameter list of file names that constitute stories
      *
-     * @docauthor Trelent
      */
     public Dictionary(String...files){
         fileNames = files;
@@ -35,12 +33,10 @@ public class Dictionary {
 
     /**
      * The loadFile function takes a file name as an argument and loads the words from that file into the bloom filter.
-
      *
      * @param fileName Specify the file that will be read from
-     * @throw RuntimeException
+     * @throws RuntimeException if the stream is failed
      *
-     * @docauthor Trelent
      */
     public void loadFile(String fileName) {
         try{
@@ -63,13 +59,11 @@ public class Dictionary {
      * Search in BloomFilter, and we will return his answer after we update the appropriate cache manager with the answer.
      * Word found, adding to LRU
      * Word not found, adding to LFU
-
      *
      * @param word Check if the word is in the cache
      *
      * @return True if the word is found, false otherwise
      *
-     * @docauthor Trelent
      */
     public boolean query(String word){
         if(LRU_CM.query(word))
@@ -91,13 +85,11 @@ public class Dictionary {
      * The function will update the corresponding cache manager with the answer.
      * If the word is found, the word will be added to the LRU cache.
      * If the word is not found, then the word will be added to the LFU cache.
-
      *
      * @param word Search the word in the filenames array
      *
      * @return True if the word is found, false otherwise
      *
-     * @docauthor Trelent
      */
     public boolean challenge(String word){
         boolean searchTest;

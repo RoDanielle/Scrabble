@@ -23,7 +23,6 @@ public class Tile {
   *
   * @return The hash code value for this object
   *
-  * @docauthor Trelent
   */
  @Override
 	public int hashCode() {
@@ -40,7 +39,6 @@ public class Tile {
   *
   * @return True if the two objects are equal
   *
-  * @docauthor Trelent
   */
  @Override
 	public boolean equals(Object obj) {
@@ -102,7 +100,6 @@ public class Tile {
    *
    * @return A reference to the bag object
    *
-   * @docauthor Trelent
    */
   public static Bag getBag() {
 			if(_instance == null)
@@ -119,7 +116,6 @@ public class Tile {
    *
    * @return A random tile from the bag
    *
-   * @docauthor Trelent
    */
   public Tile getRand() {
 			if(sum == 0)
@@ -143,7 +139,6 @@ public class Tile {
    *
    * @return A tile with the given letter
    *
-   * @docauthor Trelent
    */
   public Tile getTile(char cha){
 			if(Character.isUpperCase(cha)) {

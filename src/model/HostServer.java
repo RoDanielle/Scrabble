@@ -21,7 +21,6 @@ public class HostServer {
      *
      * @param host used to set the hostmodel field
      *
-     * @return a new instance of HostServer
      */
     public HostServer(HostModel host){
         this.hostModel = host;

@@ -15,12 +15,10 @@ public class CacheManager{
      * It will add a new object to the cache if it does not exist in it, and update its frequency.
      * If the object exists in the cache, then its frequency will be updated and moved to front of queue.
      * If there is no space left in CacheManager, then an element with lowest frequency will be removed from CacheManager
-
      *
      * @param size Set the maximum size of the cache
      * @param policy Determine which policy to use
      *
-     * @docauthor Trelent
      */
     public CacheManager(int size, CacheReplacementPolicy policy)
     {
@@ -39,7 +37,6 @@ public class CacheManager{
      *
      * @return True if the word is in the data structure cacheM, false otherwise.
      *
-     * @docauthor Trelent
      */
     public boolean query(String word) {
         return cacheM.contains(word);
@@ -53,7 +50,6 @@ public class CacheManager{
      *
      * @param word Add a word to the cache
      *
-     * @docauthor Trelent
      */
     public void add(String word) {
         if(currentSize == MaxSize){

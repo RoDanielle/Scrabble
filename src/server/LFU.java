@@ -11,9 +11,7 @@ public class LFU implements CacheReplacementPolicy{
      * The constructor for the LFU class which is the implementation of the CacheReplacementPolicy interface
      * Which defines the policy of the replacement of words in the cache
      * Its policy is: least frequently used
-
      *
-     * @docauthor Trelent
      */
     public LFU(){
         words = new LinkedHashMap<String,Integer>();
@@ -24,11 +22,9 @@ public class LFU implements CacheReplacementPolicy{
     /**
      * The add function adds a word to the structure while maintaining its policy.
      * If the word already exists, it's counter is incremented by 1.
-
      *
      * @param word The word you want to add to the structure.
      *
-     * @docauthor Trelent
      */
     @Override
     public void add(String word) {
@@ -43,11 +39,9 @@ public class LFU implements CacheReplacementPolicy{
     /**
      * The remove function removes the least frequently used word from the cache.
      * In case of a tie, the one that entered first is returned
-
      *
      * @return The key of the least frequent word
      *
-     * @docauthor Trelent
      */
     @Override
     public String remove() {

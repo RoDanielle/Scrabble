@@ -17,12 +17,10 @@ public class BookScrabbleHandler implements ClientHandler{
      * The function first reads in a string from the input stream, then splits that string into two parts: a command and arguments.
      * If this command is "Q" then we know that this is a query request, so we call DictionaryManager's query method on our arguments array.
      * If this command is "C" then we know that this is a challenge request, so we call DictionaryManager's challenge method on our arguments array instead of calling query
-
      *
      * @param inFromClient Read from the client
      * @param outToClient Send data back to the client
      *
-     * @docauthor Trelent
      */
     @Override
     public void handleClient(InputStream inFromClient, OutputStream outToClient) {
@@ -56,9 +54,7 @@ public class BookScrabbleHandler implements ClientHandler{
 
     /**
      * The close function closes the input and output streams.
-
      *
-     * @docauthor Trelent
      */
     @Override
     public void close() {
