@@ -32,5 +32,7 @@ In Milestone 1 we focused on the communication protocol between the server and t
 https://drive.google.com/file/d/11ONq0T5Q1t94xUaeDZSAtmHy5iiOibH8/view?usp=sharing
 
 **Milestone 3:**
+
 javadoc: https://rodanielle.github.io/Rodanielle.github.io-scrabble_javadoc/
+
 finale video: https://drive.google.com/file/d/1nTJIjOSehOMQWa4NPX5GSIBwNMKyxW4V/view?usp=sharing
