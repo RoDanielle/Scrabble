@@ -1,4 +1,4 @@
-Scrabble Game
+**Scrabble Game**
 
 Scrabble is a board game inspired by crosswords. In this game, one to four players create words on a 15x15 game board using tiles that have letters printed on them. The goal is to accumulate points, where the number of points the player wins in each move depends on the fixed score for each letter, the color ofthe squares in which the letters were placed, and the words that were created on the board by placing these tiles.
 
