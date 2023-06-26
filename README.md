@@ -32,9 +32,11 @@ https://rodanielle.github.io/Rodanielle.github.io-scrabble_javadoc/
 ## Demo
 
 intruduction and information:
+
 https://drive.google.com/file/d/1nTJIjOSehOMQWa4NPX5GSIBwNMKyxW4V/view?usp=sharing
 
 simple game demo:
+
 https://drive.google.com/file/d/11ONq0T5Q1t94xUaeDZSAtmHy5iiOibH8/view?usp=sharing
 
 ## Roadmap
