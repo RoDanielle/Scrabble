@@ -42,11 +42,11 @@ https://rodanielle.github.io/Rodanielle.github.io-scrabble_javadoc/
 ## Demo
 intruduction and information:
 
-https://drive.google.com/file/d/1nTJIjOSehOMQWa4NPX5GSIBwNMKyxW4V/view?usp=sharing
+https://youtu.be/j9tl4_rWa3o
 
 simple game demo:
 
-https://drive.google.com/file/d/11ONq0T5Q1t94xUaeDZSAtmHy5iiOibH8/view?usp=sharing
+https://youtu.be/PAj1GynoXMw
 
 ## Roadmap
 [Gantt (1).pdf](https://github.com/RoDanielle/Scrabble/files/11870154/Gantt.1.pdf)
