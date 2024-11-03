@@ -69,6 +69,7 @@ simple game demo:
 https://youtu.be/PAj1GynoXMw
 
 Screenshot:
+
 ![Scrabble Game Screenshot](game_screenshot.png)
 
 ## Roadmap
