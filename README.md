@@ -51,6 +51,11 @@ https://youtu.be/PAj1GynoXMw
 ## Roadmap
 [Gantt (1).pdf](https://github.com/RoDanielle/Scrabble/files/11870154/Gantt.1.pdf)
 
+## License
+This project is licensed under the MIT License. You are free to use, modify, and distribute this project, as long as the original license and attribution are retained. For more details, see the [LICENSE](LICENSE) file.
+
+## Contributing
+Feel free to contribute by opening issues or creating pull requests.
 
 ## Authors
 For any questions or suggestions, please do not hesitate to contact the project management team:
