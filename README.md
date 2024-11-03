@@ -1,3 +1,4 @@
+![Scrabble Game](scrabble.jpeg)
 
 # Scrabble game
 
