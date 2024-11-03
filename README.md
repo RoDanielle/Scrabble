@@ -24,10 +24,16 @@ It is bounded by using property data members to the ViewModel layer in order to 
 ## Game Rules
 1. **Starting the Game**: The first player must create a word and place it on the center square.
 2. **Word Placement**: Like a crossword puzzle, each new word must connect with at least one of the tiles already on the board.
-3. **Scoring**:
+3. **Legal Words**: A word is considered legal if it meets all the following conditions:
+   - It is written from left to right or from top to bottom (and not in any other way).
+   - It appears in one of the books chosen for the game.
+   - It leans on one of the existing tiles on the board.
+   - It does not create any illegal words on the board.
+4. **Forfeiting a Turn**: A player who cannot form a legal word forfeits their turn.
+5. **Scoring**:
    - Each player's score accumulates based on all the words created on the board following the placement of their tiles.
-4. **Special Tile Scoring**:
-   - **Central Square**: Doubles the value of the word written on it. *This bonus applies only for the first player.*
+6. **Special Tile Scoring**:
+   - **Central Square**: Doubles the value of the word placed on it. *This bonus applies only for the first player.*
    - **Light Blue Squares**: Double the value of the letter placed on them.
    - **Blue Squares**: Triple the value of the letter placed on them.
    - **Yellow Squares**: Double the value of the entire word placed on them.
