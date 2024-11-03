@@ -21,6 +21,19 @@ VIEW-
 The View is responsible for displaying the user interface (UI) to the user.
 It is bounded by using property data members to the ViewModel layer in order to present on screen the most updated data, such as the board, score, user name and more.
 
+## Game Rules
+1. **Starting the Game**: The first player must create a word and place it on the center square.
+2. **Word Placement**: Like a crossword puzzle, each new word must connect with at least one of the tiles already on the board.
+3. **Scoring**:
+   - Each player's score accumulates based on all the words created on the board following the placement of their tiles.
+4. **Special Tile Scoring**:
+   - **Central Square**: Doubles the value of the word written on it. *This bonus applies only for the first player.*
+   - **Light Blue Squares**: Double the value of the letter placed on them.
+   - **Blue Squares**: Triple the value of the letter placed on them.
+   - **Yellow Squares**: Double the value of the entire word placed on them.
+   - **Red Squares**: Triple the value of the entire word placed on them.
+
+
 ## Installation
 This project is a command-line Scrabble game implemented in Java.
 
