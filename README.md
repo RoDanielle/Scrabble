@@ -68,8 +68,8 @@ simple game demo:
 
 https://youtu.be/PAj1GynoXMw
 
-### Screenshot:
-![Scrabble Game Screenshot](game screenshot.png)
+Screenshot:
+![Scrabble Game Screenshot](game_screenshot.png)
 
 ## Roadmap
 [Gantt (1).pdf](https://github.com/RoDanielle/Scrabble/files/11870154/Gantt.1.pdf)
